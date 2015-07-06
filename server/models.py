@@ -9,3 +9,9 @@ class Users(models.Model):
 	user_summary = models.CharField(max_length=500)
 	location = models.CharField(max_length=30)
 
+class Skills(models.Model):
+	skill_name = models.CharField(max_length=30)
+
+class Types(models.Model):
+	type_name = models.CharField(max_length=30)
+
