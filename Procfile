@@ -1,1 +1,1 @@
-web: gunicorn server.wsgi
+web: gunicorn tunak_server.wsgi
