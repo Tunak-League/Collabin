@@ -11,7 +11,9 @@ class Users(models.Model):
 
 class Skills(models.Model):
 	skill_name = models.CharField(max_length=30)
+	users = models.ManyToManyField(Users)
 
 class Types(models.Model):
 	type_name = models.CharField(max_length=30)
+
 
