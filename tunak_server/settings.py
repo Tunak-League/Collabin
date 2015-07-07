@@ -37,7 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'server'
+    'server',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'tunak_server.wsgi.application'
 
 DATABASES = {
     'default': {
-       'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
@@ -102,7 +102,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-if not os.environ.get("HOME") == '/home/justin':
+if not os.environ.get("HOME") == '/home/park':
     # Parse database configuration from $DATABASE_URL
     import dj_database_url
     DATABASES['default'] = dj_database_url.config()
