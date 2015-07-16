@@ -118,6 +118,11 @@ REST_FRAMEWORK = {
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config()
 
+if os.environ.get("HOME") == '/home/zero':
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+    DATABASES['default']['NAME'] = 'justin'
+
+
 if os.environ.get("HOME") == '/home/park':
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
     DATABASES['default']['NAME'] = 'park'
