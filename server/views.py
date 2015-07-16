@@ -1,3 +1,7 @@
 from django.shortcuts import render
+from server.models import Projects, UserProfiles
+from server.serializers import ProjectsSerializer
+from rest_framework import generics
 
-# Create your views here.
+class UserList(generics.ListAPIView):
+
