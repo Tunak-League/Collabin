@@ -38,6 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'server',
+    'rest_framework',
+    'rest_framework.authtoken'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -101,6 +103,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+#REST FRAMEWORK SETTINGS
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+         'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 #if not os.environ.get("HOME") == '/home/park':
     # Parse database configuration from $DATABASE_URL
