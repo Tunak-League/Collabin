@@ -18,18 +18,18 @@ class SkillsSerializer(serializers.HyperlinkedModelSerializer):
     projects = serializers.HyperlinkedRelatedField(many = True, view_name = '')
     class Meta:
         model = Skills
-        fields('url', 'skill_name')
+        fields('url', 'skill_name', 'users', 'projects')
 
 class TypesSerializer(serializers.HyperlinkedModelSerializer):
     users = serializers.HyperlinkedRelatedField(many = True, view_name = '')
     class Meta:
         model = Types
-        fields('url', 'type_name')
+        fields('url', 'type_name', 'users')
 
 class ProjectsSerializer(serializers.HyperlinkedModelSerializer):
-    types = serializers.HyperlinkedRelatedField(many = False, view_name = '')
-    owner = serializers.HyperlinkedRelatedField(many = False, view_name = '')
+    owner = serializers.HyperlinkedRelatedField(many = False, view_name = '') 
+    types = serializers.ReadOnlyField(source = 'owner.username')
     class Meta:
         model = Projects
-        fields('url', 'project_name', 'project_summary', 'date_created', 'image_path')
+        fields('url', 'project_name', 'project_summary', 'date_created', 'image_path', 'types', 'owner')
 
