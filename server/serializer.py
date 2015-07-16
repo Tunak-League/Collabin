@@ -1,0 +1,35 @@
+from django.forms import widgets
+from rest_framework import serializers
+from server.models import UserProfiles, Skills, Types, Projects
+from django.contrib.auth.models import User
+
+class UsersSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields('url', 'full_name', 'email', 'user_summary', 'location', 'image_path', 'password')
+
+class UserProfilesSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = UserProfiles
+        fields('url', 'first_name', 'last_name', 'username', 'password', 'user_permissions')
+
+class SkillsSerializer(serializers.HyperlinkedModelSerializer):
+    users = serializers.HyperlinkedRelatedField(many = True, view_name = '')
+    projects = serializers.HyperlinkedRelatedField(many = True, view_name = '')
+    class Meta:
+        model = Skills
+        fields('url', 'skill_name')
+
+class TypesSerializer(serializers.HyperlinkedModelSerializer):
+    users = serializers.HyperlinkedRelatedField(many = True, view_name = '')
+    class Meta:
+        model = Types
+        fields('url', 'type_name')
+
+class ProjectsSerializer(serializers.HyperlinkedModelSerializer):
+    types = serializers.HyperlinkedRelatedField(many = False, view_name = '')
+    owner = serializers.HyperlinkedRelatedField(many = False, view_name = '')
+    class Meta:
+        model = Projects
+        fields('url', 'project_name', 'project_summary', 'date_created', 'image_path')
+
