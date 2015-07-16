@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -105,14 +106,8 @@ STATIC_URL = '/static/'
 #if not os.environ.get("HOME") == '/home/park':
     # Parse database configuration from $DATABASE_URL
 DATABASES = {}
-import dj_database_url
 DATABASES['default'] = dj_database_url.config()
 
-
-
-if os.environ.get("HOME") == '/home/zero' :
-    import dj_database_url
-    DATABASES = {}
-    DATABASES['default']  =  dj_database_url.config()
+if os.environ.get("HOME") == '/home/park':
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
-    DATABASES['default']['NAME'] = 'justin'
+    DATABASES['default']['NAME'] = 'park'
