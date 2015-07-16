@@ -110,7 +110,7 @@ DATABASES['default'] = dj_database_url.config()
 
 
 
-if os.environ.get("HOME") == '/home/justin' :
+if os.environ.get("HOME") == '/home/zero' :
     import dj_database_url
     DATABASES = {}
     DATABASES['default']  =  dj_database_url.config()
