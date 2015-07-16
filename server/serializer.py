@@ -6,12 +6,12 @@ from django.contrib.auth.models import User
 class UsersSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields('url', 'full_name', 'email', 'user_summary', 'location', 'image_path', 'password')
+        fields('url', 'first_name', 'last_name', 'username', 'password', 'user_permissions')
 
 class UserProfilesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UserProfiles
-        fields('url', 'first_name', 'last_name', 'username', 'password', 'user_permissions')
+        fields('url', 'user_summary', 'location', 'image_path')
 
 class SkillsSerializer(serializers.HyperlinkedModelSerializer):
     users = serializers.HyperlinkedRelatedField(many = True, view_name = '')
