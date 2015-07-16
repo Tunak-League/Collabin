@@ -86,8 +86,8 @@ WSGI_APPLICATION = 'tunak_server.wsgi.application'
 import dj_database_url
 DATABASES = {}
 DATABASES['default']  =  dj_database_url.config()
-#DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
-
+DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+DATABASES['default']['NAME'] = 'justin'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -107,8 +107,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-
+'''
 if not os.environ.get("HOME") == '/home/park':
     # Parse database configuration from $DATABASE_URL
     import dj_database_url
     DATABASES['default'] = dj_database_url.config()
+'''

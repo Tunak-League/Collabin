@@ -1,27 +1,26 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.conf import settings
 
-class Users(models.Model):
-    last_name = models.CharField(max_length=30)
-    first_name = models.CharField(max_length=30)
-    email = models.CharField(max_length=30)
-    password = models.CharField(max_length=20)
+class UserProfiles(models.Model):
     user_summary = models.CharField(max_length=500)
     location = models.CharField(max_length=30)
     image_path = models.CharField(max_length=50, null = True, blank = True, default = None)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)	
 
 class Skills(models.Model):
     skill_name = models.CharField(max_length=30)
-    users = models.ManyToManyField('Users')
+    users = models.ManyToManyField('UserProfiles')
     projects = models.ManyToManyField('Projects')
 
 class Types(models.Model):
     type_name = models.CharField(max_length=30)
-    users = models.ManyToManyField('Users')
+    users = models.ManyToManyField('UserProfiles')
 
 class Projects(models.Model):
     project_name = models.CharField(max_length=30)
     project_summary = models.CharField(max_length=500)
     date_created = models.DateField()
     id_types = models.ForeignKey('Types')
-    id_owner = models.ForeignKey('Users')
+    id_owner = models.ForeignKey('UserProfiles')
     image_path = models.CharField(max_length=50, null = True, blank = True, default = None)
