@@ -2,7 +2,7 @@ from django.forms import widgets
 from rest_framework import serializers
 from server.models import UserProfiles, Skills, Types, Projects
 from django.contrib.auth.models import User
-'''
+
 class UsersSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
@@ -25,7 +25,7 @@ class TypesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Types
         fields = ('url', 'type_name', 'users')
-'''
+
 class ProjectsSerializer(serializers.HyperlinkedModelSerializer):
   #  owner = serializers.HyperlinkedRelatedField(many = False, view_name = '', read_only=True) #NO VIEW RIGHT NOW, COMMENT OUT UNTIL THEN
    # url = serializers.HyperlinkedIdentityField(view_name="project-list"  )
