@@ -26,10 +26,16 @@ class TypesSerializer(serializers.HyperlinkedModelSerializer):
         model = Types
         fields = ('url', 'type_name', 'users')
 
-class ProjectsSerializer(serializers.HyperlinkedModelSerializer):
+class ProjectsSerializer(serializers.ModelSerializer):
   #  owner = serializers.HyperlinkedRelatedField(many = False, view_name = '', read_only=True) #NO VIEW RIGHT NOW, COMMENT OUT UNTIL THEN
    # url = serializers.HyperlinkedIdentityField(view_name="project-list"  )
-    types = serializers.ReadOnlyField(source = 'id_types.type_name')
+    #typeList = [x.type_name for x in list(self.instance.types) ]
+    #types = serializers.ReadOnlyField(source = 'types', many=True)
+    types = serializers.SlugRelatedField(
+        many=True,
+        queryset=Projects.types,
+        slug_field='type_name',
+    )
     class Meta:
         model = Projects
         fields = (   'project_name', 'project_summary', 'date_created', 'image_path','types' ) # 'owner')
