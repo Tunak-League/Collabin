@@ -15,7 +15,7 @@ from django.db.models import Count
 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-class ProjectList(APIView):
+class ProjectSearch(APIView):
     '''Returns a list of all projects the requesting user might be interested in based on their preference Types
         stored in the database
     '''
