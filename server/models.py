@@ -16,12 +16,13 @@ class Skills(models.Model):
 class Types(models.Model):
     type_name = models.CharField(max_length=30)
     users = models.ManyToManyField('UserProfiles', related_name="types")
+    projects = models.ManyToManyField('Projects', related_name="types")
 
 class Projects(models.Model):
     project_name = models.CharField(max_length=30)
     project_summary = models.CharField(max_length=500)
     date_created = models.DateField()
-    id_types = models.ForeignKey('Types')
+#    id_types = models.ForeignKey('Types')
     id_owner = models.ForeignKey('UserProfiles')
     image_path = models.CharField(max_length=50, null = True, blank = True, default = None)
 
