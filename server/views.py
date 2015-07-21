@@ -4,7 +4,6 @@ from server.serializers import ProjectsSerializer
 from rest_framework import generics
 
 
-
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,18 +11,32 @@ from rest_framework import status
 from server.models import Projects
 from server.models import Types
 from server.serializers import ProjectsSerializer
+from django.db.models import Count
 
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 class ProjectList(APIView):
     '''Returns a list of all projects the requesting user might be interested in based on their preference Types
         stored in the database
     '''
+    #Set authentication and permission classes so only authorized users can request for projects
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, format=None):
         profile = UserProfiles.objects.get(user_id=request.user.id) #obtain UserProfile from the requesting User's id 
         types_profiles = Types.users.through #the types_profiles pivot table
         preferredTypes = types_profiles.objects.filter( userprofiles_id= profile.id ) #obtain all Types preferred by the requesting user
-        preferredTypes = [x.types_id for x in preferredTypes] 
-        projects = Projects.objects.filter( id_types__in=preferredTypes ) #obtain all projects with a type matching an item in preferredTypes
+        preferredTypes = [x.types_id for x in preferredTypes] #list of IDs of preferred types
+
+        types_projects = Types.projects.through #the types_projects pivot table
+        rawResults = types_projects.objects.filter(types_id__in=preferredTypes).values('projects_id') #All projects that match preferred types (with duplicate projects)
+        projectIDs = rawResults.annotate(count=Count('projects_id')).order_by('-count') #Get the IDs of the projects in descending order of most "Type" matches
+        projectIDs = [x['projects_id'] for x in projectIDs] #Put the IDs into a flat list
+        projects = Projects.objects.filter(pk__in=projectIDs) #Get the actual project instances from the IDs
+        projects_list = list(projects) #turn queryset into a list
+        projects_list.sort(key=lambda project: projectIDs.index(project.id)) #Sort projects back to proper order based on projectIDs
 
         #Serialize the data and return it
-        serializer = ProjectsSerializer(projects, many=True, context={'request': request})
+        serializer = ProjectsSerializer(projects_list, many=True, context={'request': request})
         return Response( serializer.data )
