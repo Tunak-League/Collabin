@@ -3,6 +3,6 @@ from server import views
 
 urlpatterns = [
     #url(r'^$', views.index, name = 'index')
-    url(r'^project-list/', views.ProjectList.as_view(), name='project-list' ),
+    url(r'^project-search/', views.ProjectSearch.as_view(), name='project-search' ),
 ]
 
