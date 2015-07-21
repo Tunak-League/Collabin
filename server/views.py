@@ -40,3 +40,18 @@ class ProjectSearch(APIView):
         #Serialize the data and return it
         serializer = ProjectsSerializer(projects_list, many=True, context={'request': request})
         return Response( serializer.data )
+
+from rest_framework import mixins
+from rest_framework import generics
+
+class Project(generics.GenericAPIView):
+    queryset = Projects.objects.all()
+    serializer_class = ProjectsSerializer
+
+    def post(self, request, format=None ):
+        serializer = ProjectsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        

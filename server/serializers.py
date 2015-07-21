@@ -38,5 +38,5 @@ class ProjectsSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = Projects
-        fields = (   'id','project_name', 'project_summary', 'date_created', 'image_path','types' ) # 'owner')
+        fields = (   'id','project_name', 'project_summary', 'id_owner', 'date_created', 'image_path','types' ) # 'owner')
 
