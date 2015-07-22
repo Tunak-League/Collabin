@@ -18,6 +18,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^', include('server.urls')),
 ]
 
 #Adds Django's authentication view to the urls
@@ -25,4 +26,5 @@ from rest_framework.authtoken import views
 urlpatterns += [
     url(r'^api-token-auth/', views.obtain_auth_token)
 ]
+
 
