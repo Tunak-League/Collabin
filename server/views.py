@@ -15,6 +15,37 @@ from django.db.models import Count
 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+
+class UserSearch(APIView):
+    authentication_classes = (TokenAuthentication,) # Use token for authentication
+    permission_classes = (IsAuthenticated,) # Only authenticated users may view the list of other users
+    
+    def getProject(self, pk): # Helper function for get; handles error checking
+        try:
+            return Projects.objects.get(pk = pk)
+        except Projects.DoesNotExist:
+            raise Http404
+    '''
+        Lists all users that a project's required skills category matches. The more relevant skills the user has, 
+        the user is prioritized in the list
+    '''
+    def get(self, request, pk, format = None):
+        project = self.getProject(pk) # Get the project using its primary key
+        skills = Skills.objects.filter(projects = project.id) # All skills related to the project
+        skillsList = [skill.id for skill in skills] # Make a list containing skill ids of all skills related to the project
+        
+        skills_users = Skills.user_profiles.through # skills / users pivot table
+        # Get the userprofiles_ids which have the skills required by the project in the skills_users table 
+        users = skills_users.objects.filter(skills_id__in = skillsList).values('userprofiles_id')
+        userProfile_ids = users.annotate(count = Count('userprofiles_id')).order_by('-count') # order by the count of userprofiles_ids in descending order
+        user_list = [userProfile_id['userprofiles_id'] for userProfile_id in userProfile_ids] # Put the ids into a list
+        userProfiles = UserProfiles.objects.filter(user_id__in = user_list) # get those users' user profiles
+        userProfiles_list = list(userProfiles) # Make a user profiles list
+        userProfiles_list.sort(key = lambda profile: user_list.index(profile.id)) # Sort the user profiles list in the order that user-list is sorted
+ 
+        userProfilesSerializer = UserProfilesSerializer(userProfiles_list, many = True, context = {'request': request}) # serialize the data
+        return Response(userProfilesSerializer.data) # Return the response
+
 class ProjectSearch(APIView):
     '''Returns a list of all projects the requesting user might be interested in based on their preference Types
         stored in the database
