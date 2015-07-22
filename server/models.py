@@ -23,7 +23,7 @@ class Projects(models.Model):
     project_summary = models.CharField(max_length=500)
     date_created = models.DateField()
 #    id_types = models.ForeignKey('Types')
-    id_owner = models.ForeignKey('UserProfiles')
+    owner = models.ForeignKey('UserProfiles')
     image_path = models.CharField(max_length=50, null = True, blank = True, default = None)
 
 from django.conf import settings 
