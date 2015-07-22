@@ -22,7 +22,6 @@ class Projects(models.Model):
     project_name = models.CharField(max_length=30)
     project_summary = models.CharField(max_length=500)
     date_created = models.DateField()
-#    id_types = models.ForeignKey('Types')
     owner = models.ForeignKey('UserProfiles')
     image_path = models.CharField(max_length=50, null = True, blank = True, default = None)
 
