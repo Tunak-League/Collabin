@@ -30,16 +30,26 @@ class UserSearch(APIView):
         project = self.getProject(pk) # Get the project using its primary key
         skills = Skills.objects.filter(projects = project.id) # All skills related to the project
         skillsList = [skill.id for skill in skills] # Make a list containing skill ids of all skills related to the project
+        print skillsList
         
         skills_users = Skills.user_profiles.through # skills / users pivot table
         # Get the userprofiles_ids which have the skills required by the project in the skills_users table 
         users = skills_users.objects.filter(skills_id__in = skillsList).values('userprofiles_id')
         userProfile_ids = users.annotate(count = Count('userprofiles_id')).order_by('-count') # order by the count of userprofiles_ids in descending order
+
+        print userProfile_ids
+
         user_list = [userProfile_id['userprofiles_id'] for userProfile_id in userProfile_ids] # Put the ids into a list
-        userProfiles = UserProfiles.objects.filter(user_id__in = user_list) # get those users' user profiles
+        print user_list
+        print UserProfiles.objects.get(pk=3).user_summary 
+        print UserProfiles.objects.get(pk=4).user_summary 
+        userProfiles = UserProfiles.objects.filter(pk__in = user_list) # get those users' user profiles
+        print userProfiles
         userProfiles_list = list(userProfiles) # Make a user profiles list
         userProfiles_list.sort(key = lambda profile: user_list.index(profile.id)) # Sort the user profiles list in the order that user-list is sorted
- 
+        
+        print userProfiles_list
+
         userProfilesSerializer = UserProfilesSerializer(userProfiles_list, many = True, context = {'request': request}) # serialize the data
         return Response(userProfilesSerializer.data) # Return the response
 
