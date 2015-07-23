@@ -14,9 +14,11 @@ class UserProfilesSerializer(serializers.ModelSerializer):
         read_only = True,
         slug_field = 'skill_name',
     )
+    last_name = serializers.ReadOnlyField(source='user.last_name')
+    first_name= serializers.ReadOnlyField(source='user.first_name')
     class Meta:
         model = UserProfiles
-        fields = ('id', 'user_summary', 'location', 'image_path', 'skills')
+        fields = ('id', 'last_name', 'first_name', 'user_summary', 'location', 'image_path', 'skills')
 
 class SkillsSerializer(serializers.ModelSerializer):
     users = serializers.PrimaryKeyRelatedField(many = True, read_only=True)
