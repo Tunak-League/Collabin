@@ -10,12 +10,12 @@ class UserProfiles(models.Model):
 
 class Skills(models.Model):
     skill_name = models.CharField(max_length=30)
-    users = models.ManyToManyField('UserProfiles', related_name="skills")
+    user_profiles = models.ManyToManyField('UserProfiles', related_name="skills")
     projects = models.ManyToManyField('Projects', related_name="skills")
 
 class Types(models.Model):
     type_name = models.CharField(max_length=30)
-    users = models.ManyToManyField('UserProfiles', related_name="types")
+    user_profiles = models.ManyToManyField('UserProfiles', related_name="types")
     projects = models.ManyToManyField('Projects', related_name="types")
 
 class Projects(models.Model):
