@@ -1,5 +1,4 @@
-from django.shortcuts import render
-from server.models import Projects, UserProfiles
+from server.models import Projects, UserProfiles, Skills, Types
 from server.serializers import ProjectsSerializer
 from rest_framework import generics
 
@@ -8,8 +7,6 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from server.models import Projects
-from server.models import Types
 from server.serializers import ProjectsSerializer
 from django.db.models import Count
 

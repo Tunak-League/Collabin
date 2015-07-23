@@ -19,23 +19,23 @@ class UserProfilesSerializer(serializers.ModelSerializer):
         fields = ('id', 'user_summary', 'location', 'image_path', 'skills')
 
 class SkillsSerializer(serializers.ModelSerializer):
-    users = serializers.PrimaryKeyRelatedField(many = True, view_name = '', read_only=True)
-    projects = serializers.PrimaryKeyRelatedField(many = True, view_name = '', read_only=True)
+    users = serializers.PrimaryKeyRelatedField(many = True, read_only=True)
+    projects = serializers.PrimaryKeyRelatedField(many = True, read_only=True)
     class Meta:
         model = Skills
         fields = ('id', 'skill_name', 'users', 'projects')
 
 class TypesSerializer(serializers.ModelSerializer):
-    users = serializers.PrimaryKeyRelatedField(many = True, view_name = '', read_only=True)
+    users = serializers.PrimaryKeyRelatedField(many = True, read_only=True)
     class Meta:
         model = Types
         fields = ('id', 'type_name', 'users')
 
 class ProjectsSerializer(serializers.ModelSerializer):
     types = serializers.SlugRelatedField(
-        many=True,
-        queryset=Projects.types,
-        slug_field='type_name',
+        many = True,
+        queryset = Projects.types,
+        slug_field = 'type_name',
     )
     class Meta:
         model = Projects
