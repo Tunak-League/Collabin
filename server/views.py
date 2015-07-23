@@ -1,15 +1,14 @@
+from django.db.models import Count
+from django.http import Http404
+
 from server.models import Projects, UserProfiles, Skills, Types
 from server.serializers import ProjectsSerializer, UserProfilesSerializer
+
 from rest_framework import generics
-
-
-from django.http import Http404
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework import mixins
 from rest_framework import status
-from server.serializers import ProjectsSerializer
-from django.db.models import Count
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -54,7 +53,7 @@ class ProjectSearch(APIView):
     def get(self, request, format=None):
         profile = UserProfiles.objects.get(user_id=request.user.id) #obtain UserProfile from the requesting User's id 
         types_profiles = Types.user_profiles.through #the types_profiles pivot table
-        preferredTypes = types_profiles.objects.filter( userprofiles_id= profile.id ) #obtain all Types preferred by the requesting user
+        preferredTypes = types_profiles.objects.filter(userprofiles_id = profile.id) #obtain all Types preferred by the requesting user
         preferredTypes = [x.types_id for x in preferredTypes] #list of IDs of preferred types
 
         types_projects = Types.projects.through #the types_projects pivot table
@@ -67,10 +66,17 @@ class ProjectSearch(APIView):
 
         #Serialize the data and return it
         serializer = ProjectsSerializer(projects_list, many=True, context={'request': request})
-        return Response( serializer.data )
+        return Response(serializer.data)
 
-from rest_framework import mixins
-from rest_framework import generics
+class UserProject(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    
+    def get(self, request, format = None): 
+        profile = UserProfiles.objects.get(user_id = request.user.id) # Get UserProfile from the requesting User's id 
+        projects = Projects.objects.filter(owner_id = profile.id)
+        serializer = ProjectsSerializer(projects, many = True, context = {'request': request})
+        return Response(serializer.data)
 
 class Project(generics.GenericAPIView):
     queryset = Projects.objects.all()
