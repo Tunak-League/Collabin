@@ -1,5 +1,5 @@
 from server.models import Projects, UserProfiles, Skills, Types
-from server.serializers import ProjectsSerializer
+from server.serializers import ProjectsSerializer, UserProfilesSerializer
 from rest_framework import generics
 
 
@@ -53,7 +53,7 @@ class ProjectSearch(APIView):
 
     def get(self, request, format=None):
         profile = UserProfiles.objects.get(user_id=request.user.id) #obtain UserProfile from the requesting User's id 
-        types_profiles = Types.users.through #the types_profiles pivot table
+        types_profiles = Types.user_profiles.through #the types_profiles pivot table
         preferredTypes = types_profiles.objects.filter( userprofiles_id= profile.id ) #obtain all Types preferred by the requesting user
         preferredTypes = [x.types_id for x in preferredTypes] #list of IDs of preferred types
 
