@@ -1,15 +1,12 @@
 from server.models import Projects, UserProfiles, Skills, Types
 from server.serializers import ProjectsSerializer, UserProfilesSerializer, TypesSerializer, SkillsSerializer
-from rest_framework import generics
-
 
 from django.http import Http404
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from server.serializers import ProjectsSerializer
 from django.db.models import Count
 
+from rest_framework import generics, mixins, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -72,18 +69,7 @@ class ProjectSearch(APIView):
         serializer = ProjectsSerializer(projects_list, many=True, context={'request': request})
         return Response( serializer.data )
 
-class UserProject(APIView):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
-                
-    def get(self, request, format = None): 
-        profile = UserProfiles.objects.get(user_id = request.user.id) # Get UserProfile from the requesting User's id 
-        projects = Projects.objects.filter(owner_id = profile.id)
-        serializer = ProjectsSerializer(projects, many = True, context = {'request': request})
-        return Response(serializer.data) 
 
-from rest_framework import mixins
-from rest_framework import generics
 
 class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
     authentication_classes = (TokenAuthentication,)
