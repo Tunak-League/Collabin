@@ -13,6 +13,8 @@ from django.db.models import Count
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from datetime import date
+
 class UserSearch(APIView):
     authentication_classes = (TokenAuthentication,) # Use token for authentication
     permission_classes = (IsAuthenticated,) # Only authenticated users may view the list of other users
@@ -44,7 +46,8 @@ class UserSearch(APIView):
         return Response(userProfilesSerializer.data) # Return the response
 
 class ProjectSearch(APIView):
-    '''Returns a list of all projects the requesting user might be interested in based on their preference Types
+    '''
+        Returns a list of all projects the requesting user might be interested in based on their preference Types
         stored in the database
     '''
     #Set authentication and permission classes so only authorized users can request for projects
@@ -87,30 +90,33 @@ class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
     permission_classes = (IsAuthenticated,)
     queryset = Projects.objects.all()
     serializer_class = ProjectsSerializer
-    #TODO: Add in auto owner
+    
+    def perform_create(self, serializer):
+        serializer.save(owner = UserProfiles.objects.get(user_id = self.request.user.id))
+    
+    def get(self, request, *args, **kwargs):
+        profile = UserProfiles.objects.get(user_id = request.user.id)
+        projects = Projects.objects.filter(owner_id = profile.id)
+        serializer = ProjectsSerializer(projects, many = True, context = {'request': request})
+        return Response(serializer.data)
+
     #Creates a new Project with the specified fields
     def post(self, request, *args, **kwargs ):
+        request.data['date_created'] = date.today()
         skillsList = request.data.getlist('skills') #Get a list of all skills associated with this project
 
         #Check if skills exist in database, create them if they don't. Check for errors after
         if check_skills(skillsList) == False: 
             return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
-        '''
-        #Attempt to create the project with the data in the request
-        serializer = ProjectsSerializer(data=request.data) 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT
-        '''
+        
         return self.create(request, *args, **kwargs ) #Use CreateModelMixin to create the Project
 
-class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin):
+class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = Projects.objects.all()
     serializer_class = ProjectsSerializer
-    #TODO: Add in auto owner
+
     #Update data for a specific Project
     def put( self, request, *args, **kwargs ): 
         skillsList = request.data.getlist('skills') #Get a list of all skills associated with this project
@@ -121,11 +127,14 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin):
 
         return self.update(request, *args, **kwargs )
     
-    #TODO: RETRIEVE 1 PROJECT
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
     
-    #TODO: DELETE PROJECT
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
-'''Helper function to check if a list of Skills exist in the database and create them if they don't
+'''
+    Helper function to check if a list of Skills exist in the database and create them if they don't
     @param skillsList - list of skills 
     @postcondition - Return true if skills either all exist OR were successfully created. False if an error occurs when creating a skill
 '''
