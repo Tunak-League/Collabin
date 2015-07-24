@@ -39,7 +39,13 @@ class ProjectsSerializer(serializers.ModelSerializer):
         queryset = Types.objects.all(),
         slug_field = 'type_name',
     )
+    
+    skills = serializers.SlugRelatedField(
+            many = True,
+            queryset = Skills.objects.all(),
+            slug_field = 'skill_name',
+        )
     class Meta:
         model = Projects
-        fields = ('id', 'project_name', 'project_summary', 'owner', 'date_created', 'image_path','types')
+        fields = ('id', 'project_name', 'project_summary', 'owner', 'date_created', 'image_path','types', 'skills')
 
