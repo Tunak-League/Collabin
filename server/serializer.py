@@ -14,20 +14,20 @@ class UserProfilesSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'user_summary', 'location', 'image_path')
 
 class SkillsSerializer(serializers.HyperlinkedModelSerializer):
-    users = serializers.HyperlinkedRelatedField(many = True, view_name = '')
-    projects = serializers.HyperlinkedRelatedField(many = True, view_name = '')
+    users = serializers.HyperlinkedRelatedField(many = True, view_name = 'user-list', read_only=True)
+    projects = serializers.HyperlinkedRelatedField(many = True, view_name = 'project-list', read_only=True)
     class Meta:
         model = Skills
         fields = ('url', 'skill_name', 'users', 'projects')
 
 class TypesSerializer(serializers.HyperlinkedModelSerializer):
-    users = serializers.HyperlinkedRelatedField(many = True, view_name = '')
+    users = serializers.HyperlinkedRelatedField(many = True, view_name = 'user-list', read_only=True)
     class Meta:
         model = Types
         fields = ('url', 'type_name', 'users')
 
 class ProjectsSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.HyperlinkedRelatedField(many = False, view_name = '') 
+    owner = serializers.HyperlinkedRelatedField(view_name = 'user-detail', read_only=True) 
     types = serializers.ReadOnlyField(source = 'owner.username')
     class Meta:
         model = Projects
