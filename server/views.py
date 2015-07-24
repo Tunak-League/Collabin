@@ -77,6 +77,7 @@ class Project(generics.GenericAPIView):
     serializer_class = ProjectsSerializer
 
     def post(self, request, format=None ):
+        print request.data["types"]
         serializer = ProjectsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
