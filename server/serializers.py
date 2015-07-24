@@ -36,7 +36,7 @@ class TypesSerializer(serializers.ModelSerializer):
 class ProjectsSerializer(serializers.ModelSerializer):
     types = serializers.SlugRelatedField(
         many = True,
-        queryset = Types.projects.all(),
+        queryset = Types.objects.all(),
         slug_field = 'type_name',
     )
     class Meta:
