@@ -21,10 +21,16 @@ urlpatterns = [
     url(r'^', include('server.urls')),
 ]
 
+urlpatterns += [
+    url(r'^api-auth/', include('rest_framework.urls',
+                               namespace='rest_framework')),
+]
+
+
+"""
 #Adds Django's authentication view to the urls
 from rest_framework.authtoken import views
 urlpatterns += [
     url(r'^api-token-auth/', views.obtain_auth_token)
 ]
-
-
+"""
