@@ -1,14 +1,15 @@
-from django.db.models import Count
-from django.http import Http404
-
 from server.models import Projects, UserProfiles, Skills, Types
-from server.serializers import ProjectsSerializer, UserProfilesSerializer
-
+from server.serializers import ProjectsSerializer, UserProfilesSerializer, TypesSerializer, SkillsSerializer
 from rest_framework import generics
-from rest_framework import mixins
-from rest_framework import status
-from rest_framework.response import Response
+
+
+from django.http import Http404
 from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from server.serializers import ProjectsSerializer
+from django.db.models import Count
+
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -53,7 +54,7 @@ class ProjectSearch(APIView):
     def get(self, request, format=None):
         profile = UserProfiles.objects.get(user_id=request.user.id) #obtain UserProfile from the requesting User's id 
         types_profiles = Types.user_profiles.through #the types_profiles pivot table
-        preferredTypes = types_profiles.objects.filter(userprofiles_id = profile.id) #obtain all Types preferred by the requesting user
+        preferredTypes = types_profiles.objects.filter( userprofiles_id= profile.id ) #obtain all Types preferred by the requesting user
         preferredTypes = [x.types_id for x in preferredTypes] #list of IDs of preferred types
 
         types_projects = Types.projects.through #the types_projects pivot table
@@ -66,27 +67,78 @@ class ProjectSearch(APIView):
 
         #Serialize the data and return it
         serializer = ProjectsSerializer(projects_list, many=True, context={'request': request})
-        return Response(serializer.data)
+        return Response( serializer.data )
 
 class UserProject(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-    
+                
     def get(self, request, format = None): 
         profile = UserProfiles.objects.get(user_id = request.user.id) # Get UserProfile from the requesting User's id 
         projects = Projects.objects.filter(owner_id = profile.id)
         serializer = ProjectsSerializer(projects, many = True, context = {'request': request})
-        return Response(serializer.data)
+        return Response(serializer.data) 
 
-class Project(generics.GenericAPIView):
+from rest_framework import mixins
+from rest_framework import generics
+
+class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
     queryset = Projects.objects.all()
     serializer_class = ProjectsSerializer
+    #TODO: Add in auto owner
+    #Creates a new Project with the specified fields
+    def post(self, request, *args, **kwargs ):
+        skillsList = request.data.getlist('skills') #Get a list of all skills associated with this project
 
-    def post(self, request, format=None ):
-        print request.data["types"]
-        serializer = ProjectsSerializer(data=request.data)
+        #Check if skills exist in database, create them if they don't. Check for errors after
+        if check_skills(skillsList) == False: 
+            return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
+        '''
+        #Attempt to create the project with the data in the request
+        serializer = ProjectsSerializer(data=request.data) 
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT
+        '''
+        return self.create(request, *args, **kwargs ) #Use CreateModelMixin to create the Project
+
+class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    queryset = Projects.objects.all()
+    serializer_class = ProjectsSerializer
+    #TODO: Add in auto owner
+    #Update data for a specific Project
+    def put( self, request, *args, **kwargs ): 
+        skillsList = request.data.getlist('skills') #Get a list of all skills associated with this project
+
+        #Check if skills exist in database, create them if they don't. Check for errors after
+        if check_skills(skillsList) == False: 
+            return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
+
+        return self.update(request, *args, **kwargs )
+    
+    #TODO: RETRIEVE 1 PROJECT
+    
+    #TODO: DELETE PROJECT
+
+'''Helper function to check if a list of Skills exist in the database and create them if they don't
+    @param skillsList - list of skills 
+    @postcondition - Return true if skills either all exist OR were successfully created. False if an error occurs when creating a skill
+'''
+def check_skills( skillsList ): 
+    for skill in skillsList: 
+        try:
+            Skills.objects.get(skill_name=skill) #Check if this skill exists in database
+        except Skills.DoesNotExist:
+            skillData = {}
+            skillData['skill_name'] = skill #Format the skill as a dictionary to pass to SkillsSerializer
+            serializer = SkillsSerializer( data=skillData )
+            if( serializer.is_valid() ): 
+                serializer.save() #Save newly created skill to database
+            else:
+                return False #Data was invalid 
+    return True #all skills either creatd or already exist
