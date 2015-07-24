@@ -7,6 +7,5 @@ urlpatterns = format_suffix_patterns([
     url(r'^project-list/', views.ProjectList.as_view(), name='project-list'),
     url(r'^project-detail/(?P<pk>[0-9]+)/$', views.ProjectDetail.as_view(), name='project-detail'),
     url(r'^user-search/(?P<pk>[0-9]+)/$', views.UserSearch.as_view()),
-    url(r'^user-project/$', views.UserProject.as_view()),
 ])
 
