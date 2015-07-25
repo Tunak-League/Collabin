@@ -12,17 +12,17 @@ class UserProfiles(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)	
 
 class Skills(models.Model):
-    skill_name = models.CharField(max_length=30)
+    skill_name = models.CharField(max_length=30, unique = True)
     user_profiles = models.ManyToManyField('UserProfiles', related_name="skills")
     projects = models.ManyToManyField('Projects', related_name="skills")
 
 class Types(models.Model):
-    type_name = models.CharField(max_length=30)
+    type_name = models.CharField(max_length=30, unique = True)
     user_profiles = models.ManyToManyField('UserProfiles', related_name="types")
     projects = models.ManyToManyField('Projects', related_name="types")
 
 class Projects(models.Model):
-    project_name = models.CharField(max_length=30)
+    project_name = models.CharField(max_length=30, unique = True)
     project_summary = models.CharField(max_length=500)
     date_created = models.DateField(null = True, blank = True, default = None)
     owner = models.ForeignKey('UserProfiles')

@@ -85,6 +85,7 @@ class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
         projects = Projects.objects.filter(owner_id = profile.id)
         serializer = ProjectsSerializer(projects, many = True, context = {'request': request})
         return Response(serializer.data)
+    
 
     #Creates a new Project with the specified fields
     def post(self, request, *args, **kwargs ):
@@ -94,6 +95,14 @@ class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
         #Check if skills exist in database, create them if they don't. Check for errors after
         if check_skills(skillsList) == False: 
             return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
+        
+        if not request.data.get('types'):
+            content = {'Please specify the type of the project. You must specify at least one type to create a project'}
+            return Response(content, status = status.HTTP_404_NOT_FOUND)
+
+        if not request.data.get('skills'):
+            content = {'Please specify the skills required for this project. You must specify at least one skill to create a project'}
+            return Response(content, status = status.HTTP_404_NOT_FOUND)
         
         return self.create(request, *args, **kwargs ) #Use CreateModelMixin to create the Project
 
@@ -132,8 +141,9 @@ def check_skills( skillsList ):
             skillData = {}
             skillData['skill_name'] = skill #Format the skill as a dictionary to pass to SkillsSerializer
             serializer = SkillsSerializer( data=skillData )
-            if( serializer.is_valid() ): 
+            if serializer.is_valid(): 
                 serializer.save() #Save newly created skill to database
             else:
                 return False #Data was invalid 
     return True #all skills either creatd or already exist
+
