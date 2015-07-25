@@ -77,43 +77,48 @@ class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
     queryset = Projects.objects.all()
     serializer_class = ProjectsSerializer
     
+    # Override the perform_create function to automatically set the project's owner as the requesting user 
     def perform_create(self, serializer):
         serializer.save(owner = UserProfiles.objects.get(user_id = self.request.user.id))
     
+    # GET request of all projects a user owns
     def get(self, request, *args, **kwargs):
-        profile = UserProfiles.objects.get(user_id = request.user.id)
-        projects = Projects.objects.filter(owner_id = profile.id)
-        serializer = ProjectsSerializer(projects, many = True, context = {'request': request})
-        return Response(serializer.data)
+        profile = UserProfiles.objects.get(user_id = request.user.id) # Get the requesting user's profile
+        projects = Projects.objects.filter(owner_id = profile.id) # get projects owned by the requesting user
+        serializer = ProjectsSerializer(projects, many = True, context = {'request': request}) # deserialize the data
+        return Response(serializer.data) # return the requested data
     
 
-    #Creates a new Project with the specified fields
+    # Creates a new Project with the specified fields
     def post(self, request, *args, **kwargs ):
-        request.data['date_created'] = date.today()
-        skillsList = request.data.getlist('skills') #Get a list of all skills associated with this project
+        request.data['date_created'] = date.today() # Set the date_created field as today's date
+        skillsList = request.data.getlist('skills') # Get a list of all skills associated with this project
 
-        #Check if skills exist in database, create them if they don't. Check for errors after
+        # Check if skills exist in database, create them if they don't. Check for errors after
         if check_skills(skillsList) == False: 
             return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
         
+        # If the user requests to create a project without specifying the types of the project, send an error message response
         if not request.data.get('types'):
             content = {'Please specify the type of the project. You must specify at least one type to create a project'}
             return Response(content, status = status.HTTP_404_NOT_FOUND)
 
+        # If the user requests to create a project without specifying the skills of the project, send an error message response
         if not request.data.get('skills'):
             content = {'Please specify the skills required for this project. You must specify at least one skill to create a project'}
             return Response(content, status = status.HTTP_404_NOT_FOUND)
         
-        return self.create(request, *args, **kwargs ) #Use CreateModelMixin to create the Project
+        return self.create(request, *args, **kwargs ) # Use CreateModelMixin to create the Project
 
+# Update, Retrieve or Delete an existing project specified by its primary key 
 class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = Projects.objects.all()
     serializer_class = ProjectsSerializer
 
-    #Update data for a specific Project
-    def put( self, request, *args, **kwargs ): 
+    # Update data for a specific Project
+    def put(self, request, *args, **kwargs): 
         skillsList = request.data.getlist('skills') #Get a list of all skills associated with this project
 
         #Check if skills exist in database, create them if they don't. Check for errors after
@@ -122,9 +127,11 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
 
         return self.update(request, *args, **kwargs )
     
+    # Get data for a specific project
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
     
+    # Delete a specific project
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
@@ -133,17 +140,17 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
     @param skillsList - list of skills 
     @postcondition - Return true if skills either all exist OR were successfully created. False if an error occurs when creating a skill
 '''
-def check_skills( skillsList ): 
+def check_skills(skillsList): 
     for skill in skillsList: 
         try:
-            Skills.objects.get(skill_name=skill) #Check if this skill exists in database
+            Skills.objects.get(skill_name=skill) # Check if this skill exists in database
         except Skills.DoesNotExist:
             skillData = {}
-            skillData['skill_name'] = skill #Format the skill as a dictionary to pass to SkillsSerializer
-            serializer = SkillsSerializer( data=skillData )
+            skillData['skill_name'] = skill # Format the skill as a dictionary to pass to SkillsSerializer
+            serializer = SkillsSerializer(data=skillData)
             if serializer.is_valid(): 
-                serializer.save() #Save newly created skill to database
+                serializer.save() # Save newly created skill to database
             else:
-                return False #Data was invalid 
-    return True #all skills either creatd or already exist
+                return False # Data was invalid 
+    return True # all skills either creatd or already exist
 
