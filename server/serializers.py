@@ -1,6 +1,6 @@
 from django.forms import widgets
 from rest_framework import serializers
-from server.models import UserProfiles, Skills, Types, Projects
+from server.models import UserProfiles, Skills, Types, Projects, Swipes
 from django.contrib.auth.models import User
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -11,41 +11,50 @@ class UsersSerializer(serializers.ModelSerializer):
 class UserProfilesSerializer(serializers.ModelSerializer):
     skills = serializers.SlugRelatedField (
         many = True,
-        read_only = True,
+        queryset = Skills.objects.all(),
         slug_field = 'skill_name',
+    )
+    types = serializers.SlugRelatedField (
+        many = True,
+        queryset = Types.objects.all(),
+        slug_field = 'type_name'
     )
     last_name = serializers.ReadOnlyField(source='user.last_name')
     first_name= serializers.ReadOnlyField(source='user.first_name')
     class Meta:
         model = UserProfiles
-        fields = ('id', 'last_name', 'first_name', 'user_summary', 'location', 'image_path', 'skills')
+        fields = ('id', 'last_name', 'first_name', 'user_summary', 'location', 'image_path', 'skills', 'types')
 
 class SkillsSerializer(serializers.ModelSerializer):
-    users = serializers.PrimaryKeyRelatedField(many = True, read_only=True )
-    projects = serializers.PrimaryKeyRelatedField(many = True, read_only=True )
+    users = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
+    projects = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
     class Meta:
         model = Skills
-        fields = ('id', 'skill_name', 'users', 'projects' )
+        fields = ('id', 'skill_name', 'users', 'projects')
 
 class TypesSerializer(serializers.ModelSerializer):
-    users = serializers.PrimaryKeyRelatedField(many = True, read_only=True)
+    users = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
     class Meta:
         model = Types
         fields = ('id', 'type_name', 'users')
 
 class ProjectsSerializer(serializers.ModelSerializer):
-    types = serializers.SlugRelatedField(
+    types = serializers.SlugRelatedField (
         many = True,
         queryset = Types.objects.all(),
         slug_field = 'type_name',
     )
-    
-    skills = serializers.SlugRelatedField(
-            many = True,
-            queryset = Skills.objects.all(),
-            slug_field = 'skill_name',
-        )
+    skills = serializers.SlugRelatedField (
+        many = True,
+        queryset = Skills.objects.all(),
+        slug_field = 'skill_name',
+    )
     class Meta:
         model = Projects
         fields = ('id', 'project_name', 'project_summary', 'owner', 'date_created', 'image_path','types', 'skills')
         read_only_fields = ('owner',)
+
+class SwipesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Swipes
+        fields = ('id', 'user_profile', 'project', 'user_likes', 'project_likes')
