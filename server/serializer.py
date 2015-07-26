@@ -3,32 +3,49 @@ from rest_framework import serializers
 from server.models import UserProfiles, Skills, Types, Projects
 from django.contrib.auth.models import User
 
-class UsersSerializer(serializers.HyperlinkedModelSerializer):
+class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'first_name', 'last_name', 'username', 'password', 'user_permissions')
+        fields = ('id', 'first_name', 'last_name', 'username', 'password', 'user_permissions')
 
-class UserProfilesSerializer(serializers.HyperlinkedModelSerializer):
+class UserProfilesSerializer(serializers.ModelSerializer):
+    skills = serializers.SlugRelatedField (
+        many = True,
+        read_only = True,
+        slug_field = 'skill_name',
+    )
+    last_name = serializers.ReadOnlyField(source='user.last_name')
+    first_name= serializers.ReadOnlyField(source='user.first_name')
     class Meta:
         model = UserProfiles
-        fields = ('url', 'user_summary', 'location', 'image_path')
+        fields = ('id', 'last_name', 'first_name', 'user_summary', 'location', 'image_path', 'skills')
 
-class SkillsSerializer(serializers.HyperlinkedModelSerializer):
-    users = serializers.HyperlinkedRelatedField(many = True, view_name = 'user-list', read_only=True)
-    projects = serializers.HyperlinkedRelatedField(many = True, view_name = 'project-list', read_only=True)
+class SkillsSerializer(serializers.ModelSerializer):
+    users = serializers.PrimaryKeyRelatedField(many = True, read_only=True )
+    projects = serializers.PrimaryKeyRelatedField(many = True, read_only=True )
     class Meta:
         model = Skills
-        fields = ('url', 'skill_name', 'users', 'projects')
+        fields = ('id', 'skill_name', 'users', 'projects' )
 
-class TypesSerializer(serializers.HyperlinkedModelSerializer):
-    users = serializers.HyperlinkedRelatedField(many = True, view_name = 'user-list', read_only=True)
+class TypesSerializer(serializers.ModelSerializer):
+    users = serializers.PrimaryKeyRelatedField(many = True, read_only=True)
     class Meta:
         model = Types
-        fields = ('url', 'type_name', 'users')
+        fields = ('id', 'type_name', 'users')
 
-class ProjectsSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.HyperlinkedRelatedField(view_name = 'user-detail', read_only=True) 
-    types = serializers.ReadOnlyField(source = 'owner.username')
+class ProjectsSerializer(serializers.ModelSerializer):
+    types = serializers.SlugRelatedField(
+        many = True,
+        queryset = Types.objects.all(),
+        slug_field = 'type_name',
+    )
+    
+    skills = serializers.SlugRelatedField(
+            many = True,
+            queryset = Skills.objects.all(),
+            slug_field = 'skill_name',
+        )
     class Meta:
         model = Projects
-        fields = ('url', 'project_name', 'project_summary', 'date_created', 'image_path', 'types', 'owner')
+        fields = ('id', 'project_name', 'project_summary', 'date_created', 'image_path','types', 're
+	read_only_fields = ('owner',)
