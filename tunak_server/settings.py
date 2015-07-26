@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-# import dj_database_url
+import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'server',
     'rest_framework',
-    #'rest_framework.authtoken'
+    'rest_framework.authtoken'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -77,18 +77,19 @@ WSGI_APPLICATION = 'tunak_server.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-
+"""
+"""
 REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
+"""
 
 
 # Internationalization
@@ -110,15 +111,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-"""
+
 #REST FRAMEWORK SETTINGS
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
          'rest_framework.authentication.TokenAuthentication',
     )
 }
-"""
-"""
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -126,21 +127,6 @@ DATABASES = {
     }
 }
 
-"""
-
-"""
-#if not os.environ.get("HOME") == '/home/park':
-    # Parse database configuration from $DATABASE_URL
-DATABASES = {}
-DATABASES['default'] = dj_database_url.config()
-
-if os.environ.get("HOME") == '/home/zero':
+if os.environ.get("HOME") == '/home/carol':
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
-    DATABASES['default']['NAME'] = 'justin'
-
-
-if os.environ.get("HOME") == '/home/park':
-    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
-    DATABASES['default']['NAME'] = 'park'
-
-"""
+    DATABASES['default']['NAME'] = 'carol'
