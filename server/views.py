@@ -3,6 +3,7 @@ from server.serializers import ProjectsSerializer, UserProfilesSerializer, Types
 
 from django.http import Http404
 from django.db.models import Count
+from django.contrib.auth.models import User
 
 from rest_framework import generics, mixins, status
 from rest_framework.views import APIView
@@ -11,6 +12,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from datetime import date
+import copy
 
 class UserSearch(APIView):
     authentication_classes = (TokenAuthentication,) # Use token for authentication
@@ -154,19 +156,27 @@ def check_skills(skillsList):
                 return False # Data was invalid 
     return True # all skills either creatd or already exist
 
-
 '''
     Returns all projects matched with the requesting user
 '''
 @api_view(['GET'])
 def project_matches(request):
-   profile = UserProfiles.objects.get(user=request.user)
-   matched_swipes = Swipes.objects.filter( user_profile=profile, user_likes=Swipes.YES, project_likes=Swipes.YES ) #get all swipes that user is involved in with mutual likes
-   serializer = ProjectMatchSerializer(matched_swipes, many=True, context = {'request': request} )
-   return Response( serializer.data )
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    
+    profile = UserProfiles.objects.get(user=request.user)
+    matched_swipes = Swipes.objects.filter( user_profile=profile, user_likes=Swipes.YES, project_likes=Swipes.YES ) #get all swipes that user is involved in with mutual likes
+    serializer = ProjectMatchSerializer(matched_swipes, many=True, context = {'request': request} )
+    return Response( serializer.data )
 
+'''
+    Returns all users matched with the requesting project owner
+'''
 @api_view(['GET'])
 def user_matches(request):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    
     profile = UserProfiles.objects.get(user = request.user)
     projects = Projects.objects.filter(owner = profile)
     projectsList = [project.id for project in projects]
@@ -174,4 +184,36 @@ def user_matches(request):
     serializer = UserMatchSerializer(matched_swipes, many = True, context = {'request': request})
     return Response(serializer.data)
 
-        
+@api_view(['POST'])
+def user_list(request):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    user = User.objects.create_user(request.data.get('username'), request.data.get('email'), request.data.get('password'))
+    requestData = request.data.copy()
+    requestData['user'] = user
+    
+    serializer = UserProfilesSerializer(data = requestData)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status = status.HTTP_201_CREATED)
+    return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+class UserDetail(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request, format = None):
+        profile = UserProfiles.objects.get(user_id = request.user.id)
+        serializer = UserProfilesSerializer(profile, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, format = None):
+        user = User.objects.get(id = request.user.id)
+        profile = UserProfiles.objects.get(user_id = user.id)
+        user.delete()
+        profile.delete()
+        return Response(status = status.HTTP_204_NO_CONTENT)
