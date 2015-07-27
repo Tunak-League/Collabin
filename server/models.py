@@ -29,10 +29,20 @@ class Projects(models.Model):
     image_path = models.CharField(max_length = 50, null = True, blank = True, default = None)
 
 class Swipes(models.Model):
+    YES = 'YES'
+    NO = 'NO'
+    UNKNOWN = '?'
+
+    SWIPE_CHOICES = (
+        (YES, 'YES'),
+        (NO, 'NO'),
+        (UNKNOWN, 'UNKNOWN'),
+    )
+
     user_profile = models.ForeignKey('UserProfiles')
     project = models.ForeignKey('Projects')
-    user_likes = models.CharField(max_length = 3, null = True, blank = True, default = None)
-    project_likes = models.CharField(max_length = 3, null = True, blank = True, default = None)
+    user_likes = models.CharField(max_length = 3, null = True, blank = True, default = None, choices = SWIPE_CHOICES)
+    project_likes = models.CharField(max_length = 3, null = True, blank = True, default = None, choices = SWIPE_CHOICES)
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL) 
 def create_auth_token(sender, instance = None, created = False, **kwargs): 
