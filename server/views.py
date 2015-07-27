@@ -18,10 +18,15 @@ class Users(APIView):
 		return Response(serializer.data)
 	
 	def post(self, request, format=None):
+		#first create a user with the request
 		serializer = UsersSerializer(data=request.data)
 		if serializer.is_valid():
 			serializer.save()
-			return Response(serializer.data, status=status.HTTP_201_CREATED)
+			#secondly, create a user profile with the request 
+			serializer = UserProfilesSerializer(data=request.data)
+				if serializer.is_valid():
+					serializer.save()
+				return Response(serializer.data, status=status.HTTP_201_CREATED)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -31,16 +36,17 @@ class UserDetail(APIView):
 	"""
 	def get_object(self, pk):
 		try:
-			return User.objects.get(pk=pk)
+			return UserProfiles.objects.get(pk=pk)
 		except User.DoesNotExist:
 			raise Http404
 	def get(self, reqeust, pk, format=None):
 		user = self.get_object(pk)
-		serializer = UserSerializer(user)
+		serializer = UsersProfilesSerializer(user)
 		return Response(serializer.data)
-	def put(self, request, pk , format=NOne):
+
+	def put(self, request, pk , format=None):
 		user = self.get_object(pk)
-		serializer = UserSerializer(user.data=request.data)
+		serializer = UsersProfilesSerializer(user.data=request.data)
 		if serializer.is_valid():
 			serializer.save()
 			return Response(serializer.data)
