@@ -1,5 +1,5 @@
-from server.models import Projects, UserProfiles, Skills, Types
-from server.serializers import ProjectsSerializer, UserProfilesSerializer, TypesSerializer, SkillsSerializer
+from server.models import Projects, UserProfiles, Skills, Types, Swipes
+from server.serializers import ProjectsSerializer, UserProfilesSerializer, TypesSerializer, SkillsSerializer, SwipesSerializer, ProjectMatchSerializer
 
 from django.http import Http404
 from django.db.models import Count
@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.decorators import api_view
 from datetime import date
 
 class UserSearch(APIView):
@@ -154,3 +154,13 @@ def check_skills(skillsList):
                 return False # Data was invalid 
     return True # all skills either creatd or already exist
 
+
+'''
+    Returns all projects matched with the requesting user
+'''
+@api_view(['GET'])
+def project_matches(request):
+   profile = UserProfiles.objects.get(user=request.user)
+   matched_swipes = Swipes.objects.filter( user_profile=profile, user_likes=Swipes.YES, project_likes=Swipes.YES ) #get all swipes that user is involved in with mutual likes
+   serializer = ProjectMatchSerializer(matched_swipes, many=True, context = {'request': request} )
+   return Response( serializer.data )
