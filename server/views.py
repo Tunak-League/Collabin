@@ -205,7 +205,9 @@ class UserDetail(APIView):
 
     def put(self, request, format = None):
         profile = UserProfiles.objects.get(user_id = request.user.id)
-        serializer = UserProfilesSerializer(profile, data = request.data)
+        requestData = request.data.copy()
+        requestData['user'] = profile.user_id
+        serializer = UserProfilesSerializer(profile, data = requestData)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
