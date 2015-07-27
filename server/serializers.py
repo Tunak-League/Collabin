@@ -19,11 +19,13 @@ class UserProfilesSerializer(serializers.ModelSerializer):
         queryset = Types.objects.all(),
         slug_field = 'type_name'
     )
-    last_name = serializers.ReadOnlyField(source='user.last_name')
-    first_name= serializers.ReadOnlyField(source='user.first_name')
+    last_name = serializers.ReadOnlyField(source = 'user.last_name')
+    first_name= serializers.ReadOnlyField(source = 'user.first_name')
+    email = serializers.ReadOnlyField(source = 'user.email')
+    username = serializers.ReadOnlyField(source = 'user.username')
     class Meta:
         model = UserProfiles
-        fields = ('id', 'last_name', 'first_name', 'user_summary', 'location', 'image_path', 'skills', 'types')
+        fields = ('id', 'last_name', 'first_name', 'email', 'username', 'user_summary', 'location', 'image_path', 'skills', 'types', 'user')
 
 class SkillsSerializer(serializers.ModelSerializer):
     users = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
