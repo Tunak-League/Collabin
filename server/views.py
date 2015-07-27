@@ -164,3 +164,14 @@ def project_matches(request):
    matched_swipes = Swipes.objects.filter( user_profile=profile, user_likes=Swipes.YES, project_likes=Swipes.YES ) #get all swipes that user is involved in with mutual likes
    serializer = ProjectMatchSerializer(matched_swipes, many=True, context = {'request': request} )
    return Response( serializer.data )
+
+@api_view(['GET'])
+def user_matches(request):
+    profile = UserProfiles.objects.get(user = request.user)
+    projects = Projects.objects.filter(owner = profile)
+    projectsList = [project.id for project in projects]
+    matched_swipes = Swipes.objects.filter(project_id__in = projectsList, user_likes = Swipes.YES, project_likes = Swipes.YES)
+    serializer = UserMatchSerializer(matched_swipes, many = True, context = {'request': request})
+    return Response(serializer.data)
+
+        
