@@ -191,7 +191,7 @@ def user_list(request):
 
     user = User.objects.create_user(request.data.get('username'), request.data.get('email'), request.data.get('password'))
     requestData = request.data.copy()
-    requestData['user'] = user
+    requestData['user'] = user.id
     
     serializer = UserProfilesSerializer(data = requestData)
     if serializer.is_valid():
