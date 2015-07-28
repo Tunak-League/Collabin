@@ -192,6 +192,10 @@ def user_list(request):
     requestData = request.data.copy()
     requestData['user'] = user.id
     
+    skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
+    if not check_skills(skillsList): 
+        return Response(status=status.HTTP_400_BAD_REQUEST) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
+    
     serializer = UserProfilesSerializer(data = requestData)
     if serializer.is_valid():
         serializer.save()
@@ -206,6 +210,11 @@ class UserDetail(APIView):
         profile = UserProfiles.objects.get(user_id = request.user.id)
         requestData = request.data.copy()
         requestData['user'] = profile.user_id
+
+        skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
+        if not check_skills(skillsList): 
+            return Response(status=status.HTTP_400_BAD_REQUEST) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
+
         serializer = UserProfilesSerializer(profile, data = requestData)
         if serializer.is_valid():
             serializer.save()
