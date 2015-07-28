@@ -13,6 +13,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from datetime import date
 
+'''
+    Lists all users that a project's required skills category matches. The more relevant skills the user has, 
+    the user is prioritized in the list
+'''
 class UserSearch(APIView):
     authentication_classes = (TokenAuthentication,) # Use token for authentication
     permission_classes = (IsAuthenticated,) # Only authenticated users may view the list of other users
@@ -22,10 +26,7 @@ class UserSearch(APIView):
             return Projects.objects.get(pk = pk)
         except Projects.DoesNotExist:
             raise Http404
-    '''
-        Lists all users that a project's required skills category matches. The more relevant skills the user has, 
-        the user is prioritized in the list
-    '''
+
     def get(self, request, pk, format = None):
         project = self.getProject(pk) # Get the project using its primary key
         skills = Skills.objects.filter(projects = project.id) # All skills related to the project
@@ -34,44 +35,44 @@ class UserSearch(APIView):
 
         # Get the userprofiles_ids which have the skills required by the project in the skills_users table 
         users = skills_users.objects.filter(skills_id__in = skillsList).values('userprofiles_id')
-        userProfile_ids = users.annotate(count = Count('userprofiles_id')).order_by('-count') # order by the count of userprofiles_ids in descending order
+        userProfile_ids = users.annotate(count = Count('userprofiles_id')).order_by('-count') # Order by the count of userprofiles_ids in descending order
         user_list = [userProfile_id['userprofiles_id'] for userProfile_id in userProfile_ids] # Put the ids into a list
-        userProfiles = UserProfiles.objects.filter(pk__in = user_list) # get those users' user profiles
+        userProfiles = UserProfiles.objects.filter(pk__in = user_list) # Get those users' user profiles
         userProfiles_list = list(userProfiles) # Make a user profiles list
         userProfiles_list.sort(key = lambda profile: user_list.index(profile.id)) # Sort the user profiles list in the order that user-list is sorted
         
-        userProfilesSerializer = UserProfilesSerializer(userProfiles_list, many = True, context = {'request': request}) # serialize the data
-        return Response(userProfilesSerializer.data) # Return the response
+        userProfilesSerializer = UserProfilesSerializer(userProfiles_list, many = True, context = {'request': request}) # Deserialize the data
+        return Response(userProfilesSerializer.data) # Return the response with data
 
+'''
+    Returns a list of all projects the requesting user might be interested in based on their preference Types
+    stored in the database
+'''
 class ProjectSearch(APIView):
-    '''
-        Returns a list of all projects the requesting user might be interested in based on their preference Types
-        stored in the database
-    '''
-    #Set authentication and permission classes so only authorized users can request for projects
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, format=None):
-        profile = UserProfiles.objects.get(user_id=request.user.id) #obtain UserProfile from the requesting User's id 
-        types_profiles = Types.user_profiles.through #the types_profiles pivot table
-        preferredTypes = types_profiles.objects.filter( userprofiles_id= profile.id ) #obtain all Types preferred by the requesting user
-        preferredTypes = [x.types_id for x in preferredTypes] #list of IDs of preferred types
+    def get(self, request, format = None):
+        profile = UserProfiles.objects.get(user_id = request.user.id) # Obtain UserProfile from the requesting User's id 
+        types_profiles = Types.user_profiles.through # The types_profiles pivot table
+        preferredTypes = types_profiles.objects.filter( userprofiles_id= profile.id ) # Obtain all Types preferred by the requesting user
+        preferredTypes = [x.types_id for x in preferredTypes] # Put into a list of IDs of preferred types
 
-        types_projects = Types.projects.through #the types_projects pivot table
-        rawResults = types_projects.objects.filter(types_id__in=preferredTypes).values('projects_id') #All projects that match preferred types (with duplicate projects)
-        projectIDs = rawResults.annotate(count=Count('projects_id')).order_by('-count') #Get the IDs of the projects in descending order of most "Type" matches
-        projectIDs = [x['projects_id'] for x in projectIDs] #Put the IDs into a flat list
-        projects = Projects.objects.filter(pk__in=projectIDs) #Get the actual project instances from the IDs
-        projects_list = list(projects) #turn queryset into a list
-        projects_list.sort(key=lambda project: projectIDs.index(project.id)) #Sort projects back to proper order based on projectIDs
+        types_projects = Types.projects.through # Types_projects pivot table
+        rawResults = types_projects.objects.filter(types_id__in=preferredTypes).values('projects_id') # All projects that match preferred types (with duplicate projects)
+        projectIDs = rawResults.annotate(count=Count('projects_id')).order_by('-count') # Get the IDs of the projects in descending order of most "Type" matches
+        projectIDs = [x['projects_id'] for x in projectIDs] # Put the IDs into a flat list
+        projects = Projects.objects.filter(pk__in = projectIDs) # Get the actual project instances from the IDs
+        projects_list = list(projects) # Turn queryset into a list
+        projects_list.sort(key = lambda project: projectIDs.index(project.id)) #Sort projects back to proper order based on projectIDs
 
-        #Serialize the data and return it
+        # Deserialize the data and return it
         serializer = ProjectsSerializer(projects_list, many=True, context={'request': request})
         return Response( serializer.data )
 
-
-
+'''
+    Creates and retrieves a project
+'''
 class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
@@ -82,14 +83,13 @@ class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
     def perform_create(self, serializer):
         serializer.save(owner = UserProfiles.objects.get(user_id = self.request.user.id))
     
-    # GET request of all projects a user owns
+    # Retrieves all projects a user owns
     def get(self, request, *args, **kwargs):
         profile = UserProfiles.objects.get(user_id = request.user.id) # Get the requesting user's profile
         projects = Projects.objects.filter(owner_id = profile.id) # get projects owned by the requesting user
         serializer = ProjectsSerializer(projects, many = True, context = {'request': request}) # deserialize the data
         return Response(serializer.data) # return the requested data
     
-
     # Creates a new Project with the specified fields
     def post(self, request, *args, **kwargs ):
         request.data['date_created'] = date.today() # Set the date_created field as today's date
@@ -111,7 +111,9 @@ class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
         
         return self.create(request, *args, **kwargs ) # Use CreateModelMixin to create the Project
 
-# Update, Retrieve or Delete an existing project specified by its primary key 
+'''
+    Update, Retrieve or Delete an existing project specified by its primary key 
+'''
 class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
@@ -137,7 +139,7 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
         return self.destroy(request, *args, **kwargs)
 
 '''
-    Helper function to check if a list of Skills exist in the database and create them if they don't
+    Checks if a list of Skills exist in the database and create them if they don't
     @param skillsList - list of skills 
     @postcondition - Return true if skills either all exist OR were successfully created. False if an error occurs when creating a skill
 '''
@@ -163,10 +165,10 @@ def project_matches(request):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     
-    profile = UserProfiles.objects.get(user=request.user)
-    matched_swipes = Swipes.objects.filter( user_profile=profile, user_likes=Swipes.YES, project_likes=Swipes.YES ) #get all swipes that user is involved in with mutual likes
-    serializer = ProjectMatchSerializer(matched_swipes, many=True, context = {'request': request} )
-    return Response( serializer.data )
+    profile = UserProfiles.objects.get(user = request.user) # Get the requesting user's profile
+    matched_swipes = Swipes.objects.filter(user_profile=profile, user_likes=Swipes.YES, project_likes=Swipes.YES) # Get all swipes that user is involved in with mutual likes
+    serializer = ProjectMatchSerializer(matched_swipes, many=True, context = {'request': request})
+    return Response(serializer.data)
 
 '''
     Returns all users matched with the requesting project owner
@@ -176,21 +178,24 @@ def user_matches(request):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     
-    profile = UserProfiles.objects.get(user = request.user)
-    projects = Projects.objects.filter(owner = profile)
-    projectsList = [project.id for project in projects]
-    matched_swipes = Swipes.objects.filter(project_id__in = projectsList, user_likes = Swipes.YES, project_likes = Swipes.YES)
-    serializer = UserMatchSerializer(matched_swipes, many = True, context = {'request': request})
+    profile = UserProfiles.objects.get(user = request.user) # Get the requesting user's profile
+    projects = Projects.objects.filter(owner = profile) # Get the projects owned by this user
+    projectsList = [project.id for project in projects] # Put the project ids into a list
+    matched_swipes = Swipes.objects.filter(project_id__in = projectsList, user_likes = Swipes.YES, project_likes = Swipes.YES) # Query the swipes which contain the projects in the project list
+    serializer = UserMatchSerializer(matched_swipes, many = True, context = {'request': request}) # Deserialize and return the data
     return Response(serializer.data)
 
+'''
+    Makes a new user and user profile in the database
+'''
 @api_view(['POST'])
 def user_list(request):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     user = User.objects.create_user(request.data.get('username'), request.data.get('email'), request.data.get('password'))
-    requestData = request.data.copy()
-    requestData['user'] = user.id
+    requestData = request.data.copy() # Make a mutable copy of the request
+    requestData['user'] = user.id # Set the user field to requesting user
     
     skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
     if not check_skills(skillsList): 
@@ -202,14 +207,18 @@ def user_list(request):
         return Response(serializer.data, status = status.HTTP_201_CREATED)
     return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
+'''
+    Modifies or deletes a user
+'''
 class UserDetail(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
+    # Modifies the profile of the requesting user
     def put(self, request, format = None):
         profile = UserProfiles.objects.get(user_id = request.user.id)
-        requestData = request.data.copy()
-        requestData['user'] = profile.user_id
+        requestData = request.data.copy() # Make a mutable copy of the request
+        requestData['user'] = profile.user_id # Set the user field to requesting user
 
         skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
         if not check_skills(skillsList): 
@@ -221,9 +230,10 @@ class UserDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
+    # Deletes a user and the corresponding user profile
     def delete(self, request, format = None):
-        user = User.objects.get(id = request.user.id)
+        user = User.objects.get(id = request.user.id) # Get the instance of the requesting user and the user profile
         profile = UserProfiles.objects.get(user_id = user.id)
-        user.delete()
+        user.delete() # Delete both the user and the user profile
         profile.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
