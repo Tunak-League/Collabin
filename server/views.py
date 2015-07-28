@@ -12,7 +12,6 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from datetime import date
-import copy
 
 class UserSearch(APIView):
     authentication_classes = (TokenAuthentication,) # Use token for authentication
