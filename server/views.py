@@ -31,6 +31,13 @@ class UserSearch(APIView):
         project = self.getProject(pk) # Get the project using its primary key
         skills = Skills.objects.filter(projects = project.id) # All skills related to the project
         skillsList = [skill.id for skill in skills] # Make a list containing skill ids of all skills related to the project 
+        
+        # If no preferred skills are specified on the requesting project, return all users
+        if not skillsList:
+            userProfiles = UserProfiles.objects.all()
+            serializer = UserProfilesSerializer(userProfiles, many = True) 
+            return Response(serializer.data)
+        
         skills_users = Skills.user_profiles.through # skills / users pivot table
 
         # Get the userprofiles_ids which have the skills required by the project in the skills_users table 
@@ -55,9 +62,15 @@ class ProjectSearch(APIView):
     def get(self, request, format = None):
         profile = UserProfiles.objects.get(user_id = request.user.id) # Obtain UserProfile from the requesting User's id 
         types_profiles = Types.user_profiles.through # The types_profiles pivot table
-        preferredTypes = types_profiles.objects.filter( userprofiles_id= profile.id ) # Obtain all Types preferred by the requesting user
+        preferredTypes = types_profiles.objects.filter(userprofiles_id = profile.id) # Obtain all Types preferred by the requesting user
         preferredTypes = [x.types_id for x in preferredTypes] # Put into a list of IDs of preferred types
-
+        
+        # If user did not specify a preferred type, return all projects
+        if not preferredTypes:
+            projects = Projects.objects.all()
+            serializer = ProjectsSerializer(projects, many = True)
+            return Response(serializer.data)
+        
         types_projects = Types.projects.through # Types_projects pivot table
         rawResults = types_projects.objects.filter(types_id__in=preferredTypes).values('projects_id') # All projects that match preferred types (with duplicate projects)
         projectIDs = rawResults.annotate(count=Count('projects_id')).order_by('-count') # Get the IDs of the projects in descending order of most "Type" matches
@@ -65,10 +78,10 @@ class ProjectSearch(APIView):
         projects = Projects.objects.filter(pk__in = projectIDs) # Get the actual project instances from the IDs
         projects_list = list(projects) # Turn queryset into a list
         projects_list.sort(key = lambda project: projectIDs.index(project.id)) #Sort projects back to proper order based on projectIDs
-
+        
         # Deserialize the data and return it
         serializer = ProjectsSerializer(projects_list, many=True, context={'request': request})
-        return Response( serializer.data )
+        return Response(serializer.data)
 
 '''
     Creates and retrieves a project
@@ -98,17 +111,7 @@ class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
         # Check if skills exist in database, create them if they don't. Check for errors after
         if check_skills(skillsList) == False: 
             return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
-        
-        # If the user requests to create a project without specifying the types of the project, send an error message response
-        if not request.data.get('types'):
-            content = {'Please specify the type of the project. You must specify at least one type to create a project'}
-            return Response(content, status = status.HTTP_404_NOT_FOUND)
-
-        # If the user requests to create a project without specifying the skills of the project, send an error message response
-        if not request.data.get('skills'):
-            content = {'Please specify the skills required for this project. You must specify at least one skill to create a project'}
-            return Response(content, status = status.HTTP_404_NOT_FOUND)
-        
+    
         return self.create(request, *args, **kwargs ) # Use CreateModelMixin to create the Project
 
 '''

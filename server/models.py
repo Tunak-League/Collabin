@@ -8,7 +8,7 @@ from rest_framework.authtoken.models import Token
 class UserProfiles(models.Model):
     user_summary = models.CharField(max_length = 500)
     location = models.CharField(max_length = 30)
-    image_path = models.CharField(max_length=50, null = True, blank = True, default = None)
+    image_path = models.CharField(max_length = 50, null = True, blank = True, default = None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)	
 
 class Skills(models.Model):
@@ -31,12 +31,10 @@ class Projects(models.Model):
 class Swipes(models.Model):
     YES = 'YES'
     NO = 'NO'
-    UNKNOWN = '?'
 
     SWIPE_CHOICES = (
         (YES, 'YES'),
         (NO, 'NO'),
-        (UNKNOWN, 'UNKNOWN'),
     )
 
     user_profile = models.ForeignKey('UserProfiles')
