@@ -34,8 +34,8 @@ class Migration(migrations.Migration):
             name='Swipes',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('user_likes', models.CharField(default=None, max_length=3, null=True, blank=True, choices=[(b'YES', b'YES'), (b'NO', b'NO'), (b'?', b'UNKNOWN')])),
-                ('project_likes', models.CharField(default=None, max_length=3, null=True, blank=True, choices=[(b'YES', b'YES'), (b'NO', b'NO'), (b'?', b'UNKNOWN')])),
+                ('user_likes', models.CharField(default=None, max_length=3, null=True, blank=True, choices=[(b'YES', b'YES'), (b'NO', b'NO')])),
+                ('project_likes', models.CharField(default=None, max_length=3, null=True, blank=True, choices=[(b'YES', b'YES'), (b'NO', b'NO')])),
                 ('project', models.ForeignKey(to='server.Projects')),
             ],
         ),

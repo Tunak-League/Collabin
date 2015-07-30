@@ -1,5 +1,5 @@
 from server.models import Projects, UserProfiles, Skills, Types, Swipes
-from server.serializers import ProjectsSerializer, UserProfilesSerializer, TypesSerializer, SkillsSerializer, SwipesSerializer, ProjectMatchSerializer
+from server.serializers import UsersSerializer, ProjectsSerializer, UserProfilesSerializer, TypesSerializer, SkillsSerializer, SwipesSerializer, ProjectMatchSerializer
 
 from django.http import Http404
 from django.db.models import Count
@@ -37,9 +37,9 @@ class UserSearch(APIView):
             userProfiles = UserProfiles.objects.all()
             serializer = UserProfilesSerializer(userProfiles, many = True) 
             return Response(serializer.data)
-        
+         
         skills_users = Skills.user_profiles.through # skills / users pivot table
-
+        
         # Get the userprofiles_ids which have the skills required by the project in the skills_users table 
         users = skills_users.objects.filter(skills_id__in = skillsList).values('userprofiles_id')
         userProfile_ids = users.annotate(count = Count('userprofiles_id')).order_by('-count') # Order by the count of userprofiles_ids in descending order
@@ -193,16 +193,19 @@ def user_matches(request):
 '''
 @api_view(['POST'])
 def user_list(request):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-    user = User.objects.create_user(request.data.get('username'), request.data.get('email'), request.data.get('password'))
+    serializer = UsersSerializer(data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+    if not serializer.is_valid():
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+    
+    user = User.objects.get(username = request.data.get('username'))
     requestData = request.data.copy() # Make a mutable copy of the request
     requestData['user'] = user.id # Set the user field to requesting user
     
     skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
     if not check_skills(skillsList): 
-        return Response(status=status.HTTP_400_BAD_REQUEST) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
+        return Response(status = status.HTTP_400_BAD_REQUEST)
     
     serializer = UserProfilesSerializer(data = requestData)
     if serializer.is_valid():
@@ -225,7 +228,7 @@ class UserDetail(APIView):
 
         skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
         if not check_skills(skillsList): 
-            return Response(status=status.HTTP_400_BAD_REQUEST) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
         serializer = UserProfilesSerializer(profile, data = requestData)
         if serializer.is_valid():
