@@ -4,9 +4,27 @@ from server.models import UserProfiles, Skills, Types, Projects, Swipes
 from django.contrib.auth.models import User
 
 class UsersSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(error_messages = {'required': 'Please enter a username',})
+    email = serializers.CharField(required = True, error_messages = {'required': 'Please enter your email address',})  
+
+    def validate_username(self, value):
+        try:
+            User.objects.get(username = value)
+            raise serializers.ValidationError('The username you specified is already taken. Please enter a different username')
+        except User.DoesNotExist:
+            return value
+
+    def validate_email(self, value):
+        try:
+            User.objects.get(email = value)
+            raise serializers.ValidationError('The email you specified is already in use. Please enter a different email address')
+        except User.DoesNotExist:
+            return value
+    
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'username', 'password', 'user_permissions')
+        fields = ('id', 'first_name', 'last_name', 'username', 'password', 'email')
+        
 
 class UserProfilesSerializer(serializers.ModelSerializer):
     skills = serializers.SlugRelatedField (
@@ -51,7 +69,16 @@ class ProjectsSerializer(serializers.ModelSerializer):
         queryset = Skills.objects.all(),
         slug_field = 'skill_name',
     )
-    owner_name = serializers.ReadOnlyField( source='owner.user.username' )
+    owner_name = serializers.ReadOnlyField(source='owner.user.username')
+    project_name = serializers.CharField(error_messages = {'required': 'Please enter a name for your project',})
+
+    def validate_project_name(self, value):
+        try:
+            Projects.objects.get(project_name = value)
+            raise serializers.ValidationError('Another project with the name you specified exists. Please enter a different project name')
+        except Projects.DoesNotExist:
+            return value
+
     class Meta:
         model = Projects
         fields = ('id', 'project_name', 'project_summary', 'owner', 'date_created', 'image_path','types', 'skills', 'owner_name')
@@ -74,4 +101,4 @@ class UserMatchSerializer( serializers.ModelSerializer ):
     project_name = serializers.ReadOnlyField(source='project.project_name')
     class Meta:
         model = Swipes
-        fields = ('user_profile', 'username', 'project_name' )
+        fields = ('user_profile', 'username', 'project_name')
