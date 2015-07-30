@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 class UsersSerializer(serializers.ModelSerializer):
     username = serializers.CharField(error_messages = {'required': 'Please enter a username',})
     email = serializers.CharField(required = True, error_messages = {'required': 'Please enter your email address',})  
-
+    password = serializers.CharField(required = True, error_messages = {'required': 'Please enter a password'})
+    
     def validate_username(self, value):
         try:
             User.objects.get(username = value)
