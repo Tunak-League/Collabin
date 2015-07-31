@@ -1,0 +1,97 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="tunakleague.com.redemption.authentication.RegistrationActivity">
+
+    <!--Register Button -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:id="@+id/register_button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="registerUser"/>
+
+    <!--Username input field -->
+
+    <EditText
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_input"
+        android:layout_marginTop="24dp"
+        android:editable="true"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_weight="1"
+        android:layout_toRightOf="@+id/user_label"
+        android:layout_toEndOf="@+id/user_label" />
+
+    <!--Username label -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Username"
+        android:id="@+id/user_label"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignBaseline="@+id/user_input" />
+
+    <!--Password label -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Password"
+        android:id="@+id/password_label"
+        android:layout_marginTop="92dp"
+        android:layout_below="@+id/user_label"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <!--Password input field -->
+    <EditText
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/password_input"
+        android:layout_below="@+id/user_input"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@id/password_label"
+        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@id/password_label"
+        />
+
+    <!--Email label -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Email"
+        android:id="@+id/email_label"
+        android:layout_marginTop="92dp"
+        android:layout_below="@+id/user_input"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <!--Email input field -->
+    <EditText
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/email_input"
+        android:layout_below="@+id/password_input"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@id/email_label"
+        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@id/email_label"
+        />
+
+</RelativeLayout>
