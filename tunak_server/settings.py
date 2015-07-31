@@ -40,7 +40,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'server',
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    "push_notifications",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -111,6 +112,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
          'rest_framework.authentication.TokenAuthentication',
     )
+}
+
+#django push notification settings
+PUSH_NOTIFICATIONS_SETTINGS = {
+    "GCM_API_KEY": "AIzaSyBxuuBPDpWw8LEt1AbkkN7Z929-yi-gAOM",
 }
 
 #if not os.environ.get("HOME") == '/home/park':

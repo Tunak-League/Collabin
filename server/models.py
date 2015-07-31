@@ -6,8 +6,8 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token 
 
 class UserProfiles(models.Model):
-    user_summary = models.CharField(max_length = 500)
-    location = models.CharField(max_length = 30)
+    user_summary = models.CharField(max_length = 500, null=True, blank=True, default=None)
+    location = models.CharField(max_length = 30, null=True, blank=True, default=None)
     image_path = models.CharField(max_length = 50, null = True, blank = True, default = None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)	
 
