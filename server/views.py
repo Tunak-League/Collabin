@@ -196,7 +196,7 @@ def user_list(request):
     serializer = UsersSerializer(data = request.data)
     if serializer.is_valid():
         serializer.save()
-    if not serializer.is_valid():
+    else:
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
     
     user = User.objects.get(username = request.data.get('username'))
