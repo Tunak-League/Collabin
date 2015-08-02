@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from datetime import date
 
+from server.permissions import IsOwnerOrReadOnly
 '''
     Lists all users that a project's required skills category matches. The more relevant skills the user has, 
     the user is prioritized in the list
@@ -50,6 +51,19 @@ class UserSearch(APIView):
         
         userProfilesSerializer = UserProfilesSerializer(userProfiles_list, many = True, context = {'request': request}) # Deserialize the data
         return Response(userProfilesSerializer.data) # Return the response with data
+
+def getProject( pk): # Helper function for get; handles error checking
+    try:
+        return Projects.objects.get(pk = pk)
+    except Projects.DoesNotExist:
+        raise Http404
+#Helper function for getting a user. Handles error if user doesn't exist. Only used when a UserProfile is supplied as an argument in the URL, else request.user is used to obtain it
+def getUser( pk ): 
+    try:
+        return UserProfiles.objects.get(pk=pk)
+    except UserProfiles.DoesNotExist:
+        raise Http404
+
 
 '''
     Returns a list of all projects the requesting user might be interested in based on their preference Types
@@ -159,6 +173,61 @@ def check_skills(skillsList):
             else:
                 return False # Data was invalid 
     return True # all skills either creatd or already exist
+
+from push_notifications.models import GCMDevice
+'''
+Inserts the result of a project swiping on a UserProfile into the Swipes table, or updates the entry of it already exists
+@requires: 
+    In the URL:
+        project - a primary key in the url  indicating id of the project that is swiping
+        user - a primary key in the url indicating id of the user being swiped on
+    In the request Body: 
+        project_likes - In the body:  Yes or No indicating if the project likes the user
+'''
+
+@api_view(['PUT'])
+#@permission_classes( (IsAuthenticated,) )
+def project_swipe( request, **kwargs ):
+
+    #Try to obtain the project and user specified in the URL. 
+    project = getProject( kwargs['project'] )
+    #TODO: IMPLEMENT PERMISSION CHECK TO SEE IF REQUESTING USER OWNS THE PROJECT
+    user = getUser( kwargs['user'] ) 
+
+    #Attempt to update the swipe in the Swipes table if it exists
+    try:
+        swipe = Swipes.objects.get(user_profile=user, project=project )
+        serializer = SwipesSerializer( swipe, data=request.data, partial=True ) #update the swipe
+
+        if serializer.is_valid() :
+            serializer.save()
+            #Send push notification to both users involved if mutual interest is expressed
+            if swipe.project_likes == Swipes.YES and swipe.user_likes == Swipes.YES :
+                #Get the device ids of the project owner and user being swiped
+                project_owner_deviceID = UserProfiles.objects.get( pk=project.owner_id ).device_id
+                user_deviceID = user.device_id
+                print project_owner_deviceID
+
+                project_owner_device = GCMDevice.objects.create(registration_id=project_owner_deviceID)
+                user_device = GCMDevice.objects.create( registration_id=user_deviceID )
+                project_owner_device.send_message( "Project: " + project.project_name + " has found a match!" )
+                user_device.send_message( "You have found a match!" )
+            return Response(serializer.data)
+
+    except Swipes.DoesNotExist: #Create a new entry in swipes table if it doesn't exist
+        #Populate request.data with the project and user for creation of new Swipe
+        request.data['user_profile'] = user.id
+        request.data['project'] = project.id
+        serializer = SwipesSerializer(data=request.data)
+ 
+        if serializer.is_valid():
+            serializer.save()
+            return Response( serializer.data )
+
+    return Response(serializer.errors, status.HTTP_400_BAD_REQUEST ) #If neither an update or create occurred (data was invalid)
+
+
+
 
 '''
     Returns all projects matched with the requesting user
