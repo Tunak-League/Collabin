@@ -10,5 +10,6 @@ urlpatterns = format_suffix_patterns([
     url(r'^project-matches/', views.project_matches, name='project-matches'),
     url(r'^user-list', views.user_list),
     url(r'^user-detail', views.UserDetail.as_view()),
+    url(r'^project-swipe/(?P<project>[0-9]+)/(?P<user>[0-9]+)/$', views.project_swipe, name="project-swipe"  ),
 ])
 
