@@ -3,13 +3,13 @@ from server.models import  Types, Skills, Projects, UserProfiles
 import datetime
 
 
-daler=User.objects.create_user(username="daler", password="tunak" )
-justin=User.objects.create_user(username="justin", password="tunak" )
-bob=User.objects.create_user(username="bob", password="tunak" )
+daler=User.objects.create_user(username="daler", password="tunak", email="daler@gmail.com" )
+justin=User.objects.create_user(username="justin", password="tunak", email="justin@gmail.com" )
+bob=User.objects.create_user(username="bob", password="tunak", email="bob@gmail.com" )
 
-daler=UserProfiles.objects.create(user=daler, user_summary="God of the Universe", location="Tunak Desert" )
-justin=UserProfiles.objects.create(user=justin, user_summary="Disciple of Daler", location="Vancouver" )
-bob = UserProfiles.objects.create(user=bob, user_summary="some guy", location = "Burnaby" )
+daler=UserProfiles.objects.create(user=daler, user_summary="God of the Universe", location="Tunak Desert", device_id= "thisIsBS" )
+justin=UserProfiles.objects.create(user=justin, user_summary="Disciple of Daler", location="Vancouver", device_id="thisIsBS" )
+bob = UserProfiles.objects.create(user=bob, user_summary="some guy", location = "Burnaby", device_id="thisIsBS" )
 
 software = Types.objects.create( type_name="Software" )
 electrical = Types.objects.create( type_name="Electrical" )
