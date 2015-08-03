@@ -4,13 +4,14 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.dispatch import receiver 
 from rest_framework.authtoken.models import Token 
+from push_notifications.models import  GCMDevice
 
 class UserProfiles(models.Model):
     user_summary = models.CharField(max_length = 500, null=True, blank=True, default=None)
     location = models.CharField(max_length = 30, null=True, blank=True, default=None)
     image_path = models.CharField(max_length = 50, null = True, blank = True, default = None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    device_id = models.TextField()
+    device = models.ForeignKey( 'push_notifications.GCMDevice' )
 
 class Skills(models.Model):
     skill_name = models.CharField(max_length = 30, unique = True)

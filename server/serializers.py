@@ -44,7 +44,7 @@ class UserProfilesSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source = 'user.username')
     class Meta:
         model = UserProfiles
-        fields = ('id', 'last_name', 'first_name', 'email', 'username', 'user_summary', 'location', 'image_path', 'skills', 'types', 'user', 'device_id')
+        fields = ('id', 'last_name', 'first_name', 'email', 'username', 'user_summary', 'location', 'image_path', 'skills', 'types', 'user', 'device')
 
 class SkillsSerializer(serializers.ModelSerializer):
     users = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
