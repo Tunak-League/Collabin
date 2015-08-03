@@ -1,15 +1,19 @@
 from django.contrib.auth.models import User
 from server.models import  Types, Skills, Projects, UserProfiles
 import datetime
-
+from push_notifications.models import APNSDevice, GCMDevice
 
 daler=User.objects.create_user(username="daler", password="tunak", email="daler@gmail.com" )
 justin=User.objects.create_user(username="justin", password="tunak", email="justin@gmail.com" )
 bob=User.objects.create_user(username="bob", password="tunak", email="bob@gmail.com" )
 
-daler=UserProfiles.objects.create(user=daler, user_summary="God of the Universe", location="Tunak Desert", device_id= "thisIsBS" )
-justin=UserProfiles.objects.create(user=justin, user_summary="Disciple of Daler", location="Vancouver", device_id="thisIsBS" )
-bob = UserProfiles.objects.create(user=bob, user_summary="some guy", location = "Burnaby", device_id="thisIsBS" )
+device1 = GCMDevice.objects.create( registration_id="bs1")
+device2 = GCMDevice.objects.create( registration_id="bs2" )
+device3 = GCMDevice.objects.create( registration_id="bs3" )
+
+daler=UserProfiles.objects.create(user=daler, user_summary="God of the Universe", location="Tunak Desert", device=device1 )
+justin=UserProfiles.objects.create(user=justin, user_summary="Disciple of Daler", location="Vancouver", device=device2 )
+bob = UserProfiles.objects.create(user=bob, user_summary="some guy", location = "Burnaby", device=device3 )
 
 software = Types.objects.create( type_name="Software" )
 electrical = Types.objects.create( type_name="Electrical" )
