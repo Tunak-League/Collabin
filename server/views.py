@@ -203,13 +203,8 @@ def project_swipe( request, **kwargs ):
             serializer.save()
             #Send push notification to both users involved if mutual interest is expressed
             if swipe.project_likes == Swipes.YES and swipe.user_likes == Swipes.YES :
-                #Get the device ids of the project owner and user being swiped
-                project_owner_deviceID = UserProfiles.objects.get( pk=project.owner_id ).device_id
-                user_deviceID = user.device_id
-                print project_owner_deviceID
-
-                project_owner_device = GCMDevice.objects.create(registration_id=project_owner_deviceID)
-                user_device = GCMDevice.objects.create( registration_id=user_deviceID )
+                project_owner_device = project.owner.device
+                user_device = user.device
                 project_owner_device.send_message( "Project: " + project.project_name + " has found a match!" )
                 user_device.send_message( "You have found a match!" )
             return Response(serializer.data)
@@ -267,11 +262,13 @@ def user_list(request):
         serializer.save()
     else:
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-    
+
+    device = GCMDevice.objects.create(registration_id=request.data.get('device_id')  ) #create new GCMDevice with the given device_id
     user = User.objects.get(username = request.data.get('username'))
     requestData = request.data.copy() # Make a mutable copy of the request
     requestData['user'] = user.id # Set the user field to requesting user
-    
+    requestData['device'] = device.id 
+    print requestData 
     skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
     if not check_skills(skillsList): 
         return Response(status = status.HTTP_400_BAD_REQUEST)
