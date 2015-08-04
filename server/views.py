@@ -14,12 +14,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from datetime import date
 
+from push_notifications.models import GCMDevice
 from server.permissions import IsOwnerOrReadOnly
 '''
     Lists all users that a project's required skills category matches. The more relevant skills the user has, 
     the user is prioritized in the list
 '''
-class UserSearch(APIView):
+class ProjectSearch(APIView):
     authentication_classes = (TokenAuthentication,) # Use token for authentication
     permission_classes = (IsAuthenticated,) # Only authenticated users may view the list of other users
 
@@ -74,7 +75,7 @@ def getUser( pk ):
     Returns a list of all projects the requesting user might be interested in based on their preference Types
     stored in the database
 '''
-class ProjectSearch(APIView):
+class UserSearch(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
@@ -192,7 +193,6 @@ def check_skills(skillsList):
                 return False # Data was invalid 
     return True # all skills either creatd or already exist
 
-from push_notifications.models import GCMDevice
 '''
 Inserts the result of a project swiping on a UserProfile into the Swipes table, or updates the entry of it already exists
 @requires: 
@@ -248,7 +248,7 @@ def project_swipe( request, **kwargs ):
     Returns all projects matched with the requesting user
 '''
 @api_view(['GET'])
-def project_matches(request):
+def user_matches(request):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     
@@ -261,7 +261,7 @@ def project_matches(request):
     Returns all users matched with the requesting project owner
 '''
 @api_view(['GET'])
-def user_matches(request):
+def project_matches(request):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     
