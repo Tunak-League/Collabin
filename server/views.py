@@ -25,7 +25,7 @@ class UserSearch(APIView):
 
     def get(self, request, pk, format = None):
         project = getProject(pk) # Get the project using its primary key
-        if request.user != User.objects.get(id = project.owner.user_id):
+        if not isOwner(request, project):
             return Response(request.data, status = status.HTTP_403_FORBIDDEN)
         self.check_object_permissions(self.request, project)
         skills = Skills.objects.filter(projects = project.id) # All skills related to the project
@@ -150,8 +150,12 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
 
     # Update data for a specific Project
     def put(self, request, *args, **kwargs): 
+        project = Projects.objects.get(pk = kwargs['pk'])
+        if not isOwner(request, project):
+            return Response(status = status.HTTP_403_FORBIDDEN)
+            
         skillsList = request.data.getlist('skills') #Get a list of all skills associated with this project
-
+        
         #Check if skills exist in database, create them if they don't. Check for errors after
         if check_skills(skillsList) == False: 
             return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
@@ -164,6 +168,9 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
     
     # Delete a specific project
     def delete(self, request, *args, **kwargs):
+        project = Projects.objects.get(pk = kwargs['pk'])
+        if not isOwner(request, project):
+            return Response(status = status.HTTP_403_FORBIDDEN)
         return self.destroy(request, *args, **kwargs)
 
 '''
@@ -202,6 +209,8 @@ def project_swipe( request, **kwargs ):
 
     #Try to obtain the project and user specified in the URL. 
     project = getProject( kwargs['project'] )
+    if not isOwner(request, project):
+        return Response(status = status.HTTP_403_FORBIDDEN)
     #TODO: IMPLEMENT PERMISSION CHECK TO SEE IF REQUESTING USER OWNS THE PROJECT
     user = getUser( kwargs['user'] ) 
 
@@ -356,3 +365,5 @@ class UserSwipe(APIView):
                 return Response(serializer.data)
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
+def isOwner(request, project):
+    return request.user == project.owner.user
