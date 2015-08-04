@@ -22,36 +22,40 @@ from server.permissions import IsOwnerOrReadOnly
 class UserSearch(APIView):
     authentication_classes = (TokenAuthentication,) # Use token for authentication
     permission_classes = (IsAuthenticated,) # Only authenticated users may view the list of other users
-    
-    def getProject(self, pk): # Helper function for get; handles error checking
-        try:
-            return Projects.objects.get(pk = pk)
-        except Projects.DoesNotExist:
-            raise Http404
 
     def get(self, request, pk, format = None):
-        project = self.getProject(pk) # Get the project using its primary key
+        project = getProject(pk) # Get the project using its primary key
+        if request.user != User.objects.get(id = project.owner.user_id):
+            return Response(request.data, status = status.HTTP_403_FORBIDDEN)
+        self.check_object_permissions(self.request, project)
         skills = Skills.objects.filter(projects = project.id) # All skills related to the project
         skillsList = [skill.id for skill in skills] # Make a list containing skill ids of all skills related to the project 
-        
-        # If no preferred skills are specified on the requesting project, return all users
+
+        # If no preferred skills are specified on the requesting project, return all users (excluding the project's owner)
         if not skillsList:
-            userProfiles = UserProfiles.objects.all()
-            serializer = UserProfilesSerializer(userProfiles, many = True) 
+            userProfiles = UserProfiles.objects.all().exclude(id = project.owner.id)
+            serializer = UserProfilesSerializer(userProfiles, many = True)
             return Response(serializer.data)
-         
-        skills_users = Skills.user_profiles.through # skills / users pivot table
-        
-        # Get the userprofiles_ids which have the skills required by the project in the skills_users table 
-        users = skills_users.objects.filter(skills_id__in = skillsList).values('userprofiles_id')
+
+        skills_users = Skills.user_profiles.through # skills / users pivot table 
+        # Get the userprofiles_ids which have the skills required by the project in the skills_users table (excluding the project's owner) 
+        users = skills_users.objects.filter(skills_id__in = skillsList).exclude(userprofiles_id = project.owner).values('userprofiles_id')
+
         userProfile_ids = users.annotate(count = Count('userprofiles_id')).order_by('-count') # Order by the count of userprofiles_ids in descending order
         user_list = [userProfile_id['userprofiles_id'] for userProfile_id in userProfile_ids] # Put the ids into a list
         userProfiles = UserProfiles.objects.filter(pk__in = user_list) # Get those users' user profiles
+        # Get all userprofile ids that have been swiped by the project already
+        usersAlreadySwiped = Swipes.objects.filter(Q(user_likes=Swipes.YES) | Q(user_likes=Swipes.NO),
+                project_id = project.id, user_profile_id__in = users).values('user_profile_id')
+        # Get all userprofile ids that have the skills required by the project that also have not been swiped yet 
+        userProfiles = userProfiles.filter(pk__in = users).exclude(pk__in = usersAlreadySwiped)
+
         userProfiles_list = list(userProfiles) # Make a user profiles list
         userProfiles_list.sort(key = lambda profile: user_list.index(profile.id)) # Sort the user profiles list in the order that user-list is sorted
-        
+
         userProfilesSerializer = UserProfilesSerializer(userProfiles_list, many = True, context = {'request': request}) # Deserialize the data
         return Response(userProfilesSerializer.data) # Return the response with data
+
 
 def getProject( pk): # Helper function for get; handles error checking
     try:
@@ -316,3 +320,39 @@ class UserDetail(APIView):
         user.delete() # Delete both the user and the user profile
         profile.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
+'''
+    Updates a Swipes row every time a user swipes on a project
+'''
+class UserSwipe(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request, pk, format = None):
+        profile = UserProfiles.objects.get(user_id = request.user.id)
+        project = Projects.objects.get(pk = pk)
+        requestData = request.data.copy() # Make a mutable copy of the request
+        requestData['user_profile'] = profile.id # Set the user field to requesting user
+        requestData['project'] = project.id
+
+        try:
+            swipe = Swipes.objects.get(user_profile = profile, project = project)
+            serializer = SwipesSerializer(swipe, data = requestData)
+            if serializer.is_valid():
+                serializer.save()
+                swipe = Swipes.objects.get(user_profile = profile, project = project)
+                if swipe.user_likes == Swipes.YES and swipe.project_likes == Swipes.YES:
+                    project_owner_device = project.owner.device # Get Device ID of project owner
+                    user_device = request.user.device # Get GCM device with requesting user's device ID 
+
+                    project_owner_device.send_message("Project: " + project.project_name + " has found a match!")
+                    user_device.send_message("You have found a match!")
+                return Response(serializer.data)
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+        except Swipes.DoesNotExist:
+            serializer = SwipesSerializer(data = requestData)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
