@@ -152,7 +152,7 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
         if check_skills(skillsList) == False: 
             return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
 
-        return self.update(request, *args, **kwargs )
+        return self.partial_update(request, *args, **kwargs )
     
     # Get data for a specific project
     def get(self, request, *args, **kwargs):
@@ -303,7 +303,7 @@ class UserDetail(APIView):
         if not check_skills(skillsList): 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
-        serializer = UserProfilesSerializer(profile, data = requestData)
+        serializer = UserProfilesSerializer(profile, data = requestData, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
