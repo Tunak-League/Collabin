@@ -4,6 +4,7 @@ from server.serializers import UsersSerializer, ProjectsSerializer, UserProfiles
 from django.http import Http404
 from django.db.models import Count
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from rest_framework import generics, mixins, status
 from rest_framework.views import APIView
@@ -86,13 +87,19 @@ class ProjectSearch(APIView):
             return Response(serializer.data)
         
         types_projects = Types.projects.through # Types_projects pivot table
-        rawResults = types_projects.objects.filter(types_id__in=preferredTypes).values('projects_id') # All projects that match preferred types (with duplicate projects)
+        rawResults = types_projects.objects.filter(types_id__in=preferredTypes).values('projects_id') # All projects that match preferred types (with duplicate projects) 
         projectIDs = rawResults.annotate(count=Count('projects_id')).order_by('-count') # Get the IDs of the projects in descending order of most "Type" matches
         projectIDs = [x['projects_id'] for x in projectIDs] # Put the IDs into a flat list
         projects = Projects.objects.filter(pk__in = projectIDs) # Get the actual project instances from the IDs
         projects_list = list(projects) # Turn queryset into a list
         projects_list.sort(key = lambda project: projectIDs.index(project.id)) #Sort projects back to proper order based on projectIDs
         
+        #Exclude projects that the requesting user has already swiped on, AND projects the user owns
+        swiped_projects = Swipes.objects.filter(  Q( user_likes=Swipes.YES) | Q( user_likes=Swipes.NO ), user_profile=profile )
+        swiped_project_ids =  [x.project.id for x in swiped_projects]
+        owned_projects = Projects.objects.filter( owner=profile )
+        projects_list = [x for x in projects_list if (x.id not in swiped_project_ids) and x not in owned_projects ]
+
         # Deserialize the data and return it
         serializer = ProjectsSerializer(projects_list, many=True, context={'request': request})
         return Response(serializer.data)
