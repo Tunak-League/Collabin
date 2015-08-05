@@ -1,5 +1,5 @@
 from server.models import Projects, UserProfiles, Skills, Types, Swipes
-from server.serializers import UsersSerializer, ProjectsSerializer, UserProfilesSerializer, TypesSerializer, SkillsSerializer, SwipesSerializer, ProjectMatchSerializer
+from server.serializers import UsersSerializer, ProjectsSerializer, UserProfilesSerializer, TypesSerializer, SkillsSerializer, SwipesSerializer, ProjectMatchSerializer, UserMatchSerializer
 
 from django.http import Http404
 from django.db.models import Count
@@ -351,7 +351,7 @@ class UserSwipe(APIView):
                 swipe = Swipes.objects.get(user_profile = profile, project = project)
                 if swipe.user_likes == Swipes.YES and swipe.project_likes == Swipes.YES:
                     project_owner_device = project.owner.device # Get Device ID of project owner
-                    user_device = request.user.device # Get GCM device with requesting user's device ID 
+                    user_device = profile.device # Get GCM device with requesting user's device ID 
 
                     project_owner_device.send_message("Project: " + project.project_name + " has found a match!")
                     user_device.send_message("You have found a match!")
