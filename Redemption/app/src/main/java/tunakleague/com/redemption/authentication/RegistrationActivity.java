@@ -4,9 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,14 +14,11 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +29,7 @@ import java.util.Map;
 import tunakleague.com.redemption.Constants;
 import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.R;
+import tunakleague.com.redemption.ServerConstants.*;
 import tunakleague.com.redemption.notifications.IDRegistrationService;
 import tunakleague.com.redemption.notifications.NotificationsPreferences;
 
@@ -85,7 +81,7 @@ public class RegistrationActivity extends AppCompatActivity {
      *Submit the fields filled in by the user to the server to create a new user
      */
     public void registerUser(View view){
-        Log.d(TAG,  Constants.URL_SERVER );
+        Log.d(TAG, URLS.ROOT.string );
 
 
         tokenBroadcastReceiver = new BroadcastReceiver() { //Wait for IDRegistrationService to send you the deviceID from GCM
@@ -103,7 +99,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 LocalBroadcastManager.getInstance(context).unregisterReceiver(tokenBroadcastReceiver); //Set this receiver to look for the REGISTRATION_COMPLETE broadcast
 
                 final String deviceID = intent.getExtras().getString(Constants.DEVICE_ID); //Device id obtained from GCM
-                String url = Constants.URL_SERVER + "user-list";
+                String url = URLS.USER_LIST.string;
 
                 /* Create the user-list POST request*/
                 StringRequest postRequest = new StringRequest(Request.Method.POST, url,
@@ -137,10 +133,10 @@ public class RegistrationActivity extends AppCompatActivity {
                         Log.d(TAG, password.getText().toString());
                         Log.d(TAG, email.getText().toString());
                         // Get the registration info from input fields and add them to the body of the request
-                        params.put("username", username.getText().toString() );
-                        params.put("password", password.getText().toString());
-                        params.put("email", email.getText().toString() );
-                        params.put("device_id", deviceID);
+                        params.put(USERS_TABLE.USERNAME.string, username.getText().toString() );
+                        params.put(USERS_TABLE.PASSWORD.string, password.getText().toString());
+                        params.put(USERS_TABLE.EMAIL.string, email.getText().toString() );
+                        params.put(USERS_TABLE.DEVICE_ID.string, deviceID);
                         params.put("Content-Type","application/json");
                         return params;
                     }
