@@ -6,8 +6,6 @@ public class Constants {
      * Contains constants that may be used throughout the ENTIRE application.
      */
 
-    //App server constants
-    public static final String URL_SERVER = "http://192.168.1.64:8000/";
 
 
     //Custom Intent Actions

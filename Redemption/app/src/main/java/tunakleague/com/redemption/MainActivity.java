@@ -2,7 +2,9 @@ package tunakleague.com.redemption;
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -10,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import tunakleague.com.redemption.authentication.RegistrationActivity;
+import tunakleague.com.redemption.authentication.WelcomeActivity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -20,6 +23,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onResume();
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = settings.edit();
+
+        /*Check for the existence of a server authentication token in SharedPreferences */
+        if( settings.getString( PreferencesKeys.AUTH_TOKEN, null ) == null ) {
+            Intent welcomeIntent = new Intent(this, WelcomeActivity.class);
+            startActivity(welcomeIntent);
+        }
+        else {
+            Intent homeIntent = new Intent(this, HomeActivity.class );
+            startActivity(homeIntent);
+        }
 
     }
 
@@ -47,11 +69,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void launchSignup(View view ) {
-        //Launch the signup page
-        Intent signupIntent = new Intent(this, RegistrationActivity.class);
-        startActivity(signupIntent);
-        Log.d(TAG, "WTF IS THIS");
-    }
 
 }
