@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import tunakleague.com.redemption.Constants;
+import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.ServerConstants.*;
@@ -125,12 +126,8 @@ public class RegistrationActivity extends AppCompatActivity {
                             }
 
                         },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                error.printStackTrace();
-                            }
-                        }) //end of function StringRequest. Since it's making a StringRequest object, you can conveniently add in extra class definition stuff like overrides
+                        new DetailedErrorListener(RegistrationActivity.this)
+                ) //end of function StringRequest. Since it's making a StringRequest object, you can conveniently add in extra class definition stuff like overrides
                 {
                     @Override
                     //Create the body of the request
