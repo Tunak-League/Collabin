@@ -35,7 +35,7 @@ import tunakleague.com.redemption.notifications.NotificationsPreferences;
 
 public class RegistrationActivity extends AppCompatActivity {
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "RegistrationActivity";
     private BroadcastReceiver tokenBroadcastReceiver; //listens for REGISTRATION_COMPLETE message from IDRegistrationService
 
     //Input fields for creating new User
@@ -82,7 +82,9 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     public void registerUser(View view){
         Log.d(TAG, URLS.ROOT.string );
-
+        /*User-entered inputs for username and password fields. Needed for login after registration*/
+        final String username_input = username.getText().toString();
+        final String password_input = password.getText().toString();
 
         tokenBroadcastReceiver = new BroadcastReceiver() { //Wait for IDRegistrationService to send you the deviceID from GCM
 
@@ -110,6 +112,13 @@ public class RegistrationActivity extends AppCompatActivity {
                                     JSONObject jsonResponse = new JSONObject(response);
                                     String username = jsonResponse.getString("username");
                                     System.out.println("Created Username: "+username+"\ndeviceID: ");
+
+                                    /*Automatically login after registration using registered username and password*/
+                                    Intent loginIntent = new Intent( RegistrationActivity.this, LoginActivity.class );
+                                    loginIntent.setAction(Constants.ACTION_LOGIN);
+                                    loginIntent.putExtra(USERS_TABLE.USERNAME.string, username_input);
+                                    loginIntent.putExtra(USERS_TABLE.PASSWORD.string, password_input );
+                                    startActivity(loginIntent);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -133,8 +142,8 @@ public class RegistrationActivity extends AppCompatActivity {
                         Log.d(TAG, password.getText().toString());
                         Log.d(TAG, email.getText().toString());
                         // Get the registration info from input fields and add them to the body of the request
-                        params.put(USERS_TABLE.USERNAME.string, username.getText().toString() );
-                        params.put(USERS_TABLE.PASSWORD.string, password.getText().toString());
+                        params.put(USERS_TABLE.USERNAME.string, username_input );
+                        params.put(USERS_TABLE.PASSWORD.string, password_input );
                         params.put(USERS_TABLE.EMAIL.string, email.getText().toString() );
                         params.put(USERS_TABLE.DEVICE_ID.string, deviceID);
                         params.put("Content-Type","application/json");
