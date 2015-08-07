@@ -22,8 +22,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import tunakleague.com.redemption.Constants;
+import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.HomeActivity;
 import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.PreferencesKeys;
@@ -43,6 +46,16 @@ public class LoginActivity extends AppCompatActivity {
 
         username =  (EditText) findViewById(R.id.user_login);
         password = (EditText) findViewById(R.id.password_login);
+
+        Intent intent = getIntent();
+        /*If LoginActivity was started from RegistrationActivity, retrieve passed username/password to login automatically*/
+        if( intent.getAction() != null && intent.getAction().equals(Constants.ACTION_LOGIN)) {
+            String username_input = intent.getExtras().getString( USERS_TABLE.USERNAME.string );
+            String password_input = intent.getExtras().getString( USERS_TABLE.PASSWORD.string );
+            Log.d(TAG, username_input);
+            Log.d( TAG, password_input);
+            authenticate( username_input, password_input );
+        }
     }
 
     @Override
@@ -68,14 +81,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /*
-    Handler for the login_button
+
+            Handler for the login_button. Extracts the inputted username and password and passes them to authenticate() */
+    public void login( View view ) {
+        authenticate(username.getText().toString(), password.getText().toString());
+    }
+
+    /*
+
     Authenticates the inputted username and password with the app server and stores the auth_token returned
     by the server.
     Displays error message if authentication fails.
      */
-    //TODO: Move the whole method body into a method independent of button press. Conditionally call it (via intent data pass Username/pass) after Registration
-    //And then for the button make some onLoginClick() method which calls login()
-    public void login(View view ) {
+    public void authenticate(final String username, final String password ) {
         Log.d(TAG, URLS.TOKEN_AUTH.string);
         String url = URLS.TOKEN_AUTH.string;
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
@@ -103,42 +121,8 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 },
-                new Response.ErrorListener(){ //TODO: IMPLEMENT A GENERIC REST_SERVER_ERROR CLASS SO WE DON'T WRITE THIS OUT EVERYTIME.
-                    public void onErrorResponse(VolleyError error) {
-                        String json = null;
-
-                        NetworkResponse response = error.networkResponse;
-                        if(response != null && response.data != null){
-                            switch(response.statusCode){
-                                case 400:
-                                    json = new String(response.data);
-                                    json = trimMessage(json, "non_field_errors"); //TODO: CHANGE THIS FROM HARDCODED 'NON_FIELD_ERRORS' TO USING ALL VALUES???
-                                    if(json != null) displayMessage(json);
-                                    break;
-                            }
-                            //TODO: Additional cases. Idk maybe  a generic "SERVER ERROR" in case it's not 400
-                        }
-                    }
-
-                    public String trimMessage(String json, String key){ //TODO: GET RID OF THE SQUARE BRACKETS SOMEHOW
-                        String trimmedString = null;
-
-                        try{
-                            JSONObject obj = new JSONObject(json);
-                            trimmedString = obj.getString(key);
-                        } catch(JSONException e){
-                            e.printStackTrace();
-                            return null;
-                        }
-
-                        return trimmedString;
-                    }
-
-                    //Somewhere that has access to a context
-                    public void displayMessage(String toastString){
-                        Toast.makeText(LoginActivity.this, toastString, Toast.LENGTH_LONG).show();
-                    }
-                })
+                new DetailedErrorListener(LoginActivity.this)
+        )
         {
             @Override
             //Create the body of the request
@@ -147,8 +131,8 @@ public class LoginActivity extends AppCompatActivity {
                 Map<String, String>  params = new HashMap<>();
 
                 // Get the registration info from input fields and add them to the body of the request
-                params.put(USERS_TABLE.USERNAME.string, username.getText().toString() );
-                params.put(USERS_TABLE.PASSWORD.string, password.getText().toString());
+                params.put(USERS_TABLE.USERNAME.string, username );
+                params.put(USERS_TABLE.PASSWORD.string, password);
                 params.put("Content-Type","application/json");
                 return params;
             }

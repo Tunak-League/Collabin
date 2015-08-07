@@ -11,6 +11,17 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_search">Search</string>
 
+    <string name="drawer_open">Open drawer</string>
+    <string name="drawer_close">Open drawer</string>
+
+
+    <!-- Options in the Navigation Drawer-->
+    <string-array
+        name="navigation_options">
+        <item>Logout</item>
+        <item>Profile</item>
+    </string-array>
+
 
     <!-- SharedPreferences Keys-->
     <string name="auth_token">Authentication Token</string>
