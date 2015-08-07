@@ -76,11 +76,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".UserRegistrationActivity"
-            android:label="@string/title_activity_user_registration"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
-        </activity>
+
 
         <meta-data
             android:name="com.google.android.gms.version"
