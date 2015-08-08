@@ -20,10 +20,13 @@
         name="navigation_options">
         <item>Logout</item>
         <item>Profile</item>
+        <item>Home</item>
     </string-array>
 
 
     <!-- SharedPreferences Keys-->
     <string name="auth_token">Authentication Token</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_home">HomeActivity</string>
 
 </resources>
