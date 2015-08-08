@@ -61,4 +61,9 @@ public class WelcomeActivity extends AppCompatActivity {
         Intent signinIntent = new Intent( this, LoginActivity.class);
         startActivity(signinIntent);
     }
+
+    @Override
+    public void onBackPressed() {
+        //do nothing
+    }
 }
