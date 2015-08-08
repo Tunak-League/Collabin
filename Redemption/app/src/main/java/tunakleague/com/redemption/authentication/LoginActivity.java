@@ -10,28 +10,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import tunakleague.com.redemption.Constants;
 import tunakleague.com.redemption.DetailedErrorListener;
+import tunakleague.com.redemption.DrawerActivity;
 import tunakleague.com.redemption.HomeActivity;
 import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.PreferencesKeys;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.ServerConstants;
 import tunakleague.com.redemption.ServerConstants.*;
 
 public class LoginActivity extends AppCompatActivity {
