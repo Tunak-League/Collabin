@@ -23,7 +23,6 @@ import java.util.Map;
 
 import tunakleague.com.redemption.Constants;
 import tunakleague.com.redemption.DetailedErrorListener;
-import tunakleague.com.redemption.DrawerActivity;
 import tunakleague.com.redemption.HomeActivity;
 import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.PreferencesKeys;
@@ -46,8 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = getIntent();
         /*If LoginActivity was started from RegistrationActivity, retrieve passed username/password to login automatically*/
         if( intent.getAction() != null && intent.getAction().equals(Constants.ACTION_LOGIN)) {
-            String username_input = intent.getExtras().getString( USERS_TABLE.USERNAME.string );
-            String password_input = intent.getExtras().getString( USERS_TABLE.PASSWORD.string );
+            String username_input = intent.getExtras().getString( USERS.USERNAME.string );
+            String password_input = intent.getExtras().getString( USERS.PASSWORD.string );
             Log.d(TAG, username_input);
             Log.d( TAG, password_input);
             authenticate( username_input, password_input );
@@ -98,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
-                            String token = jsonResponse.getString(USERS_TABLE.TOKEN.string );
+                            String token = jsonResponse.getString(USERS.TOKEN.string );
                             System.out.println("Token: " + token);
 
                             /*Store the token in SharedPreferences*/
@@ -127,8 +126,8 @@ public class LoginActivity extends AppCompatActivity {
                 Map<String, String>  params = new HashMap<>();
 
                 // Get the registration info from input fields and add them to the body of the request
-                params.put(USERS_TABLE.USERNAME.string, username );
-                params.put(USERS_TABLE.PASSWORD.string, password);
+                params.put(USERS.USERNAME.string, username );
+                params.put(USERS.PASSWORD.string, password);
                 params.put("Content-Type","application/json");
                 return params;
             }
