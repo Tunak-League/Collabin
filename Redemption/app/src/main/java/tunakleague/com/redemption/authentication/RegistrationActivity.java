@@ -15,7 +15,6 @@ import android.widget.EditText;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -117,8 +116,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                     /*Automatically login after registration using registered username and password*/
                                     Intent loginIntent = new Intent( RegistrationActivity.this, LoginActivity.class );
                                     loginIntent.setAction(Constants.ACTION_LOGIN);
-                                    loginIntent.putExtra(USERS_TABLE.USERNAME.string, username_input);
-                                    loginIntent.putExtra(USERS_TABLE.PASSWORD.string, password_input );
+                                    loginIntent.putExtra(USERS.USERNAME.string, username_input);
+                                    loginIntent.putExtra(USERS.PASSWORD.string, password_input );
                                     startActivity(loginIntent);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -139,10 +138,10 @@ public class RegistrationActivity extends AppCompatActivity {
                         Log.d(TAG, password.getText().toString());
                         Log.d(TAG, email.getText().toString());
                         // Get the registration info from input fields and add them to the body of the request
-                        params.put(USERS_TABLE.USERNAME.string, username_input );
-                        params.put(USERS_TABLE.PASSWORD.string, password_input );
-                        params.put(USERS_TABLE.EMAIL.string, email.getText().toString() );
-                        params.put(USERS_TABLE.DEVICE_ID.string, deviceID);
+                        params.put(USERS.USERNAME.string, username_input );
+                        params.put(USERS.PASSWORD.string, password_input );
+                        params.put(USERS.EMAIL.string, email.getText().toString() );
+                        params.put(USERS.DEVICE_ID.string, deviceID);
                         params.put("Content-Type","application/json");
                         return params;
                     }

@@ -62,8 +62,11 @@ public class WelcomeActivity extends AppCompatActivity {
         startActivity(signinIntent);
     }
 
+    /*
+    Make back button press do nothing
+     */
     @Override
     public void onBackPressed() {
-        //do nothing
+
     }
 }
