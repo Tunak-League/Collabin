@@ -151,16 +151,18 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
 
     # Update data for a specific Project
     def put(self, request, *args, **kwargs): 
+        print "Data: "
+        print request.data
         project = Projects.objects.get(pk = kwargs['pk'])
+        print "big failure"
         if not isOwner(request, project):
             return Response(status = status.HTTP_403_FORBIDDEN)
-            
-        skillsList = request.data.getlist('skills') #Get a list of all skills associated with this project
+        print "is owner" 
+        skillsList = request.data.get('skills') #Get a list of all skills associated with this project
         
         #Check if skills exist in database, create them if they don't. Check for errors after
         if check_skills(skillsList) == False: 
             return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
-
         return self.partial_update(request, *args, **kwargs )
     
     # Get data for a specific project
@@ -181,6 +183,7 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
 '''
 def check_skills(skillsList): 
     for skill in skillsList: 
+        print skill
         try:
             Skills.objects.get(skill_name=skill) # Check if this skill exists in database
         except Skills.DoesNotExist:
@@ -275,29 +278,35 @@ def project_matches(request):
 '''
     Makes a new user and user profile in the database
 '''
-@api_view(['POST'])
-def user_list(request):
-    serializer = UsersSerializer(data = request.data)
-    if serializer.is_valid():
-        serializer.save()
-    else:
-        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+class UserList( APIView):
 
-    device = GCMDevice.objects.create(registration_id=request.data.get('device_id')  ) #create new GCMDevice with the given device_id
-    user = User.objects.get(username = request.data.get('username'))
-    requestData = request.data.copy() # Make a mutable copy of the request
-    requestData['user'] = user.id # Set the user field to requesting user
-    requestData['device'] = device.id 
-    print requestData 
-    skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
-    if not check_skills(skillsList): 
-        return Response(status = status.HTTP_400_BAD_REQUEST)
-    
-    serializer = UserProfilesSerializer(data = requestData)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status = status.HTTP_201_CREATED)
-    return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+	def post(self, request, *args, **kwargs):
+		serializer = UsersSerializer(data = request.data)
+		if serializer.is_valid():
+			serializer.save()
+		else:
+			return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+		device = GCMDevice.objects.create(registration_id=request.data.get('device_id')  ) #create new GCMDevice with the given device_id
+		user = User.objects.get(username = request.data.get('username'))
+		requestData = request.data.copy() # Make a mutable copy of the request
+		requestData['user'] = user.id # Set the user field to requesting user
+		requestData['device'] = device.id 
+		print requestData 
+		skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
+		if not check_skills(skillsList): 
+			return Response(status = status.HTTP_400_BAD_REQUEST)
+
+		serializer = UserProfilesSerializer(data = requestData)
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data, status = status.HTTP_201_CREATED)
+		return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+	
+	def get( self, request, *args, **kwargs ):
+		user_profile = UserProfiles.objects.get( user=request.user);
+		serializer = UserProfilesSerializer(user_profile);
+		return Response( serializer.data );
 
 '''
     Modifies or deletes a user
@@ -308,11 +317,14 @@ class UserDetail(APIView):
 
     # Modifies the profile of the requesting user
     def put(self, request, format = None):
+        print "HELLO"
         profile = UserProfiles.objects.get(user_id = request.user.id)
         requestData = request.data.copy() # Make a mutable copy of the request
         requestData['user'] = profile.user_id # Set the user field to requesting user
-
-        skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
+        #print requestData['skills']
+        skillsList = request.data.get('skills') # Get a list of all skills associated with this user
+        print "WTF"
+        print skillsList
         if not check_skills(skillsList): 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
