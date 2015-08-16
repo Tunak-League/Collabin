@@ -15,12 +15,10 @@
         android:layout_height="30dp"
         android:text="X"
         android:id="@+id/delete_button"
-        android:layout_alignParentTop="true"
+        android:layout_alignEnd="@id/item_name"
         android:layout_alignRight="@id/item_name"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@id/item_name"
 
-        android:onClick="removeItem"
         android:textSize="10dp" />
 
 </RelativeLayout>
