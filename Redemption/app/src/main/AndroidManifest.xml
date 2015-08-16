@@ -99,7 +99,8 @@
         </activity>
         <activity
             android:name=".profiles.ProfileActivity"
-            android:label="@string/title_activity_profile" >
+            android:label="@string/title_activity_profile"
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
         <activity
             android:name=".HomeActivity"
