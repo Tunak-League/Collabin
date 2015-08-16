@@ -32,7 +32,7 @@ import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.R;
 
-import tunakleague.com.redemption.profiles.dummy.DummyContent;
+//import tunakleague.com.redemption.profiles.dummy.DummyContent;
 import tunakleague.com.redemption.ServerConstants.*;
 
 
@@ -83,14 +83,16 @@ public class ProjectListFragment extends android.support.v4.app.Fragment impleme
 
 
         // TODO: Change Adapter to display your content
+/*
         mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+*/
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_projectitem, container, false);
+        View view = inflater.inflate(R.layout.fragment_projectitem_list, container, false);
         mListView = (AbsListView) view.findViewById(android.R.id.list);
 
         // Set OnItemClickListener so we can be notified on item clicks
