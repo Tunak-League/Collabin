@@ -4,6 +4,8 @@ package tunakleague.com.redemption;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 
 import com.android.volley.RequestQueue;
@@ -29,7 +31,7 @@ public class MyApplication extends Application {
         Map<String, String>  params = new HashMap<>();
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 
-        params.put("Authorization", "Token " + settings.getString(PreferencesKeys.AUTH_TOKEN, "noToken") );
+        params.put("Authorization", "Token " + settings.getString(PreferencesKeys.AUTH_TOKEN, "noToken"));
         //TODO: Put in the token header
         return params;
     }
