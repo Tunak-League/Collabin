@@ -1,6 +1,8 @@
 package tunakleague.com.redemption.profiles;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -31,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import tunakleague.com.redemption.Constants;
 import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.ServerConstants.*;
 import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
@@ -44,14 +47,7 @@ import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
  * create an instance of this fragment.
  */
 public abstract class ProfileFragment extends android.support.v4.app.Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    HideTabsListener mListener;
 
     JSONObject profileData; //all the fields in the profile retrieved from the app server
 
@@ -66,23 +62,7 @@ public abstract class ProfileFragment extends android.support.v4.app.Fragment {
     /*Keys are all EditText fields for the profile whose input values need to be extracted and sent to the server on update; values are the name of the parameter in the app server*/
     Map<View, String> fieldsToExtract;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-/*    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }*/
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -92,20 +72,30 @@ public abstract class ProfileFragment extends android.support.v4.app.Fragment {
         super.onCreate(savedInstanceState);
         fieldsToPopulate = new HashMap<View, String>();
         fieldsToExtract = new HashMap<View, String>();
+    }
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (HideTabsListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement HideTabListener");
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        TextView textView = new TextView(getActivity());
-        textView.setText(R.string.hello_blank_fragment);
-        return textView;
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
+
+    public interface HideTabsListener{
+        /*Implemented by Activity if it uses a TabLayout with fragments and wants to hide the tabs for fragments implementing this class*/
+        public void setTabsVisible(boolean visible);
+    }
+
 
     /*
         Uses the fields from profileData to populate each of the views in fieldsToPopulate, skillsField
@@ -127,8 +117,10 @@ public abstract class ProfileFragment extends android.support.v4.app.Fragment {
 
         /*Initialize the skills/types adapters and attach them to their respective GridViews*/
         try {
-            skillsAdapter = new ProfileArrayAdapter(getActivity(), R.layout.profile_item,R.id.item_name, fieldToList(profileData.getJSONArray(USERS.SKILLS.string)));
-            typesAdapter = new ProfileArrayAdapter(getActivity(), R.layout.profile_item,R.id.item_name, fieldToList(profileData.getJSONArray(USERS.TYPES.string)));
+            List<String> skillsList = fieldToList(profileData.getJSONArray(USERS.SKILLS.string));
+            List<String> typesList = fieldToList(profileData.getJSONArray(USERS.TYPES.string));
+            skillsAdapter = new ProfileArrayAdapter(getActivity(), R.layout.profile_item,R.id.item_name, skillsList);
+            typesAdapter = new ProfileArrayAdapter(getActivity(), R.layout.profile_item,R.id.item_name, typesList);
         }
         catch(JSONException ex ) {
             Log.d("ProfileFrag: ", "Issue with getting JSONArray from skills/types" );
@@ -172,26 +164,6 @@ public abstract class ProfileFragment extends android.support.v4.app.Fragment {
      */
     protected abstract void updateProfile();
 
-
-    /*
-    Remove the item from the GridView
-     */
-/*    public void removeItem(View view ) {
-        int position = skillsField.getPositionForView( (View) view.getParent() );//Get the position of the clicked Item in the adapter's dataset
-
-        *//*Item is from *//*
-        if( position != AdapterView.INVALID_POSITION ) {
-            skillsList.remove(position);
-            ((ArrayAdapter<String>) skillsField.getAdapter()).notifyDataSetChanged();
-        }
-        else {
-            position = typesField.getPositionForView( (View) view.getParent() );
-            typesList.remove(position);
-            ((ArrayAdapter<String>) typesField.getAdapter()).notifyDataSetChanged();
-        }
-
-    }*/
-
     /*
     Adds a profile_item to the specified GridView
     @required: field must be registered with an adapter
@@ -199,6 +171,16 @@ public abstract class ProfileFragment extends android.support.v4.app.Fragment {
     protected void addItem(GridView field, String item) {
         ProfileArrayAdapter adapter = ((ProfileArrayAdapter) field.getAdapter());
         adapter.addItem(item);
+    }
+
+    /*
+    Restarts the ProfileActivity and starts the ProjectList fragment. Used after creating or updating a project.
+     */
+    protected void reloadProjects() {
+        Intent reloadIntent = new Intent(getActivity(), getActivity().getClass());
+        reloadIntent.setAction(Constants.ACTION_PROJECT);
+        startActivity(reloadIntent);
+        getActivity().finish();
     }
 
     /*

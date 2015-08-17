@@ -41,12 +41,7 @@ import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link UserFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link UserFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Displays a user's profile information and allows the user to edit it and save it to the app server.
  */
 public class UserFragment extends ProfileFragment {
     public final String TAG = "UserFragment";

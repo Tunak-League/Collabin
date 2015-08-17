@@ -1,11 +1,12 @@
 package tunakleague.com.redemption.profiles;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -13,12 +14,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,19 +36,14 @@ import tunakleague.com.redemption.ServerConstants.*;
 
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Large screen devices (such as tablets) are supported by replacing the ListView
- * with a GridView.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
- * interface.
+ *Retrieves a user's list of projects from the app server and displays them in a list. Also allows user to create new projects
+ * and view/update the information for each individual project.
  */
 public class ProjectListFragment extends android.support.v4.app.Fragment implements AbsListView.OnItemClickListener {
     public final String TAG = "ProjectListFragment";
 
     private JSONArray projects; //Holds each project owned by the user as a JSONObject
-    private OnProjectSelectedListener mListener; //Interface implemented by parent Activity. Used to communicate with it.
+    private OnProjectActionListener mListener; //Interface implemented by parent Activity. Used to communicate with it.
 
     /**
      * The fragment's ListView/GridView.
@@ -80,18 +74,32 @@ public class ProjectListFragment extends android.support.v4.app.Fragment impleme
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true); //Make menu item show up
+    }
 
+    @Override
+    public void onCreateOptionsMenu(
+            Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_projectlist, menu); //Create the ProjectList menu with the "Create a Project" button
+    }
 
-        // TODO: Change Adapter to display your content
-/*
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
-*/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.createproject_item:
+                Log.d( TAG, "CREATING A NEW PROJECT" );
+                mListener.onCreateProject(); //Call activity to load a ProjectCreateFragment
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d( TAG, "Creating the view" );
         View view = inflater.inflate(R.layout.fragment_projectitem_list, container, false);
         mListView = (AbsListView) view.findViewById(android.R.id.list);
 
@@ -105,7 +113,7 @@ public class ProjectListFragment extends android.support.v4.app.Fragment impleme
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnProjectSelectedListener) activity; //Get the activity imnplemented as the callback interface.
+            mListener = (OnProjectActionListener) activity; //Get the activity imnplemented as the callback interface.
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -204,13 +212,14 @@ public class ProjectListFragment extends android.support.v4.app.Fragment impleme
         }
     }
 
-    public interface OnProjectSelectedListener {
+    public interface OnProjectActionListener {
         // TODO: Update argument type and name
         /*
         Starts a ProfileFragment to show the profile of the given project
         @param project - object containing all the fields of the project to be displayed
          */
         public void onProjectSelected(JSONObject project, int position);
+        public void onCreateProject();
     }
 
 }

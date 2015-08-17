@@ -1,16 +1,11 @@
 package tunakleague.com.redemption.profiles;
 
-import android.app.FragmentManager;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,11 +13,12 @@ import android.view.View;
 
 import org.json.JSONObject;
 
+import tunakleague.com.redemption.Constants;
 import tunakleague.com.redemption.DrawerActivity;
 import tunakleague.com.redemption.R;
 
-public class ProfileActivity extends DrawerActivity implements ProjectListFragment.OnProjectSelectedListener
-, ProjectFragment.OnProjectUpdatedListener{
+public class ProfileActivity extends DrawerActivity implements ProjectListFragment.OnProjectActionListener
+, ProfileFragment.HideTabsListener{
 
     private TabLayout tabLayout;
     @Override
@@ -41,6 +37,10 @@ public class ProfileActivity extends DrawerActivity implements ProjectListFragme
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setVisibility(View.VISIBLE);
 
+        if( getIntent().getAction() != null && getIntent().getAction().equals(Constants.ACTION_PROJECT)) {
+            TabLayout.Tab tab = tabLayout.getTabAt(1);
+            tab.select();
+        }
     }
 
     @Override
@@ -59,6 +59,7 @@ public class ProfileActivity extends DrawerActivity implements ProjectListFragme
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             return true;
         }
 
@@ -72,29 +73,25 @@ public class ProfileActivity extends DrawerActivity implements ProjectListFragme
     public void onProjectSelected(JSONObject project, int position) {
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.profile, (Fragment) ProjectFragment.newInstance(project, position));
+        fragmentTransaction.add(R.id.profile, (Fragment) ProjectUpdateFragment.newInstance(project, position));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-        tabLayout.setVisibility(View.INVISIBLE);
-    }
-
-    /*
-    Callback interface method for ProjectFragment
-     */
-    @Override
-    public void onProjectUpdated(JSONObject project, int position) {
-        ViewPager pager = (ViewPager) findViewById(R.id.viewpager);
-        FragmentPagerAdapter a = (FragmentPagerAdapter) pager.getAdapter();
-        ProjectListFragment fragment = (ProjectListFragment) a.instantiateItem(pager, 1);
-
-        if( fragment != null )
-            fragment.updateProject(project, position);
-        else
-            Log.d(TAG, "Can't get projectlist");
+        setTabsVisible(false);
     }
 
     @Override
-    public void setTabVisible(boolean visible ){
+    public void onCreateProject() {
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.profile, (Fragment) ProjectCreateFragment.newInstance());
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        setTabsVisible(false);
+    }
+
+    @Override
+    public void setTabsVisible(boolean visible) {
         tabLayout.setVisibility( (visible == true ) ? View.VISIBLE : View.INVISIBLE );
+
     }
 }

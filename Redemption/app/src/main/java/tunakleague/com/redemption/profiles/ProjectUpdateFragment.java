@@ -1,11 +1,10 @@
 package tunakleague.com.redemption.profiles;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,22 +23,16 @@ import java.util.Map;
 import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.ServerConstants;
 import tunakleague.com.redemption.ServerConstants.*;
 import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ProjectFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ProjectFragment#newInstance} factory method to
- * create an instance of this fragment.
+ Displays a specific project's information and allows users to edit them and save them to the app server.
  */
-public class ProjectFragment extends ProfileFragment {
+public class ProjectUpdateFragment extends ProfileFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    public static final String TAG = "ProjectFragment";
+    public static final String TAG = "ProjectUpdateFragment";
 
     /*Bundle keys*/
     private static final String PROJECT = "project";
@@ -48,19 +41,13 @@ public class ProjectFragment extends ProfileFragment {
     /*Bundle values*/
     private int position;
 
-    private OnProjectUpdatedListener mListener; //Instaance of callback interface implemented by activity
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProjectFragment.
+    /*
+    Stores the passed project info and its position in the list of all user's projects into a bundle and returns an instance
+    of ProjectUpdateFragment.
+    @param project - a JSONObject containing all the fields of information about a specific project owned by the user
      */
-    // TODO: Rename and change types and number of parameters
-    public static ProjectFragment newInstance(JSONObject project, int position) {
-        ProjectFragment fragment = new ProjectFragment();
+    public static ProjectUpdateFragment newInstance(JSONObject project, int position) {
+        ProjectUpdateFragment fragment = new ProjectUpdateFragment();
         Bundle args = new Bundle();
         Log.d(TAG, "PUTTING IN BUNDLE: " + project.toString() );
         args.putString(PROJECT, project.toString());
@@ -69,7 +56,7 @@ public class ProjectFragment extends ProfileFragment {
         return fragment;
     }
 
-    public ProjectFragment() {
+    public ProjectUpdateFragment() {
         // Required empty public constructor
     }
 
@@ -86,6 +73,14 @@ public class ProjectFragment extends ProfileFragment {
                 Log.d(TAG, "JSONError - Trying to extract project from Bundle");
             }
         }
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(
+            Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_profile, menu); //Create the ProjectList menu with the "Create a Project" button
+        menu.clear();
     }
 
     @Override
@@ -120,40 +115,10 @@ public class ProjectFragment extends ProfileFragment {
         populateFields(); //Populate the selected fields in the view with the project's info
         return view;    }
 
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnProjectUpdatedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mListener.setTabVisible(true); //Un-hide the tabs when exiting this fragment
-    }
-
-    /**
-     * Callback interface to be implemented by ProfileActivity
-     */
-    public interface OnProjectUpdatedListener {
-        // TODO: Update argument type and name
-        /*
-
-         */
-        public void onProjectUpdated(JSONObject project, int position);
-        public void setTabVisible( boolean visible);
+        ( super.mListener ).setTabsVisible(true); //Un-hide the tabs when exiting this fragment. Uses ProfileFragment's callback interface
     }
 
     @Override
@@ -193,7 +158,8 @@ public class ProjectFragment extends ProfileFragment {
                         profileData = response;
                         Toast.makeText(getActivity(), "Project updated", Toast.LENGTH_LONG).show();
                         Log.d(TAG, "Updated info: " + profileData.toString());
-                        mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in ProjectListFragment
+                        //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in ProjectListFragment
+                        reloadProjects();
                     }
                 }
                 ,
