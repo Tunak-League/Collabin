@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:Redemption="http://schemas.android.com/apk/res-auto">
+<item
+    android:id="@+id/createproject_item"
+    android:icon="@drawable/ic_add_white_24dp"
+    Redemption:showAsAction="always"
+    android:title="Create a Project"
+    >
+</item>
+</menu>

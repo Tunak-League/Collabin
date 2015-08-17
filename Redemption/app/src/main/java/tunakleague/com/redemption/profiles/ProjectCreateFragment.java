@@ -70,7 +70,7 @@ public class ProjectCreateFragment extends ProfileFragment {
         /*Add listener to the Update button */
         Button updateButton = (Button) view.findViewById(R.id.update_button);
         updateButton.setOnClickListener(new UpdateListener());
-        updateButton.setText("Create"); //We're re-using ProjectFragment's layout, but need to change the name of this button from "Update"
+        updateButton.setText("Create"); //We're re-using ProjectUpdateFragment's layout, but need to change the name of this button from "Update"
 
         /*Specify all EditText fields in the UI that need to be EXTRACTED (unconditionallY) upon update and their corresponding server model keys*/
         fieldsToExtract.put(view.findViewById(R.id.project_name), ServerConstants.PROJECTS.PROJECT_NAME.string);
