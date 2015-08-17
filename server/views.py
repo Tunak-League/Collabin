@@ -132,7 +132,7 @@ class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
     # Creates a new Project with the specified fields
     def post(self, request, *args, **kwargs ):
         request.data['date_created'] = date.today() # Set the date_created field as today's date
-        skillsList = request.data.getlist('skills') # Get a list of all skills associated with this project
+        skillsList = request.data.get('skills') # Get a list of all skills associated with this project
 
         # Check if skills exist in database, create them if they don't. Check for errors after
         if check_skills(skillsList) == False: 
@@ -151,13 +151,9 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
 
     # Update data for a specific Project
     def put(self, request, *args, **kwargs): 
-        print "Data: "
-        print request.data
         project = Projects.objects.get(pk = kwargs['pk'])
-        print "big failure"
         if not isOwner(request, project):
             return Response(status = status.HTTP_403_FORBIDDEN)
-        print "is owner" 
         skillsList = request.data.get('skills') #Get a list of all skills associated with this project
         
         #Check if skills exist in database, create them if they don't. Check for errors after
