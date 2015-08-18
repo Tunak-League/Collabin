@@ -6,14 +6,17 @@ public class ServerConstants {
 
     public enum URLS {
         /*Names of server endpoints */
-        ROOT("http://192.168.1.64:8000/"),
+        ROOT("http://192.168.1.75:8000/"),
         USER_LIST( ROOT.string + "user-list/"),
         USER_DETAIL( ROOT.string + "user-detail/" ),
         PROJECT_LIST( ROOT.string + "project-list/" ),
         PROJECT_DETAIL(ROOT.string + "project-detail/"),
         TOKEN_AUTH(ROOT.string + "api-token-auth/"),
-
-        ;
+        CHAT(ROOT.string + "chat/"),
+        PROJECTS_MATCHES(ROOT.string + "project-matches/"),
+        USER_GET(ROOT.string + "user-get/"),
+	    USER_MATCHES(ROOT.string + "user-matches/"),
+	    ;
         public final String string;
         private URLS(final String text ){
             this.string=text;

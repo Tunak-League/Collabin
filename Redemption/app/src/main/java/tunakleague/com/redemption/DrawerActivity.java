@@ -1,14 +1,11 @@
 package tunakleague.com.redemption;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -36,13 +33,10 @@ public abstract class DrawerActivity extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
-
     /*Constants for items in the navigation drawer*/
     public static final int LOGOUT = 0;
     public static final int PROFILE = 1;
     public static final int HOME = 2;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +63,11 @@ public abstract class DrawerActivity extends AppCompatActivity {
                         editor.commit();
 
 //                       /*Return to the welcome page*/
-                        Intent welcomeIntent = new Intent( DrawerActivity.this, WelcomeActivity.class );
+                        Intent welcomeIntent = new Intent(DrawerActivity.this, WelcomeActivity.class);
                         startActivity(welcomeIntent);
                         break;
                     case PROFILE:
-                        Intent profileIntent = new Intent( DrawerActivity.this, ProfileActivity.class );
+                        Intent profileIntent = new Intent(DrawerActivity.this, ProfileActivity.class);
                         startActivity(profileIntent);
                         break;
                     case HOME:
@@ -88,11 +82,9 @@ public abstract class DrawerActivity extends AppCompatActivity {
 
 
 
-         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                 R.string.drawer_open, R.string.drawer_close) {
-
-
-        };
+         mDrawerToggle = new ActionBarDrawerToggle
+                 (this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
+         };
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);

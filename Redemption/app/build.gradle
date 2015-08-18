@@ -18,17 +18,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar']) //everything in android lib?
     //gcm
     //volley
-    compile 'com.google.android.gms:play-services-gcm:7.5.+'
+    compile 'com.google.android.gms:play-services-gcm:7.8.0'
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.mcxiaoke.volley:library:1.0.18'
-    compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'com.google.android.gms:play-services:7.8.0'
     compile 'com.android.support:design:22.2.1'
     //compile files('libs/gson-2.3.1.jar')
     compile 'com.google.code.gson:gson:2.3.+'
