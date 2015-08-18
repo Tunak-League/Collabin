@@ -11,6 +11,9 @@ urlpatterns = format_suffix_patterns([
     url(r'^user-swipe/(?P<pk>[0-9]+)/$', views.UserSwipe.as_view()),
     url(r'^user-list', views.UserList.as_view() ),
     url(r'^user-detail', views.UserDetail.as_view()),
-    url(r'^project-swipe/(?P<project>[0-9]+)/(?P<user>[0-9]+)/$', views.project_swipe, name="project-swipe"  ),
+    url(r'^project-swipe/(?P<project>[0-9]+)/(?P<user>[0-9]+)/$', views.project_swipe, name="project-swipe"),
+    url(r'^chat/$', views.Chat.as_view()),
+    url(r'^user-get/(?P<pk>[0-9]+)/$', views.UserGet.as_view()),
+    url(r'^user-matches/', views.user_matches),
 ])
 
