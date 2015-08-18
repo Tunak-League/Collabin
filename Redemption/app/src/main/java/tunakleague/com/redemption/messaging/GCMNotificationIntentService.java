@@ -25,7 +25,7 @@ public class GCMNotificationIntentService extends IntentService {
 	public GCMNotificationIntentService() {
 		super("GcmIntentService");
 	}
-	DbHelper dbHelper = new DbHelper(getApplication());
+//	DbHelper dbHelper = new DbHelper(getApplication());
 	public static final String TAG = "GCMNotificationIntentService";
 
 	@Override
@@ -47,13 +47,13 @@ public class GCMNotificationIntentService extends IntentService {
 				String sender = intent.getStringExtra(DataProvider.COL_SENDER);
                 String recipient = intent.getStringExtra(DataProvider.COL_RECIPIENT);
 
-				SQLiteDatabase db = dbHelper.getWritableDatabase();
+		//		SQLiteDatabase db = dbHelper.getWritableDatabase();
 				ContentValues vals = new ContentValues();
 				vals.put(DataProvider.COL_MESSAGE, msg);
 				vals.put(DataProvider.COL_SENDER, sender);
                 vals.put(DataProvider.COL_RECIPIENT, recipient);
 
-				long id = db.insert(DataProvider.TABLE_CHAT, null, vals);
+				//long id = db.insert(DataProvider.TABLE_CHAT, null, vals);
 
 				sendNotification("Sender: "
 						+ extras.get(ServerConstants.USERS.USERNAME.string) + ". Message: "

@@ -46,8 +46,6 @@ public class ChatMainActivity extends AppCompatActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.chat_toolbar);
-        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         appUtil = new MessageSender(this);
