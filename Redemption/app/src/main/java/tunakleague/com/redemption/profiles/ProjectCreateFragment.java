@@ -67,6 +67,10 @@ public class ProjectCreateFragment extends ProfileFragment {
         skillsAddButton.setOnClickListener(new CreateSkillListener() );
         typesAddButton.setOnClickListener(new CreateTypeListener());
 
+        /*Hide delete button since we don't use it here.*/
+        Button deleteButton = (Button) view.findViewById(R.id.delete_button);
+        deleteButton.setVisibility(View.INVISIBLE);
+
         /*Add listener to the Update button */
         Button updateButton = (Button) view.findViewById(R.id.update_button);
         updateButton.setOnClickListener(new UpdateListener());
