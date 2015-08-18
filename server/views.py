@@ -250,10 +250,12 @@ def project_swipe( request, **kwargs ):
 def user_matches(request):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-    
+   
     profile = UserProfiles.objects.get(user = request.user) # Get the requesting user's profile
     matched_swipes = Swipes.objects.filter(user_profile=profile, user_likes=Swipes.YES, project_likes=Swipes.YES) # Get all swipes that user is involved in with mutual likes
-    serializer = ProjectMatchSerializer(matched_swipes, many=True, context = {'request': request})
+    project_list = [matched_swipe.project_id for matched_swipe in matched_swipes]
+    projects = Projects.objects.filter(id__in = project_list)
+    serializer = ProjectsSerializer(projects, many=True, context = {'request': request})
     return Response(serializer.data)
 
 '''
