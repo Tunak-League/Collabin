@@ -108,7 +108,7 @@
             android:layout_alignLeft="@+id/skills_label"
             android:layout_alignStart="@+id/skills_label"
             android:numColumns="2"
-            android:paddingBottom="50dp"
+            android:paddingBottom="100dp"
             />
         <!--android:clipToPadding="true"-->
 
@@ -144,6 +144,16 @@
             android:layout_alignTop="@+id/textView5"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text = "Delete Project"
+            android:id="@+id/delete_button"
+            android:layout_centerHorizontal= "true"
+            android:layout_alignBottom="@id/skills"
+            android:layout_marginBottom="50dp"
+            />
 
     </RelativeLayout>
 

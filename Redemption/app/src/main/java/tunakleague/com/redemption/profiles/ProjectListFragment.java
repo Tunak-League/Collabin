@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -103,6 +104,7 @@ public class ProjectListFragment extends android.support.v4.app.Fragment impleme
         View view = inflater.inflate(R.layout.fragment_projectitem_list, container, false);
         mListView = (AbsListView) view.findViewById(android.R.id.list);
 
+
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
         return view;
@@ -164,6 +166,7 @@ public class ProjectListFragment extends android.support.v4.app.Fragment impleme
             }
         }
     }
+    
 
     /*
     Extracts the names of all projects retrieved from the server and adds them to the ListView to display to the user.
