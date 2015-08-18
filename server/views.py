@@ -373,5 +373,39 @@ class UserSwipe(APIView):
                 return Response(serializer.data)
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
+class Chat(APIView): 
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    
+    def post(self, request, format = None):  
+        requestData = request.data.copy()
+        profile = UserProfiles.objects.get(user_id = request.user.id)
+        requestData['sender'] = profile.id
+        recipient = UserProfiles.objects.get(id = request.data['recipient'])
+        recipient_device = recipient.device
+        recipient_device.send_message(request.data['message'])
+        return Response(requestData, status = status.HTTP_201_CREATED)
+        '''
+            serializer = ChatSerializer(data = requestData)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status = status.HTTP_201_CREATED)
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+        '''
+
+class UserGet(APIView): 
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    def get_object(self, pk):
+        try:
+            return UserProfiles.objects.get(pk=pk)
+        except Snippet.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        profile = self.get_object(pk)
+        serializer = UserProfilesSerializer(profile)
+        return Response(serializer.data)
+
 def isOwner(request, project):
     return request.user == project.owner.user
