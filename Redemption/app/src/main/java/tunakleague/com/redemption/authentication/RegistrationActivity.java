@@ -93,7 +93,7 @@ public class RegistrationActivity extends AppCompatActivity {
              */
             @Override
             public void onReceive(Context context, Intent intent) {
-                if( ! intent.getAction().equals(NotificationsPreferences.REGISTRATION_COMPLETE)) {
+                if(!intent.getAction().equals(NotificationsPreferences.REGISTRATION_COMPLETE)) {
                     Log.d(TAG, "GET OUT");
                     return;
 
@@ -107,14 +107,14 @@ public class RegistrationActivity extends AppCompatActivity {
                 StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
                             @Override
-                            public void onResponse( String response ) {
+                            public void onResponse(String response) {
                                 try {
                                     JSONObject jsonResponse = new JSONObject(response);
                                     String username = jsonResponse.getString("username");
                                     System.out.println("Created Username: "+username+"\ndeviceID: ");
 
                                     /*Automatically login after registration using registered username and password*/
-                                    Intent loginIntent = new Intent( RegistrationActivity.this, LoginActivity.class );
+                                    Intent loginIntent = new Intent(RegistrationActivity.this, LoginActivity.class);
                                     loginIntent.setAction(Constants.ACTION_LOGIN);
                                     loginIntent.putExtra(USERS.USERNAME.string, username_input);
                                     loginIntent.putExtra(USERS.PASSWORD.string, password_input );

@@ -39,15 +39,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".messaging.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="tunakleague.com.redemption" />
-            </intent-filter>
-        </receiver>
-
         <!-- [START gcm_listener] Detects msgs, handles them and displays notifications -->
         <service
             android:name=".notifications.MessageListenerService"
@@ -57,10 +48,6 @@
             </intent-filter>
         </service>
         <!-- [END gcm_listener] -->
-        <service
-            android:name=".messaging.GCMNotificationIntentService"
-            android:exported="false" >
-        </service>
 
 
         <!-- [START instanceId_listener] -->
@@ -120,6 +107,11 @@
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home" >
+        </activity>
+        <activity
+            android:name=".messaging.ChatMainActivity"
+            android:label="@string/title_activity_chat_main"
+            android:parentActivityName=".HomeActivity" >
         </activity>
     </application>
 

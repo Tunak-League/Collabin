@@ -65,7 +65,7 @@ public class IDRegistrationService extends IntentService {
                 else { //Triggers when intent Action is Constants.ACTION_CREATE_USER
 
                     /*Notify RegistrationActivity that deviceID was acquired successfully and pass it the deviceID */
-                    Intent registrationComplete = new Intent( NotificationsPreferences.REGISTRATION_COMPLETE);
+                    Intent registrationComplete = new Intent(NotificationsPreferences.REGISTRATION_COMPLETE);
                     registrationComplete.putExtra(Constants.DEVICE_ID, token );
                     LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
                 }
@@ -85,57 +85,6 @@ public class IDRegistrationService extends IntentService {
             // on a third-party server, this ensures that we'll attempt the update at a later time.
             sharedPreferences.edit().putBoolean(NotificationsPreferences.SENT_TOKEN_TO_SERVER, false).apply();
         }
-
-    }
-
-    /**
-     * Persist registration to third-party servers.
-     *
-     * Modify this method to associate the user's GCM registration token with any server-side account
-     * maintained by your application.
-     *
-     * @param token The new token.
-     */
-    private void sendRegistrationToServer(final String token) {
-        // Add custom implementation, as needed.
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://192.168.1.64:8000/hello/"; //localhost
-        Log.d(TAG, "HEY WHAT'S THE DEAL");
-
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse( String response ) {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            String username = jsonResponse.getString("username"),
-                                    deviceID = jsonResponse.getString("deviceID");
-                            System.out.println("Username: "+username+"\ndeviceID: "+deviceID);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                }) //end of function StringRequest. Since it's making a StringRequest object, you can conveniently add in extra class definition stuff like overrides
-        {
-            @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String>  params = new HashMap<>();
-                // the POST parameters:
-                params.put("username", "justin");
-                params.put("deviceID", token);
-                return params;
-            }
-        };
-
-        queue.add(postRequest);
 
     }
 

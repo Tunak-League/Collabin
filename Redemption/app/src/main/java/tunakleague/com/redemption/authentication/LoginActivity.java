@@ -97,13 +97,13 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
-                            String token = jsonResponse.getString(USERS.TOKEN.string );
+                            String token = jsonResponse.getString(USERS.TOKEN.string);
                             System.out.println("Token: " + token);
 
                             /*Store the token in SharedPreferences*/
-                            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences( LoginActivity.this);
+                            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                             SharedPreferences.Editor editor = settings.edit();
-                            editor.putString(PreferencesKeys.AUTH_TOKEN, token );
+                            editor.putString(PreferencesKeys.AUTH_TOKEN, token);
                             editor.commit();
 
                             /*Go to HomeActivity*/

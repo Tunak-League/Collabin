@@ -60,7 +60,7 @@ public class GCMNotificationIntentService extends IntentService {
 						+ extras.get(Config.MESSAGE_KEY));
 			}
 		}
-		GcmBroadcastReceiver.completeWakefulIntent(intent);
+		//GcmBroadcastReceiver.completeWakefulIntent(intent);
 	}
 
 	private void sendNotification(String msg) {
