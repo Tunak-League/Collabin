@@ -28,6 +28,7 @@
     <string name="auth_token">Authentication Token</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_chat_main">ChatMainActivity</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

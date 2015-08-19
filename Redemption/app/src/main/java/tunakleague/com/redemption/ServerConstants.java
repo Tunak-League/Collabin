@@ -21,9 +21,6 @@ public class ServerConstants {
         private URLS(final String text ){
             this.string=text;
         }
-
-
-
     }
 
 

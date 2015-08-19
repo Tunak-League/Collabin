@@ -48,12 +48,10 @@ public class MessageListenerService extends GcmListenerService {
      * @param message GCM message received.
      */
     private void sendNotification(String message) {
-
-
         //These do not work. Causes notification to restart the app rather than resume.
-         Intent notificationIntent = new Intent(this, MainActivity.class);
-           notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP );
-           notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP );
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         /*Create a PendingIntent to start MainActivity when the notification is clicked on */
 
@@ -67,7 +65,7 @@ public class MessageListenerService extends GcmListenerService {
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_plusone_standard_off_client) //need something else here?
-                .setContentTitle("GCM Message")
+                .setContentTitle("New Message!")
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
