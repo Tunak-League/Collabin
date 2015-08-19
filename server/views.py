@@ -225,7 +225,7 @@ def project_swipe( request, **kwargs ):
                 project_owner_device = project.owner.device
                 user_device = user.device
                 project_owner_device.send_message( "Project: " + project.project_name + " has found a match!" )
-                user_device.send_message( "You have found a match!" )
+                user_device.send_message("MatchNotificaion" + " " + "You have found a match!" )
             return Response(serializer.data)
 
     except Swipes.DoesNotExist: #Create a new entry in swipes table if it doesn't exist
@@ -364,7 +364,7 @@ class UserSwipe(APIView):
                     user_device = profile.device # Get GCM device with requesting user's device ID 
 
                     project_owner_device.send_message("Project: " + project.project_name + " has found a match!")
-                    user_device.send_message("You have found a match!")
+                    user_device.send_message("MatchNotification" + " " + "You have found a match!")
                 return Response(serializer.data)
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
@@ -385,7 +385,7 @@ class Chat(APIView):
         requestData['sender'] = profile.id
         recipient = UserProfiles.objects.get(id = request.data['recipient'])
         recipient_device = recipient.device
-        recipient_device.send_message(request.data['message'])
+        recipient_device.send_message("ChatNotification" + " " + request.data['message'])
         return Response(requestData, status = status.HTTP_201_CREATED)
         '''
             serializer = ChatSerializer(data = requestData)
