@@ -64,11 +64,11 @@ class UserProfilesSerializer(serializers.ModelSerializer):
         fields = ('id', 'last_name', 'first_name', 'email', 'username', 'user_summary', 'location', 'image_path', 'skills', 'types', 'user', 'device')
 
 class SkillsSerializer(serializers.ModelSerializer):
-    users = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
-    projects = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
+    #users = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
+    #projects = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
     class Meta:
         model = Skills
-        fields = ('id', 'skill_name', 'users', 'projects')
+        fields = ('id', 'skill_name')
 
 class TypesSerializer(serializers.ModelSerializer):
     users = serializers.PrimaryKeyRelatedField(many = True, read_only = True)

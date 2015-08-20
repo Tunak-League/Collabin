@@ -409,5 +409,13 @@ class UserGet(APIView):
         serializer = UserProfilesSerializer(profile)
         return Response(serializer.data)
 
+
+@api_view(['GET'])
+def skills(request):
+    all_skills = Skills.objects.all()
+    serializer = SkillsSerializer( all_skills, many=True )
+    return Response( data = serializer.data )
+
+
 def isOwner(request, project):
     return request.user == project.owner.user

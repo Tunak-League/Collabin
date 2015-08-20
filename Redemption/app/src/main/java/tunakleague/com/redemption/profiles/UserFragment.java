@@ -95,10 +95,13 @@ public class UserFragment extends ProfileFragment {
         fieldsToPopulate.put( view.findViewById(R.id.username), USERS.USERNAME.string );
         fieldsToPopulate.put( view.findViewById(R.id.email), USERS.EMAIL.string );
         fieldsToPopulate.put( view.findViewById(R.id.user_summary), USERS.USER_SUMMARY.string );
+        fieldsToPopulate.put( view.findViewById(R.id.location), USERS.LOCATION.string );
 
         /*Specify all EditText fields in the UI that need to be EXTRACTED upon update and their corresponding server model keys*/
         fieldsToExtract.put( view.findViewById(R.id.email), USERS.EMAIL.string );
+        fieldsToExtract.put( view.findViewById(R.id.location), USERS.LOCATION.string );
         fieldsToExtract.put( view.findViewById(R.id.user_summary), USERS.USER_SUMMARY.string );
+
         //TODO: Put in email ONLY if it has changed (probably in updateProfile)
 
         return view;
