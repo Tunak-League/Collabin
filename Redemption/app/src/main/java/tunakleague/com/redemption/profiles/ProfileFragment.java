@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -214,7 +215,13 @@ public abstract class ProfileFragment extends android.support.v4.app.Fragment {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Add a skill");
             builder.setMessage("Enter a skill?");
-            final EditText inputField = new EditText(getActivity());
+
+            final AutoCompleteTextView inputField = new AutoCompleteTextView(getActivity());
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_dropdown_item_1line, ( (ProfileActivity) getActivity() ).getSkillsCollection() );
+            inputField.setAdapter(adapter);
+
+
             builder.setView(inputField);
             builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                 @Override

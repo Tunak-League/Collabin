@@ -186,21 +186,6 @@ public class ProjectListFragment extends android.support.v4.app.Fragment impleme
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);   // Set the adapter
     }
 
-    /*
-    Replaces an existing project's information with updated information.
-    @param updatedProject - JSONObject containing informatino for updated project
-    @param position - the position of the project in the "projects" member
-     */
-    public void updateProject( JSONObject project, int position ) {
-        try {
-            projects.put(position, project);
-            renderProjects();
-            Log.d(TAG, "I did it");
-        }
-        catch(JSONException ex ) {
-            Log.d(TAG, "Error putting updated info into project list");
-        }
-    }
 
     /**
      * The default content for this Fragment has a TextView that is shown when

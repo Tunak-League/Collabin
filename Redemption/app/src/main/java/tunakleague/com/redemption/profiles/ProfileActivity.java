@@ -6,21 +6,40 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import tunakleague.com.redemption.Constants;
+import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.DrawerActivity;
+import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.R;
+import tunakleague.com.redemption.ServerConstants.*;
 
 public class ProfileActivity extends DrawerActivity implements ProjectListFragment.OnProjectActionListener
 , ProfileFragment.HideTabsListener{
+    public static final String TAG = "ProfileActivity";
+    public static final String SKILL_NAME_FIELD = "skill_name";
 
     private TabLayout tabLayout;
+
+    private List<String> skillsCollection = new ArrayList<String>(); //List of all skills on the server's database
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +56,30 @@ public class ProfileActivity extends DrawerActivity implements ProjectListFragme
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setVisibility(View.VISIBLE);
 
+        /*Displays the Projects tab upon opening if the last action completed was a project update or project create*/
         if( getIntent().getAction() != null && getIntent().getAction().equals(Constants.ACTION_PROJECT)) {
             TabLayout.Tab tab = tabLayout.getTabAt(1);
             tab.select();
         }
+
+        /*Retrieve the server database's complete list of skills to be used for auto-complete during skill entry*/
+        String url = URLS.SKILLS.string;
+        JsonArrayRequest skillsRequest = new JsonArrayRequest(Request.Method.GET, url,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for( int i = 0; i < response.length(); i++ ){
+                            try {
+                                skillsCollection.add( response.getJSONObject(i).getString(SKILL_NAME_FIELD) );
+                            } catch (JSONException e) {
+                                Log.d(TAG, "Failed to retrieve skills collection");
+                            }
+                        }
+                    }
+                },
+                new DetailedErrorListener(this)
+        );
+        MyApplication.requestQueue.add(skillsRequest);
     }
 
     @Override
@@ -79,6 +118,9 @@ public class ProfileActivity extends DrawerActivity implements ProjectListFragme
         setTabsVisible(false);
     }
 
+    /*
+        Callback interface method for ProjectListFragment
+     */
     @Override
     public void onCreateProject() {
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
@@ -89,9 +131,17 @@ public class ProfileActivity extends DrawerActivity implements ProjectListFragme
         setTabsVisible(false);
     }
 
+    /*
+    Callback interface method for ProfileFragment
+    */
     @Override
     public void setTabsVisible(boolean visible) {
-        tabLayout.setVisibility( (visible == true ) ? View.VISIBLE : View.INVISIBLE );
+        tabLayout.setVisibility((visible == true) ? View.VISIBLE : View.INVISIBLE);
 
+    }
+
+    /*Return the collection of skills stored in the server's database*/
+    public List<String> getSkillsCollection() {
+        return skillsCollection;
     }
 }

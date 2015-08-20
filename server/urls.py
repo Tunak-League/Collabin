@@ -15,5 +15,6 @@ urlpatterns = format_suffix_patterns([
     url(r'^chat/$', views.Chat.as_view()),
     url(r'^user-get/(?P<pk>[0-9]+)/$', views.UserGet.as_view()),
     url(r'^user-matches/', views.user_matches),
+    url(r'^skills/$', views.skills ),
 ])
 
