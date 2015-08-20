@@ -224,7 +224,7 @@ def project_swipe( request, **kwargs ):
             if swipe.project_likes == Swipes.YES and swipe.user_likes == Swipes.YES :
                 project_owner_device = project.owner.device
                 user_device = user.device
-                project_owner_device.send_message( "Project: " + project.project_name + " has found a match!" )
+                project_owner_device.send_message( "MatchNotification" + " " +  "Project: " + project.project_name + " has found a match!" )
                 user_device.send_message("MatchNotificaion" + " " + "You have found a match!" )
             return Response(serializer.data)
 
@@ -363,7 +363,7 @@ class UserSwipe(APIView):
                     project_owner_device = project.owner.device # Get Device ID of project owner
                     user_device = profile.device # Get GCM device with requesting user's device ID 
 
-                    project_owner_device.send_message("Project: " + project.project_name + " has found a match!")
+                    project_owner_device.send_message( "MatchNotification" + " " + "Project: " + project.project_name + " has found a match!")
                     user_device.send_message("MatchNotification" + " " + "You have found a match!")
                 return Response(serializer.data)
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
