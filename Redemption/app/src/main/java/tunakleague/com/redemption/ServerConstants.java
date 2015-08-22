@@ -6,7 +6,7 @@ public class ServerConstants {
 
     public enum URLS {
         /*Names of server endpoints */
-        ROOT("http://192.168.1.64:8000/"),
+        ROOT("https://tunak-server.herokuapp.com/"),
         USER_LIST( ROOT.string + "user-list/"),
         USER_DETAIL( ROOT.string + "user-detail/" ),
         PROJECT_LIST( ROOT.string + "project-list/" ),
