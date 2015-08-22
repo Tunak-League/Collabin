@@ -11,7 +11,7 @@ class UserProfiles(models.Model):
     location = models.CharField(max_length = 30, null=True, blank=True, default=None)
     image_path = models.CharField(max_length = 50, null = True, blank = True, default = None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    device = models.ForeignKey( 'push_notifications.GCMDevice' )
+    device = models.ForeignKey( 'push_notifications.GCMDevice', default = None )
 
 class Skills(models.Model):
     skill_name = models.CharField(max_length = 30, unique = True)
