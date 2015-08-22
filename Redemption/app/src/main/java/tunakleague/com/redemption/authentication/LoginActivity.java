@@ -1,15 +1,20 @@
 package tunakleague.com.redemption.authentication;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -28,12 +33,18 @@ import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.PreferencesKeys;
 import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.ServerConstants.*;
+import tunakleague.com.redemption.notifications.IDRegistrationService;
+import tunakleague.com.redemption.notifications.NotificationsPreferences;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AuthenticationActivity {
     public final String TAG = "LoginActivity";
 
     EditText username;
     EditText password;
+
+    String deviceID = Constants.NO_DEVICE; //If regular login (not from RegistrationActivity), used to check if user is on a different device. No device by default
+    DeviceIDReceiver tokenBroadCastReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +60,23 @@ public class LoginActivity extends AppCompatActivity {
             String password_input = intent.getExtras().getString( USERS.PASSWORD.string );
             Log.d(TAG, username_input);
             Log.d( TAG, password_input);
+            deviceID =  PreferenceManager.getDefaultSharedPreferences(this).getString(PreferencesKeys.DEVICE_ID, Constants.NO_DEVICE); //Assign old ID to pass the check for different device, since this code occurs right after RegistrationActivity
             authenticate( username_input, password_input );
+        }
+        /*Manual login. Must retrieve new device ID from GCM in case user has switched devices.*/
+        else {
+        /*Obtain device ID from GCM so we can check it against the stored ID in preferences and see if user is on a different device.*/
+            tokenBroadCastReceiver = new DeviceIDReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    super.onReceive(context, intent); //call parent method to obtain the deviceID
+                    deviceID = getDeviceID();
+                    Log.d(TAG, "Device ID: " + deviceID);
+                }
+            };
+            LocalBroadcastManager.getInstance(this).registerReceiver(tokenBroadCastReceiver,
+                    new IntentFilter(NotificationsPreferences.REGISTRATION_COMPLETE)); //Set this receiver to look for the REGISTRATION_COMPLETE broadcast
+            startIDRegistrationService(); //start service to obtain the device id from GCM
         }
     }
 
@@ -89,31 +116,89 @@ public class LoginActivity extends AppCompatActivity {
     Displays error message if authentication fails.
      */
     public void authenticate(final String username, final String password ) {
-        Log.d(TAG, URLS.TOKEN_AUTH.string);
-        String url = URLS.TOKEN_AUTH.string;
-        StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
+        /*In the case that obtaining device id somehow failed, do not attempt to login*/
+        if( deviceID.equals(Constants.NO_DEVICE)){
+            Toast.makeText(this, "Error: Failed to obtain device id. Please check your connection", Toast.LENGTH_LONG).show();
+            recreate(); //Restart the activity so we can try to get device id again.
+        }
+        else {
+            Log.d(TAG, URLS.TOKEN_AUTH.string);
+            String url = URLS.TOKEN_AUTH.string;
+            StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonResponse = new JSONObject(response);
+                                String token = jsonResponse.getString(USERS.TOKEN.string);
+                                System.out.println("Token: " + token);
+
+                            /*Store the token in SharedPreferences*/
+                                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putString(PreferencesKeys.AUTH_TOKEN, token);
+                                editor.commit();
+
+                                Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class); //Prepare intent to go to Home Screen
+
+                                String oldDeviceID = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).getString(PreferencesKeys.DEVICE_ID, "noDeviceID");
+                                Log.d(TAG, "Old Device ID: " + oldDeviceID);
+                                /*Compare device id obtained from GCM with the device id stored in preferences to see if user is on a different device and update*/
+                                if (!oldDeviceID.equals(deviceID)) {
+                                    Log.d(TAG, "New device detected");
+                                    updateDeviceID(homeIntent); //Update device ID on server, and start HomeActivity after its successful
+                                }
+                             /*Device ID was not changed, start HomeActivity*/
+                            else {
+                                    startActivity(homeIntent);
+                                    LoginActivity.this.finish();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new DetailedErrorListener(LoginActivity.this)
+            ) {
+                @Override
+                //Create the body of the request
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+
+                    // Get the registration info from input fields and add them to the body of the request
+                    params.put(USERS.USERNAME.string, username);
+                    params.put(USERS.PASSWORD.string, password);
+                    params.put("Content-Type", "application/json");
+                    return params;
+                }
+            };
+
+            //TODO: LATER WHEN USING HEADERS, MAKE A GENERIC STRINGREQUEST CLASS THAT ALREADY HAS THE getHeaders() method
+
+            MyApplication.requestQueue.add(loginRequest);
+        }
+    }
+
+    /*
+        Updates the user's device id on the server, and starts the HomeActivity on success.
+        @param homeIntent - Intent to go to HomeActivity once the device ID has been updated successfully.
+     */
+    private void updateDeviceID(final Intent homeIntent){
+    /*Send a user-detail request to update userprofile with new device ID, and store in preferences*/
+        String url = URLS.USER_DETAIL.string;
+        StringRequest updateDeviceRequest = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            String token = jsonResponse.getString(USERS.TOKEN.string);
-                            System.out.println("Token: " + token);
+                        Log.d(TAG, "Updated device ID" );
+                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString(PreferencesKeys.DEVICE_ID, deviceID);
+                        editor.commit();
 
-                            /*Store the token in SharedPreferences*/
-                            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.putString(PreferencesKeys.AUTH_TOKEN, token);
-                            editor.commit();
-
-                            /*Go to HomeActivity*/
-                            Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
-                            startActivity(homeIntent);
-                            LoginActivity.this.finish();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        startActivity(homeIntent);
+                        LoginActivity.this.finish();
                     }
                 },
                 new DetailedErrorListener(LoginActivity.this)
@@ -121,21 +206,24 @@ public class LoginActivity extends AppCompatActivity {
         {
             @Override
             //Create the body of the request
-            protected Map<String, String> getParams()
-            {
-                Map<String, String>  params = new HashMap<>();
-
-                // Get the registration info from input fields and add them to the body of the request
-                params.put(USERS.USERNAME.string, username );
-                params.put(USERS.PASSWORD.string, password);
-                params.put("Content-Type","application/json");
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put(USERS.DEVICE_ID.string, deviceID);
                 return params;
             }
+
+            @Override
+            //Add header of request
+            public Map<String, String> getHeaders() {
+                return MyApplication.getAuthenticationHeader(LoginActivity.this);
+            }
         };
+        MyApplication.requestQueue.add(updateDeviceRequest);
+    }
 
-        //TODO: LATER WHEN USING HEADERS, MAKE A GENERIC STRINGREQUEST CLASS THAT ALREADY HAS THE getHeaders() method
-
-        MyApplication.requestQueue.add(loginRequest);
-
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(tokenBroadCastReceiver); //unregister this receiver if activity destroyed.
     }
 }
