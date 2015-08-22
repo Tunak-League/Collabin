@@ -16,4 +16,6 @@ public class Constants {
 
     //Intent data keys
     public static final String DEVICE_ID = "device_id";
+
+    public static final String NO_DEVICE = "no device id";
 }
