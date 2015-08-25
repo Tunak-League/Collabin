@@ -19,7 +19,7 @@ public class DataProvider extends ContentProvider {
     public static final String COL_MESSAGE = "message";
     public static final String COL_RECIPIENT = "recipient";
     public static final String COL_SENDER = "sender";
-    // public static final String COL_TIME_SENT = "time_sent";
+    public static final String COL_TIME_SENT = "time_sent";
 
     private DbHelper dbHelper;
 
@@ -101,8 +101,6 @@ public class DataProvider extends ContentProvider {
             case MESSAGES:
                 count = db.update(TABLE_CHAT, values, selection, selectionArgs);
                 break;
-
-
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }

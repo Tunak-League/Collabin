@@ -108,15 +108,21 @@ class SwipesSerializer(serializers.ModelSerializer):
         fields = ('id', 'user_profile', 'project', 'user_likes', 'project_likes')
 
 class ProjectMatchSerializer( serializers.ModelSerializer ):
+    username = serializers.ReadOnlyField(source='user_profile.user.username')
+    userProfileId = serializers.ReadOnlyField(source = 'user_profile.id')
+    ownerId = serializers.ReadOnlyField(source = 'project.owner.id')
+    project_name = serializers.ReadOnlyField(source='project.project_name')
+    projectId = serializers.ReadOnlyField(source='project.id')
+    class Meta:
+        model = Swipes
+        fields = ('user_profile', 'userProfileId', 'username', 'project_name', 'ownerId', 'projectId')
+
+class UserMatchSerializer(serializers.ModelSerializer):
     project_name = serializers.ReadOnlyField( source='project.project_name' )
     owner = serializers.ReadOnlyField( source='project.owner.user.username')
+    userProfileId = serializers.ReadOnlyField(source = 'user_profile.id')
+    ownerId = serializers.ReadOnlyField(source = 'project.owner.id')
+    projectId = serializers.ReadOnlyField(source='project.id')
     class Meta:
         model = Swipes
-        fields = ('project', 'project_name', 'owner' ) 
-
-class UserMatchSerializer( serializers.ModelSerializer ):
-    username = serializers.ReadOnlyField( source='user_profile.user.username' )
-    project_name = serializers.ReadOnlyField(source='project.project_name')
-    class Meta:
-        model = Swipes
-        fields = ('user_profile', 'username', 'project_name')
+        fields = ('project', 'project_name', 'owner', 'ownerId', 'userProfileId', 'projectId') 

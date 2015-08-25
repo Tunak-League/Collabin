@@ -15,6 +15,7 @@ public class ChatCursorAdapter extends CursorAdapter {
         super(context, cursor, 0);
     }
 
+
     // The newView method is used to inflate a new view and return it,
     // you don't bind any data to the view at this point.
     @Override
@@ -30,8 +31,59 @@ public class ChatCursorAdapter extends CursorAdapter {
         TextView msg = (TextView) view.findViewById(R.id.singleMessage);
         // Extract properties from cursor
         String body = cursor.getString(cursor.getColumnIndexOrThrow("message"));
+        String dateSent = getDate(cursor.getString(cursor.getColumnIndexOrThrow("time_sent")));
         // Populate fields with extracted properties
-        msg.setText(body);
+        msg.setText(body + "\n" + dateSent);
+    }
 
+    public String getDate(String rawDate) {
+        // String monthString;
+        String[] dateTime = rawDate.split(" ");
+        // String[] date = dateTime[0].split("-");
+        String[] time = dateTime[1].split(":");
+        /*
+        switch (date[1]) {
+            case "01":
+                monthString = "January";
+                break;
+            case "02":
+                monthString = "February";
+                break;
+            case "03":
+                monthString = "March";
+                break;
+            case "04":
+                monthString = "April";
+                break;
+            case "05":
+                monthString = "May";
+                break;
+            case "06":
+                monthString = "June";
+                break;
+            case "07":
+                monthString = "July";
+                break;
+            case "08":
+                monthString = "August";
+                break;
+            case "09":
+                monthString = "September";
+                break;
+            case "10":
+                monthString = "October";
+                break;
+            case "11":
+                monthString = "November";
+                break;
+            case "12":
+                monthString = "December";
+                break;
+            default:
+                monthString = "Invalid month";
+                break;
+        }
+        */
+        return dateTime[0] + ", " + time[0] + ":" + time[1];
     }
 }

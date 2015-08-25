@@ -60,13 +60,13 @@ public class IDRegistrationService extends IntentService {
                 Log.i(TAG, "GCM Registration Token: " + token);
 
                 /*Only send deviceID to server if token has been refreshed and needs to be updated on the server*/
-                if( intent.getAction().equals(Constants.ACTION_REFRESH_ID))
+                if (intent.getAction().equals(Constants.ACTION_REFRESH_ID))
                     Log.d(TAG, "refreshing"); //sendRegistrationToServer(token);
                 else { //Triggers when intent Action is Constants.ACTION_CREATE_USER
 
                     /*Notify RegistrationActivity that deviceID was acquired successfully and pass it the deviceID */
                     Intent registrationComplete = new Intent(NotificationsPreferences.REGISTRATION_COMPLETE);
-                    registrationComplete.putExtra(Constants.DEVICE_ID, token );
+                    registrationComplete.putExtra(Constants.DEVICE_ID, token);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
                 }
 
