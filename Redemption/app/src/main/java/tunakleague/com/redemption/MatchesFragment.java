@@ -40,17 +40,20 @@ public class MatchesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.tab_matches, container, false);
 
-        final String URL = ServerConstants.URLS.USER_MATCHES.string;
         listView = (ListView) view.findViewById(R.id.chat_list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), ChatMainActivity.class);
                 intent.putExtra("recipient", chatRow.get(position).getOwnerId());
+                intent.putExtra("sender", chatRow.get(position).getUserProfileId());
+                intent.putExtra("project", chatRow.get(position).getProjectId());
+                intent.putExtra("match_type", "UserMatch");
                 startActivity(intent);
             }
         });
 
+        final String URL = ServerConstants.URLS.USER_MATCHES.string;
         JsonArrayRequest userMatchRequest = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -59,10 +62,12 @@ public class MatchesFragment extends Fragment {
                         try {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject data = response.getJSONObject(i);
-                                String ownerName = data.getString("owner_name");
-                                int owner = data.getInt("owner");
+                                String ownerName = data.getString("owner");
+                                int owner = data.getInt("ownerId");
                                 String projectName = data.getString("project_name");
-                                chatRow.add(new ChatRowData(ownerName, owner, projectName));
+                                int profile = data.getInt("userProfileId");
+                                int project = data.getInt("projectId");
+                                chatRow.add(new ChatRowData(ownerName, owner, projectName, profile, project));
                             }
 
                             chatRows = new String[chatRow.size()];

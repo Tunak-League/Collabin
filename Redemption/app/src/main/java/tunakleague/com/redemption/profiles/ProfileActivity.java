@@ -70,7 +70,7 @@ public class ProfileActivity extends DrawerActivity implements ProjectListFragme
                     public void onResponse(JSONArray response) {
                         for( int i = 0; i < response.length(); i++ ){
                             try {
-                                skillsCollection.add( response.getJSONObject(i).getString(SKILL_NAME_FIELD) );
+                                skillsCollection.add(response.getJSONObject(i).getString(SKILL_NAME_FIELD));
                             } catch (JSONException e) {
                                 Log.d(TAG, "Failed to retrieve skills collection");
                             }

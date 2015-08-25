@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
-from datetime import date
+from datetime import date, datetime
 
 from push_notifications.models import GCMDevice
 from server.permissions import IsOwnerOrReadOnly
@@ -157,7 +157,7 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
         skillsList = request.data.get('skills') #Get a list of all skills associated with this project
         
         #Check if skills exist in database, create them if they don't. Check for errors after
-        if check_skills(skillsList) == False: 
+        if skillsList != None and check_skills(skillsList) == False: 
             return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
         return self.partial_update(request, *args, **kwargs )
     
@@ -177,7 +177,7 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
     @param skillsList - list of skills 
     @postcondition - Return true if skills either all exist OR were successfully created. False if an error occurs when creating a skill
 '''
-def check_skills(skillsList): 
+def check_skills(skillsList):
     for skill in skillsList: 
         print skill
         try:
@@ -250,12 +250,12 @@ def project_swipe( request, **kwargs ):
 def user_matches(request):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-   
     profile = UserProfiles.objects.get(user = request.user) # Get the requesting user's profile
     matched_swipes = Swipes.objects.filter(user_profile=profile, user_likes=Swipes.YES, project_likes=Swipes.YES) # Get all swipes that user is involved in with mutual likes
-    project_list = [matched_swipe.project_id for matched_swipe in matched_swipes]
-    projects = Projects.objects.filter(id__in = project_list)
-    serializer = ProjectsSerializer(projects, many=True, context = {'request': request})
+    #project_list = [matched_swipe.project_id for matched_swipe in matched_swipes]
+    #projects = Projects.objects.filter(id__in = project_list)
+    #serializer = ProjectsSerializer(projects, many=True, context = {'request': request})
+    serializer = UserMatchSerializer(matched_swipes, many = True)
     return Response(serializer.data)
 
 '''
@@ -270,7 +270,7 @@ def project_matches(request):
     projects = Projects.objects.filter(owner = profile) # Get the projects owned by this user
     projectsList = [project.id for project in projects] # Put the project ids into a list
     matched_swipes = Swipes.objects.filter(project_id__in = projectsList, user_likes = Swipes.YES, project_likes = Swipes.YES) # Query the swipes which contain the projects in the project list
-    serializer = UserMatchSerializer(matched_swipes, many = True, context = {'request': request}) # Deserialize and return the data
+    serializer = ProjectMatchSerializer(matched_swipes, many = True) # Deserialize and return the data
     return Response(serializer.data)
 
 '''
@@ -315,17 +315,26 @@ class UserDetail(APIView):
 
     # Modifies the profile of the requesting user
     def put(self, request, format = None):
-        print "HELLO"
-        profile = UserProfiles.objects.get(user_id = request.user.id)
+        profile = UserProfiles.objects.get(user_id = request.user.id) 
         requestData = request.data.copy() # Make a mutable copy of the request
         requestData['user'] = profile.user_id # Set the user field to requesting user
+
+        #Check if user has a new device id. Update it if there is 
+        device_id = request.data.get('device_id')
+        if device_id != None:
+            print "updating device"
+            device = profile.device #save the old device so we can delete it after we safely update the user's device id with the new device
+	    device.registration_id = device_id
+            device.save()
+ 
         #print requestData['skills']
         skillsList = request.data.get('skills') # Get a list of all skills associated with this user
-        print "WTF"
         print skillsList
-        if not check_skills(skillsList): 
-            return Response(status = status.HTTP_400_BAD_REQUEST)
 
+        #If user has submitted skills, check if the skills exist in the database, create them if they don't
+        if (skillsList != None) and ( not check_skills(skillsList) ): 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        
         serializer = UserProfilesSerializer(profile, data = requestData, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -383,9 +392,11 @@ class Chat(APIView):
         requestData = request.data.copy()
         profile = UserProfiles.objects.get(user_id = request.user.id)
         requestData['sender'] = profile.id
+	requestData['time_sent'] = str(datetime.now())
         recipient = UserProfiles.objects.get(id = request.data['recipient'])
         recipient_device = recipient.device
-        recipient_device.send_message("ChatNotification" + " " + request.data['message'])
+        recipient_device.send_message("ChatNotification" + " " + request.data['message'], extra = {'sender': str(profile.id), 'recipient': str(recipient.id), 'time_sent': str(datetime.now())})
+	# recipient_device.send_message(None, extra = {'sender': str(profile.id), 'recipient': str(recipient.id), 'time_sent': str(datetime.now())})
         return Response(requestData, status = status.HTTP_201_CREATED)
         '''
             serializer = ChatSerializer(data = requestData)

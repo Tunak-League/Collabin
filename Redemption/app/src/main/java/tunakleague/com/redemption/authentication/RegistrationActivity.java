@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -28,15 +30,16 @@ import java.util.Map;
 import tunakleague.com.redemption.Constants;
 import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.MyApplication;
+import tunakleague.com.redemption.PreferencesKeys;
 import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.ServerConstants.*;
 import tunakleague.com.redemption.notifications.IDRegistrationService;
 import tunakleague.com.redemption.notifications.NotificationsPreferences;
 
-public class RegistrationActivity extends AppCompatActivity {
+public class RegistrationActivity extends AuthenticationActivity {
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "RegistrationActivity";
-    private BroadcastReceiver tokenBroadcastReceiver; //listens for REGISTRATION_COMPLETE message from IDRegistrationService
+    private DeviceIDReceiver tokenBroadcastReceiver; //listens for REGISTRATION_COMPLETE message from IDRegistrationService
 
     //Input fields for creating new User
     private EditText username;
@@ -86,24 +89,24 @@ public class RegistrationActivity extends AppCompatActivity {
         final String username_input = username.getText().toString();
         final String password_input = password.getText().toString();
 
-        tokenBroadcastReceiver = new BroadcastReceiver() { //Wait for IDRegistrationService to send you the deviceID from GCM
+        tokenBroadcastReceiver = new DeviceIDReceiver() { //Wait for IDRegistrationService to send you the deviceID from GCM
 
             /*
                 Sends POST request to app server using the inputted fields and the deviceID returned by IDRegistrationIntent
              */
             @Override
             public void onReceive(Context context, Intent intent) {
-                if(!intent.getAction().equals(NotificationsPreferences.REGISTRATION_COMPLETE)) {
-                    Log.d(TAG, "GET OUT");
-                    return;
+                super.onReceive(context, intent); //call parent method to obtain the deviceID
 
-                }
-                LocalBroadcastManager.getInstance(context).unregisterReceiver(tokenBroadcastReceiver); //Set this receiver to look for the REGISTRATION_COMPLETE broadcast
-
-                final String deviceID = intent.getExtras().getString(Constants.DEVICE_ID); //Device id obtained from GCM
-                String url = URLS.USER_LIST.string;
+                /*Store the device id in sharedpreferences to be used as comparison in LoginActivity*/
+                final String deviceID = getDeviceID();
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString(PreferencesKeys.DEVICE_ID, deviceID);
+                editor.commit();
 
                 /* Create the user-list POST request*/
+                String url = URLS.USER_LIST.string;
                 StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
                             @Override
@@ -141,7 +144,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         params.put(USERS.USERNAME.string, username_input );
                         params.put(USERS.PASSWORD.string, password_input );
                         params.put(USERS.EMAIL.string, email.getText().toString() );
-                        params.put(USERS.DEVICE_ID.string, deviceID);
+                        params.put(USERS.DEVICE_ID.string,deviceID );
                         params.put("Content-Type","application/json");
                         return params;
                     }
@@ -154,37 +157,15 @@ public class RegistrationActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(tokenBroadcastReceiver,
                 new IntentFilter(NotificationsPreferences.REGISTRATION_COMPLETE)); //Set this receiver to look for the REGISTRATION_COMPLETE broadcast
-
-
-        if (checkPlayServices()) {
-            // Start IntentService to register this application with GCM and obtain deviceID
-            Intent intent = new Intent(this, IDRegistrationService.class);
-            intent.setAction(Constants.ACTION_CREATE_USER);
-            startService(intent);
-        }
-
-
+        startIDRegistrationService(); //Start the service to obtain the device id
         Log.d(TAG, "Is it null?:" + String.valueOf(MyApplication.requestQueue == null));
-
     }
 
-    /**
-     * Check the device to make sure it has the Google Play Services APK. If
-     * it doesn't, display a dialog that allows users to download the APK from
-     * the Google Play Store or enable it in the device's system settings.
-     */
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Log.i(TAG, "This device is not supported.");
-                finish();
-            }
-            return false;
-        }
-        return true;
+
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(tokenBroadcastReceiver); //unregister this receiver if activity destroyed.
     }
 }

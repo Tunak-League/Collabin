@@ -9,6 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('push_notifications', '0001_initial'),
     ]
 
     operations = [
@@ -51,9 +52,10 @@ class Migration(migrations.Migration):
             name='UserProfiles',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('user_summary', models.CharField(max_length=500)),
-                ('location', models.CharField(max_length=30)),
+                ('user_summary', models.CharField(default=None, max_length=500, null=True, blank=True)),
+                ('location', models.CharField(default=None, max_length=30, null=True, blank=True)),
                 ('image_path', models.CharField(default=None, max_length=50, null=True, blank=True)),
+                ('device', models.ForeignKey(to='push_notifications.GCMDevice')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
