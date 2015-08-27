@@ -1,4 +1,4 @@
-package tunakleague.com.redemption;
+package tunakleague.com.redemption.app_constants;
 
 
 public class Constants {
@@ -14,8 +14,9 @@ public class Constants {
     public static final String ACTION_LOGIN = "_login";
     public static final String ACTION_PROJECT = "project created or updated";
 
-    //Intent data keys
+    //Intent Extras data keys
     public static final String DEVICE_ID = "device_id";
+    public static final String PROJECT_ID = "project id";
 
     public static final String NO_DEVICE = "no device id";
 }
