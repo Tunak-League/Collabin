@@ -13,12 +13,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,9 +23,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
+import tunakleague.com.redemption.app_constants.PreferencesKeys;
+import tunakleague.com.redemption.app_constants.ServerConstants;
 import tunakleague.com.redemption.messaging.ChatMainActivity;
 
 public class MatchesFragment extends Fragment {

@@ -1,6 +1,5 @@
 package tunakleague.com.redemption.messaging;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -18,8 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import tunakleague.com.redemption.MyApplication;
-import tunakleague.com.redemption.PreferencesKeys;
-import tunakleague.com.redemption.ServerConstants;
+import tunakleague.com.redemption.app_constants.PreferencesKeys;
+import tunakleague.com.redemption.app_constants.ServerConstants;
 
 public class MessageSender {
     private Context ctx;

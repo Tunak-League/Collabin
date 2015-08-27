@@ -2,7 +2,6 @@ package tunakleague.com.redemption;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,9 +21,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
+import tunakleague.com.redemption.app_constants.ServerConstants;
 import tunakleague.com.redemption.messaging.ChatMainActivity;
 
 public class ProjectsMatchesFragment extends Fragment {

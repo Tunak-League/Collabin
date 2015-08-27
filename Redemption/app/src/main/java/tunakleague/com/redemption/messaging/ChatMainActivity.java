@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -28,9 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import tunakleague.com.redemption.MyApplication;
-import tunakleague.com.redemption.PreferencesKeys;
+import tunakleague.com.redemption.app_constants.PreferencesKeys;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.ServerConstants;
+import tunakleague.com.redemption.app_constants.ServerConstants;
 
 public class ChatMainActivity extends AppCompatActivity {
 	private MessageSender appUtil;
