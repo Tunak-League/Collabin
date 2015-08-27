@@ -29,9 +29,9 @@ public class ProfileFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if( position == 0)
-          return UserFragment.newInstance();
+          return UserUpdateFragment.newInstance();
         else
-            return ProjectListFragment.newInstance();
+            return ProjectListCreateFragment.newInstance();
     }
 
     @Override

@@ -26,13 +26,13 @@ import java.util.Map;
 import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.ServerConstants.*;
+import tunakleague.com.redemption.app_constants.ServerConstants.*;
 import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
 
 /**
  Displays a specific project's information and allows users to edit them and save them to the app server.
  */
-public class ProjectUpdateFragment extends ProfileFragment {
+public class ProjectUpdateFragment extends ProfileUpdateFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String TAG = "ProjectUpdateFragment";
@@ -42,7 +42,6 @@ public class ProjectUpdateFragment extends ProfileFragment {
     private static final String POSITION = "position";
 
     /*Bundle values*/
-    private int position;
 
     int projectID = 0; //id of the project
 
@@ -51,12 +50,11 @@ public class ProjectUpdateFragment extends ProfileFragment {
     of ProjectUpdateFragment.
     @param project - a JSONObject containing all the fields of information about a specific project owned by the user
      */
-    public static ProjectUpdateFragment newInstance(JSONObject project, int position) {
+    public static ProjectUpdateFragment newInstance(JSONObject project) {
         ProjectUpdateFragment fragment = new ProjectUpdateFragment();
         Bundle args = new Bundle();
         Log.d(TAG, "PUTTING IN BUNDLE: " + project.toString() );
         args.putString(PROJECT, project.toString());
-        args.putInt(POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,7 +69,6 @@ public class ProjectUpdateFragment extends ProfileFragment {
         if (getArguments() != null) {
             try {
                 profileData = new JSONObject(getArguments().getString(PROJECT)); //Extract the passed project information
-                position = getArguments().getInt(POSITION);
 
                 /*Get ID of the project and store for requests later*/
                 try{
@@ -151,7 +148,7 @@ public class ProjectUpdateFragment extends ProfileFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ( super.mListener ).setTabsVisible(true); //Un-hide the tabs when exiting this fragment. Uses ProfileFragment's callback interface
+        ( super.mListener ).setTabsVisible(true); //Un-hide the tabs when exiting this fragment. Uses ProfileUpdateFragment's callback interface
     }
 
     @Override
@@ -182,7 +179,7 @@ public class ProjectUpdateFragment extends ProfileFragment {
                         profileData = response;
                         Toast.makeText(getActivity(), "Project updated", Toast.LENGTH_LONG).show();
                         Log.d(TAG, "Updated info: " + profileData.toString());
-                        //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in ProjectListFragment
+                        //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in BaseProjectListFragment
                         reloadProjects();
                     }
                 }
@@ -207,7 +204,7 @@ public class ProjectUpdateFragment extends ProfileFragment {
                     @Override
                     public void onResponse(String response) {
                         Toast.makeText(getActivity(), "Project deleted", Toast.LENGTH_LONG).show();
-                        //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in ProjectListFragment
+                        //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in BaseProjectListFragment
                         reloadProjects();
                     }
                 },
