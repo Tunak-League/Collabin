@@ -1,4 +1,4 @@
-package tunakleague.com.redemption;
+package tunakleague.com.redemption.app_constants;
 
 
 public class ServerConstants {
@@ -17,6 +17,8 @@ public class ServerConstants {
         PROJECTS_MATCHES(ROOT.string + "project-matches/"),
         USER_GET(ROOT.string + "user-get/"),
 	    USER_MATCHES(ROOT.string + "user-matches/"),
+        USER_SEARCH( ROOT.string + "user-search/" ),
+        PROJECT_SEARCH( ROOT.string + "project-search/" ),
         SKILLS(ROOT.string + "skills/" ),
 	    ;
         public final String string;

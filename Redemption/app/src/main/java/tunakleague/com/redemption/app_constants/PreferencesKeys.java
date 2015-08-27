@@ -1,4 +1,4 @@
-package tunakleague.com.redemption;
+package tunakleague.com.redemption.app_constants;
 
 
 public class PreferencesKeys {
