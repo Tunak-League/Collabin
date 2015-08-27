@@ -7,7 +7,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import tunakleague.com.redemption.Constants;
+import tunakleague.com.redemption.app_constants.Constants;
 import tunakleague.com.redemption.notifications.IDRegistrationService;
 
 

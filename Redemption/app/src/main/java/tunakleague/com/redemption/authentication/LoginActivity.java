@@ -1,6 +1,5 @@
 package tunakleague.com.redemption.authentication;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -8,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,14 +24,13 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import tunakleague.com.redemption.Constants;
+import tunakleague.com.redemption.app_constants.Constants;
 import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.HomeActivity;
 import tunakleague.com.redemption.MyApplication;
-import tunakleague.com.redemption.PreferencesKeys;
+import tunakleague.com.redemption.app_constants.PreferencesKeys;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.ServerConstants.*;
-import tunakleague.com.redemption.notifications.IDRegistrationService;
+import tunakleague.com.redemption.app_constants.ServerConstants.*;
 import tunakleague.com.redemption.notifications.NotificationsPreferences;
 
 public class LoginActivity extends AuthenticationActivity {
@@ -55,13 +52,13 @@ public class LoginActivity extends AuthenticationActivity {
 
         Intent intent = getIntent();
         /*If LoginActivity was started from RegistrationActivity, retrieve passed username/password to login automatically*/
-        if( intent.getAction() != null && intent.getAction().equals(Constants.ACTION_LOGIN)) {
-            String username_input = intent.getExtras().getString( USERS.USERNAME.string );
-            String password_input = intent.getExtras().getString( USERS.PASSWORD.string );
+        if (intent.getAction() != null && intent.getAction().equals(Constants.ACTION_LOGIN)) {
+            String username_input = intent.getExtras().getString(USERS.USERNAME.string);
+            String password_input = intent.getExtras().getString(USERS.PASSWORD.string);
             Log.d(TAG, username_input);
-            Log.d( TAG, password_input);
+            Log.d(TAG, password_input);
             deviceID =  PreferenceManager.getDefaultSharedPreferences(this).getString(PreferencesKeys.DEVICE_ID, Constants.NO_DEVICE); //Assign old ID to pass the check for different device, since this code occurs right after RegistrationActivity
-            authenticate( username_input, password_input );
+            authenticate(username_input, password_input, false);
         }
         /*Manual login. Must retrieve new device ID from GCM in case user has switched devices.*/
         else {
@@ -103,19 +100,17 @@ public class LoginActivity extends AuthenticationActivity {
     }
 
     /*
-
             Handler for the login_button. Extracts the inputted username and password and passes them to authenticate() */
     public void login( View view ) {
-        authenticate(username.getText().toString(), password.getText().toString());
+        authenticate(username.getText().toString(), password.getText().toString(), true);
     }
 
     /*
-
     Authenticates the inputted username and password with the app server and stores the auth_token returned
     by the server.
     Displays error message if authentication fails.
      */
-    public void authenticate(final String username, final String password ) {
+    public void authenticate(final String username, final String password, final boolean update) {
         /*In the case that obtaining device id somehow failed, do not attempt to login*/
         if( deviceID.equals(Constants.NO_DEVICE)){
             Toast.makeText(this, "Error: Failed to obtain device id. Please check your connection", Toast.LENGTH_LONG).show();
@@ -141,18 +136,16 @@ public class LoginActivity extends AuthenticationActivity {
 
                                 Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class); //Prepare intent to go to Home Screen
 
-                                String oldDeviceID = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).getString(PreferencesKeys.DEVICE_ID, "noDeviceID");
-                                Log.d(TAG, "Old Device ID: " + oldDeviceID);
                                 /*Compare device id obtained from GCM with the device id stored in preferences to see if user is on a different device and update*/
-                                if (!oldDeviceID.equals(deviceID)) {
-                                    Log.d(TAG, "New device detected");
+                                if (update) {
                                     updateDeviceID(homeIntent); //Update device ID on server, and start HomeActivity after its successful
                                 }
-                             /*Device ID was not changed, start HomeActivity*/
-                            else {
-                                    startActivity(homeIntent);
-                                    LoginActivity.this.finish();
+                                /*Arrived here from RegistrationActivity, no need to update device id*/
+                                else{
+                                startActivity(homeIntent);
+                                LoginActivity.this.finish();
                                 }
+
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -208,6 +201,7 @@ public class LoginActivity extends AuthenticationActivity {
             //Create the body of the request
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
+                Log.d("DeviceIDBeforeRequest", deviceID);
                 params.put(USERS.DEVICE_ID.string, deviceID);
                 return params;
             }

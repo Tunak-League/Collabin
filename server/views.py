@@ -323,12 +323,11 @@ class UserDetail(APIView):
 
         #Check if user has a new device id. Update it if there is 
         device_id = request.data.get('device_id')
-        oldDevice = None #declare here so we can delete it later if required
         if device_id != None:
             print "updating device"
-            oldDevice = profile.device #save the old device so we can delete it after we safely update the user's device id with the new device
-            newDevice = GCMDevice.objects.create(registration_id=device_id )
-            requestData['device_id'] = newDevice.id
+            device = profile.device 
+            device.registration_id = device_id;
+            device.save();
             
         #print requestData['skills']
         skillsList = request.data.get('skills') # Get a list of all skills associated with this user
@@ -341,9 +340,6 @@ class UserDetail(APIView):
         serializer = UserProfilesSerializer(profile, data = requestData, partial=True)
         if serializer.is_valid():
             serializer.save()
-            #Delete the old device if we've updated the user's device id.
-            if oldDevice != None:
-                oldDevice.delete()
             return Response(serializer.data)
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
