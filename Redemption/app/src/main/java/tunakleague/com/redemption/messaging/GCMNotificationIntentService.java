@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
@@ -14,7 +13,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import tunakleague.com.redemption.MainActivity;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.ServerConstants;
+import tunakleague.com.redemption.app_constants.ServerConstants;
 
 public class GCMNotificationIntentService extends IntentService {
 

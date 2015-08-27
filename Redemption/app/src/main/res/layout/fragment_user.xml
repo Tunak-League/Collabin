@@ -10,7 +10,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="wrap_content" tools:context="tunakleague.com.redemption.profiles.UserFragment"
+    android:layout_height="wrap_content" tools:context="tunakleague.com.redemption.profiles.UserUpdateFragment"
     >
 
     <!-- TODO: Update blank fragment layout -->
