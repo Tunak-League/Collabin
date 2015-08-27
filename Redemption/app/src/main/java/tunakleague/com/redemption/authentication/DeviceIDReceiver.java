@@ -1,15 +1,11 @@
 package tunakleague.com.redemption.authentication;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
-import tunakleague.com.redemption.Constants;
+import tunakleague.com.redemption.app_constants.Constants;
 import tunakleague.com.redemption.notifications.NotificationsPreferences;
 
 

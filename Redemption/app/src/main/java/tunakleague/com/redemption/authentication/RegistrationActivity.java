@@ -1,6 +1,5 @@
 package tunakleague.com.redemption.authentication;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -8,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,8 +16,6 @@ import android.widget.EditText;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,13 +23,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import tunakleague.com.redemption.Constants;
+import tunakleague.com.redemption.app_constants.Constants;
 import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.MyApplication;
-import tunakleague.com.redemption.PreferencesKeys;
+import tunakleague.com.redemption.app_constants.PreferencesKeys;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.ServerConstants.*;
-import tunakleague.com.redemption.notifications.IDRegistrationService;
+import tunakleague.com.redemption.app_constants.ServerConstants.*;
 import tunakleague.com.redemption.notifications.NotificationsPreferences;
 
 public class RegistrationActivity extends AuthenticationActivity {
