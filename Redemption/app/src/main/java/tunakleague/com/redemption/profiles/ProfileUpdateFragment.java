@@ -3,75 +3,51 @@ package tunakleague.com.redemption.profiles;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.TextView;
 
-
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import tunakleague.com.redemption.Constants;
+import tunakleague.com.redemption.app_constants.Constants;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.ServerConstants.*;
-import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
+import tunakleague.com.redemption.app_constants.ServerConstants.*;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ProfileFragment.OnFragmentInteractionListener} interface
+ * {@link ProfileUpdateFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ProfileFragment#newInstance} factory method to
+ * Use the {@link ProfileUpdateFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public abstract class ProfileFragment extends android.support.v4.app.Fragment {
+public abstract class ProfileUpdateFragment extends BaseProfileFragment {
     HideTabsListener mListener;
-
-    JSONObject profileData; //all the fields in the profile retrieved from the app server
-
-    /*Keys are all EditText fields for the profile that need to be populated upon opening the profile; values are the name of the parameter in the app server's database for HTTP params*/
-    Map<View, String> fieldsToPopulate;
-
-    /*These need to be separate from the views in "fields" since they have different behaviour/require extra handling*/
-    protected ExpandableHeightGridView skillsField;
-    protected ExpandableHeightGridView typesField;
-
 
     /*Keys are all EditText fields for the profile whose input values need to be extracted and sent to the server on update; values are the name of the parameter in the app server*/
     Map<View, String> fieldsToExtract;
 
 
-    public ProfileFragment() {
+    public ProfileUpdateFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fieldsToPopulate = new HashMap<View, String>();
         fieldsToExtract = new HashMap<View, String>();
     }
 
@@ -98,43 +74,11 @@ public abstract class ProfileFragment extends android.support.v4.app.Fragment {
     }
 
 
-    /*
-        Uses the fields from profileData to populate each of the views in fieldsToPopulate, skillsField
-        and typesField
-     */
-    protected void populateFields() {
-        /*Set text in each view in fieldsToPopulate to the corresponding value of the field in profileData*/
-        for (View view : fieldsToPopulate.keySet()) {
-            try {
-                ((EditText) view).setText(profileData.getString(fieldsToPopulate.get(view)));
-            } catch (JSONException ex) {
 
-            }
-        }
-
-        //TODO: Implement the GRIDVIEW stuff with the Add/Delete buttons for "Skills", and "Types"
-        ProfileArrayAdapter skillsAdapter = null;
-        ProfileArrayAdapter typesAdapter = null;
-
-        /*Initialize the skills/types adapters and attach them to their respective GridViews*/
-        try {
-            List<String> skillsList = fieldToList(profileData.getJSONArray(USERS.SKILLS.string));
-            List<String> typesList = fieldToList(profileData.getJSONArray(USERS.TYPES.string));
-            skillsAdapter = new ProfileArrayAdapter(getActivity(), R.layout.profile_item,R.id.item_name, skillsList);
-            typesAdapter = new ProfileArrayAdapter(getActivity(), R.layout.profile_item,R.id.item_name, typesList);
-        }
-        catch(JSONException ex ) {
-            Log.d("ProfileFrag: ", "Issue with getting JSONArray from skills/types" );
-        }
-        skillsField.setExpanded(true);
-        typesField.setExpanded(true);
-        skillsField.setAdapter(skillsAdapter);
-        typesField.setAdapter(typesAdapter);
-    }
 
     /*
         Extracts the data from each of the views in fieldsToExtract, skillsField, and typesField and returns the data as a JSONObject
-        @throws JSONException ex - if an error occurs while attempting to put items into the ProfileFragment
+        @throws JSONException ex - if an error occurs while attempting to put items into the ProfileUpdateFragment
      */
     protected JSONObject extractFields() {
         //TODO: Implement this.
@@ -150,8 +94,10 @@ public abstract class ProfileFragment extends android.support.v4.app.Fragment {
 
         /*Extract the skills and types field using their adapters*/
         try {
-            data.put(USERS.SKILLS.string, new JSONArray( ((ProfileArrayAdapter) skillsField.getAdapter()).getItems()) );
-            data.put(USERS.TYPES.string, new JSONArray( ( (ProfileArrayAdapter) typesField.getAdapter()).getItems()) ) ;
+            if( skillsField != null )
+                data.put(USERS.SKILLS.string, new JSONArray( ((ProfileArrayAdapter) skillsField.getAdapter()).getItems()) );
+            if( typesField != null )
+                data.put(USERS.TYPES.string, new JSONArray( ( (ProfileArrayAdapter) typesField.getAdapter()).getItems()) ) ;
 
         } catch (JSONException ex) {
             Log.d("ProfileFrag:", "JSONError in extractFields() - Skills and Types ");
@@ -185,25 +131,34 @@ public abstract class ProfileFragment extends android.support.v4.app.Fragment {
     }
 
     /*
-    Converts one of the array fields in profileData from JSONObject to List<String>
-    @requires: The name of an array-field must be provided such as "types" or "skills"
+    Override to use ProfileArrayAdapter, which allows removal of skills/types from each list.
      */
-    private List<String> fieldToList(JSONArray array) {
-        Type listType = new TypeToken<List<String>>() {
-        }.getType();
-        List<String> list = new ArrayList<String>();
-
-        for( int i = 0; i < array.length(); i++ ) {
-            try {
-                list.add(array.getString(i));
-            }
-            catch(JSONException ex ) {
-                Log.d("ProfileFrag: ", "Error in fieldToList" );
-            }
+    @Override
+    protected void configureListData(){
+                /*Initialize the skills/types adapters and attach them to their respective GridViews*/
+        ProfileArrayAdapter skillsAdapter = null;
+        ProfileArrayAdapter typesAdapter = null;
+        try {
+            List<String> skillsList = fieldToList(profileData.getJSONArray(USERS.SKILLS.string));
+            List<String> typesList = fieldToList(profileData.getJSONArray(USERS.TYPES.string));
+            skillsAdapter = new ProfileArrayAdapter(getActivity(), R.layout.profile_item,R.id.item_name, skillsList);
+            typesAdapter = new ProfileArrayAdapter(getActivity(), R.layout.profile_item,R.id.item_name, typesList);        }
+        catch(JSONException ex ) {
+            Log.d("ProfileFrag: ", "Issue with getting JSONArray from skills/types" );
         }
 
-        return list;
+        /*Set the adapters for each view, only if it is not null*/
+        if( skillsField != null ) {
+            skillsField.setAdapter(skillsAdapter);
+            skillsField.setExpanded(true);
+
+        }
+        if( typesField != null ) {
+            typesField.setAdapter(typesAdapter);
+            typesField.setExpanded(true);
+        }
     }
+
 
     class CreateSkillListener implements View.OnClickListener {
         /*
@@ -267,4 +222,6 @@ public abstract class ProfileFragment extends android.support.v4.app.Fragment {
         /*Attached to an "Update Profile" button. Calls the updateProfile method to be implemented by subclasses of this class*/
 
     }
+
+
 }

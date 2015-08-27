@@ -1,67 +1,50 @@
 package tunakleague.com.redemption.profiles;
 
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.google.gson.JsonObject;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import tunakleague.com.redemption.DetailedErrorListener;
-import tunakleague.com.redemption.HomeActivity;
 import tunakleague.com.redemption.MyApplication;
-import tunakleague.com.redemption.PreferencesKeys;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.ServerConstants.*;
+import tunakleague.com.redemption.app_constants.ServerConstants.*;
 import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
 
 
 /**
  * Displays a user's profile information and allows the user to edit it and save it to the app server.
  */
-public class UserFragment extends ProfileFragment {
-    public final String TAG = "UserFragment";
+public class UserUpdateFragment extends ProfileUpdateFragment {
+    public final String TAG = "UserUpdateFragment";
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment UserFragment.
+     * @return A new instance of fragment UserUpdateFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UserFragment newInstance() {
-        UserFragment fragment = new UserFragment();
+    public static UserUpdateFragment newInstance() {
+        UserUpdateFragment fragment = new UserUpdateFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public UserFragment() {
+    public UserUpdateFragment() {
         // Required empty public constructor
     }
 
@@ -118,8 +101,7 @@ public class UserFragment extends ProfileFragment {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject  response) {
-                            profileData =  response;
-                            populateFields();
+                            renderUI(response);
                             Log.d(TAG, "Response: " + profileData.toString() );
                     }
                 },

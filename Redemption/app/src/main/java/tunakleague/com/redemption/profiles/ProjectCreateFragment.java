@@ -1,9 +1,7 @@
 package tunakleague.com.redemption.profiles;
 
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,13 +21,13 @@ import java.util.Map;
 import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.ServerConstants;
+import tunakleague.com.redemption.app_constants.ServerConstants;
 import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
 
 /**
  * Displays a UI for users to create a new project and sends the new project data up to the app server to be saved.
  */
-public class ProjectCreateFragment extends ProfileFragment {
+public class ProjectCreateFragment extends ProfileUpdateFragment {
     public static final String TAG = "ProjectCreateFragment";
 
     public static ProjectCreateFragment newInstance() {
@@ -85,7 +83,7 @@ public class ProjectCreateFragment extends ProfileFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ( super.mListener ).setTabsVisible(true); //Un-hide the tabs when exiting this fragment. Uses ProfileFragment's callback interface
+        ( super.mListener ).setTabsVisible(true); //Un-hide the tabs when exiting this fragment. Uses ProfileUpdateFragment's callback interface
     }
 
     /*
@@ -105,7 +103,7 @@ public class ProjectCreateFragment extends ProfileFragment {
                         profileData = response;
                         Toast.makeText(getActivity(), "Project created", Toast.LENGTH_LONG).show();
                         Log.d(TAG, "Created project: " + profileData.toString());
-                        //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in ProjectListFragment
+                        //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in BaseProjectListFragment
                         reloadProjects(); //Take user back to updated list of projects
                     }
                 }

@@ -14,7 +14,6 @@ import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 
 import org.json.JSONArray;
@@ -24,15 +23,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import tunakleague.com.redemption.Constants;
+import tunakleague.com.redemption.app_constants.Constants;
 import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.DrawerActivity;
 import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.ServerConstants.*;
+import tunakleague.com.redemption.app_constants.ServerConstants.*;
 
-public class ProfileActivity extends DrawerActivity implements ProjectListFragment.OnProjectActionListener
-, ProfileFragment.HideTabsListener{
+public class ProfileActivity extends DrawerActivity implements BaseProjectListFragment.OnProjectSelectedListener
+, ProjectListCreateFragment.OnProjectCreateListener, ProfileUpdateFragment.HideTabsListener{
     public static final String TAG = "ProfileActivity";
     public static final String SKILL_NAME_FIELD = "skill_name";
 
@@ -106,20 +105,21 @@ public class ProfileActivity extends DrawerActivity implements ProjectListFragme
     }
 
     /*
-    Callback interface method for ProjectListFragment
+    Callback interface method for BaseProjectListFragment
      */
     @Override
-    public void onProjectSelected(JSONObject project, int position) {
+    public void onProjectSelected(JSONObject project) {
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.profile, (Fragment) ProjectUpdateFragment.newInstance(project, position));
+       fragmentTransaction.add(R.id.profile, (Fragment) ProjectUpdateFragment.newInstance(project));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
         setTabsVisible(false);
     }
 
     /*
-        Callback interface method for ProjectListFragment
+        Callback interface method for BaseProjectListFragment
      */
     @Override
     public void onCreateProject() {
@@ -132,7 +132,7 @@ public class ProfileActivity extends DrawerActivity implements ProjectListFragme
     }
 
     /*
-    Callback interface method for ProfileFragment
+    Callback interface method for ProfileUpdateFragment
     */
     @Override
     public void setTabsVisible(boolean visible) {
