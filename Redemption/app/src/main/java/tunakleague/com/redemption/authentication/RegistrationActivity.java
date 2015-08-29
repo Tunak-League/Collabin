@@ -26,11 +26,7 @@ import java.util.Map;
 import tunakleague.com.redemption.app_constants.Constants;
 import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.MyApplication;
-<<<<<<< HEAD
 import tunakleague.com.redemption.app_constants.PreferencesKeys;
-=======
-import tunakleague.com.redemption.PreferencesKeys;
->>>>>>> andrew
 import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.app_constants.ServerConstants.*;
 import tunakleague.com.redemption.notifications.NotificationsPreferences;

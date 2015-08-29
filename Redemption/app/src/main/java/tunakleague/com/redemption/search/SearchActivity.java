@@ -1,11 +1,9 @@
 package tunakleague.com.redemption.search;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -14,13 +12,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import tunakleague.com.redemption.DrawerActivity;
-import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.profiles.BaseProfileFragment;
 
-import static android.widget.Toast.LENGTH_SHORT;
-
-public abstract class SearchActivity extends DrawerActivity implements View.OnTouchListener {
+public abstract class SearchActivity extends DrawerActivity {
     public final String TAG = "SearchActivity";
+    private GestureDetector gestureDetector;
 
     public final String PROFILE_TAG = "Profile Fragment Tag"; //tag used to retrieve the fragment used for displaying profiles
     JSONArray profileList; //List of profiles to be displayed to the user.
@@ -28,83 +24,29 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
     BaseProfileFragment profileDisplay; //fragment to display a single profile on the screen
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        gestureDetector = new GestureDetector(getApplicationContext(), new SwipeGestureDetector());
         position = 0;
-
-
     }
 
     /*Placeholder for the actual left/right swipe listener. All this does is load the next profile to the screen on every touch*/
 
-    public class SwipeActivity extends Activity {
 
-        private GestureDetector gestureDetector;
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);gestureDetector = new GestureDetector(getApplicationContext(),
-                            new SwipeGestureDetector()); }
-
-  /* ... */
-
-        @Override
-        public boolean onTouchEvent(MotionEvent event) {
-            setContentView(R.layout.activity_swipe);
-            // ...
-
-
-            if (gestureDetector.onTouchEvent(event)) {
-                return true;
-            }
-            return super.onTouchEvent(event);
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (gestureDetector.onTouchEvent(event)) {
+            return true;
         }
+        return super.onTouchEvent(event);
+    }
 
-        private void onLeftSwipe() {
-            Toast.makeText(getApplicationContext(), "RECRUIT!", Toast.LENGTH_SHORT).show();
+    private void onLeftSwipe() {
+        Toast.makeText(getApplicationContext(), "RECRUIT!", Toast.LENGTH_SHORT).show();
+    }
 
-        }
-
-        private void onRightSwipe() {
-            Toast.makeText(getApplicationContext(), "NEXT ONE!", Toast.LENGTH_SHORT).show();
-
-        }
-
-        // Private class for gestures
-        private class SwipeGestureDetector
-                extends GestureDetector.SimpleOnGestureListener {
-            // Swipe properties, you can change it to make the swipe
-            // longer or shorter and speed
-            private static final int SWIPE_MIN_DISTANCE = 120;
-            private static final int SWIPE_MAX_OFF_PATH = 200;
-            private static final int SWIPE_THRESHOLD_VELOCITY = 100;
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2,
-                                   float velocityX, float velocityY) {
-                try {
-                    float diffAbs = Math.abs(e1.getY() - e2.getY());
-                    float diff = e1.getX() - e2.getX();
-
-                    if (diffAbs > SWIPE_MAX_OFF_PATH)
-                        return false;
-
-                    // Left swipe
-                    if (diff > SWIPE_MIN_DISTANCE
-                            && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                        SwipeActivity.this.onLeftSwipe();
-
-                        // Right swipe
-                    } else if (-diff > SWIPE_MIN_DISTANCE
-                            && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                        SwipeActivity.this.onRightSwipe();
-                    }
-                } catch (Exception e) {
-                    Log.e("SearchActivity", "Error on gestures");
-                }
-                return false;
-            }
-        }
+    private void onRightSwipe() {
+        Toast.makeText(getApplicationContext(), "NEXT ONE!", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -143,6 +85,42 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
         else{
             //TODO: Proper screen telling you you're done searching
             Log.d(TAG, "No more profiles left to show" );
+        }
+    }
+
+    // Private class for gestures
+    public class SwipeGestureDetector extends GestureDetector.SimpleOnGestureListener {
+        // Swipe properties, you can change it to make the swipe
+        // longer or shorter and speed
+        private static final int SWIPE_MIN_DISTANCE = 120;
+        private static final int SWIPE_MAX_OFF_PATH = 200;
+        private static final int SWIPE_THRESHOLD_VELOCITY = 100;
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+                float diffAbs = Math.abs(e1.getY() - e2.getY());
+                float diff = e1.getX() - e2.getX();
+
+                if (diffAbs > SWIPE_MAX_OFF_PATH)
+                    return false;
+
+                // Left swipe
+                if (diff > SWIPE_MIN_DISTANCE
+                        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    SearchActivity.this.onLeftSwipe();
+
+                    // Right swipe
+                }
+                //
+                else if (-diff > SWIPE_MIN_DISTANCE
+                        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    SearchActivity.this.onRightSwipe();
+                }
+            } catch (Exception e) {
+                Log.e("SearchActivity", "Error on gestures");
+            }
+            return false;
         }
     }
 

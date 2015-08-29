@@ -16,12 +16,8 @@ public class Constants {
 
     //Intent Extras data keys
     public static final String DEVICE_ID = "device_id";
-<<<<<<< HEAD:Redemption/app/src/main/java/tunakleague/com/redemption/app_constants/Constants.java
     public static final String PROJECT_ID = "project id";
 
     public static final String NO_DEVICE = "no device id";
-=======
 
-    public static final String NO_DEVICE = "no device_id";
->>>>>>> andrew:Redemption/app/src/main/java/tunakleague/com/redemption/Constants.java
 }
