@@ -25,7 +25,7 @@ public class SwipeActivity extends Activity {
         setContentView(R.layout.activity_swipe);
         // ...
 
-        gestureDetector = new GestureDetector(
+        gestureDetector = new GestureDetector(getApplicationContext(),
                 new SwipeGestureDetector());
     }
 
