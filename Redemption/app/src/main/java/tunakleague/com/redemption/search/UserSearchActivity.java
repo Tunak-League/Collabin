@@ -28,7 +28,7 @@ import tunakleague.com.redemption.profiles.BaseProfileFragment;
 public class UserSearchActivity extends SearchActivity {
     View contentView;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
          contentView = inflater.inflate(R.layout.activity_user_search, null, false);
@@ -39,7 +39,6 @@ public class UserSearchActivity extends SearchActivity {
 
         initializeData();
 //        findViewById(R.id.user_search).setOnTouchListener(this); //Set the UI to respond to touch events using SearchActivity's touch listener
-        contentView.setOnTouchListener(this);
 
     }
 
