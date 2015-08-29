@@ -71,6 +71,7 @@ public class ChatFragment extends Fragment  {
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
                 String[] projection = new String[]{
                         "_id",
+                        DataProvider.RECEIVED_OR_SENT,
                         DataProvider.COL_MESSAGE,
                         DataProvider.COL_TIME_SENT
                 };
@@ -106,6 +107,7 @@ public class ChatFragment extends Fragment  {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String[] projection = new String[] {
                 "_id",
+                DataProvider.RECEIVED_OR_SENT,
                 DataProvider.COL_MESSAGE,
                 DataProvider.COL_TIME_SENT
         };
@@ -163,32 +165,7 @@ public class ChatFragment extends Fragment  {
 
             @Override
             protected void onPostExecute(String msg) {
-                DbHelper dbHelper = new DbHelper(getActivity());
-                SQLiteDatabase db = dbHelper.getReadableDatabase();
-                String[] projection = new String[] {
-                        "_id",
-                        DataProvider.COL_MESSAGE,
-                        DataProvider.COL_TIME_SENT
-                };
-                String whereClause = "(recipient = ? AND sender = ?) OR (recipient = ? AND sender = ?)";
-                String whereArgs[] = new String[] {
-                        Integer.toString(toUser),
-                        Integer.toString(sender),
-                        Integer.toString(sender),
-                        Integer.toString(toUser)
-                };
-                String orderBy = DataProvider.COL_TIME_SENT + " ASC";
 
-                c = db.query(
-                        DbHelper.TABLE_NAME, // table name
-                        projection, // columns to be returned by the query
-                        whereClause, //
-                        whereArgs,
-                        null,
-                        null,
-                        orderBy
-                );
-                adapter.changeCursor(c);
             }
         }.execute(null, null, null);
     }
@@ -213,6 +190,7 @@ public class ChatFragment extends Fragment  {
                             String time_sent = jsonResponse.getString(DataProvider.COL_TIME_SENT);
 
                             ContentValues values = new ContentValues();
+                            values.put(DataProvider.RECEIVED_OR_SENT, "sent");
                             values.put(DataProvider.COL_RECIPIENT, recipient);
                             values.put(DataProvider.COL_SENDER, sender);
                             values.put(DataProvider.COL_MESSAGE, msg);
@@ -224,6 +202,7 @@ public class ChatFragment extends Fragment  {
                             db = dbHelper.getReadableDatabase();
                             String[] projection = new String[] {
                                     "_id",
+                                    DataProvider.RECEIVED_OR_SENT,
                                     DataProvider.COL_MESSAGE,
                                     DataProvider.COL_TIME_SENT
                             };

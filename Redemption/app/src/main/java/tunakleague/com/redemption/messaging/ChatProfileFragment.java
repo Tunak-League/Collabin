@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -30,7 +29,7 @@ public class ChatProfileFragment extends Fragment  {
     private View view;
     private int profileId;
     private TextView userName, email, location, userSummary;
-    private TextView preferredTypes, skillsGrid;
+    private TextView preferredTypes, skills;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,7 +40,7 @@ public class ChatProfileFragment extends Fragment  {
         userSummary = (TextView) view.findViewById(R.id.chat_user_summary);
 
         preferredTypes = (TextView) view.findViewById(R.id.chat_types);
-        skillsGrid = (TextView) view.findViewById(R.id.skills);
+        skills = (TextView) view.findViewById(R.id.chat_skills);
 
         profileId = getActivity().getIntent().getIntExtra("recipient", -1);
         String url = ServerConstants.URLS.USER_GET.string + Integer.toString(profileId) + "/";
@@ -55,6 +54,10 @@ public class ChatProfileFragment extends Fragment  {
                             email.setText(data.getString("email"));
                             location.setText(data.getString("location"));
                             userSummary.setText(data.getString("user_summary"));
+                            String stringTypes = arrayToString(data.getJSONArray("types"));
+                            String stringSkills = arrayToString(data.getJSONArray("skills"));
+                            preferredTypes.setText(stringTypes);
+                            skills.setText(stringSkills);
                         }
 
                         catch (JSONException e) {
@@ -78,5 +81,18 @@ public class ChatProfileFragment extends Fragment  {
         };
         MyApplication.requestQueue.add(jsonRequest);
         return view;
+    }
+
+    public String arrayToString(JSONArray array) throws org.json.JSONException {
+        String string = "";
+        for (int i = 0; i < array.length() - 1; i++) {
+            String object = array.getString(i);
+            string += object;
+            string += ", ";
+        }
+        String object = array.getString(array.length() - 1);
+        string += object;
+
+        return string;
     }
 }

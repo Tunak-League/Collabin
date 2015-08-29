@@ -68,8 +68,7 @@
             android:id="@+id/chat_skills"
             android:layout_below="@id/skill_label"
             android:layout_alignLeft="@id/skill_label"
-            android:layout_alignStart="@id/skill_label"
-            android:numColumns="2" />
+            android:layout_alignStart="@id/skill_label" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -147,8 +146,7 @@
             android:id="@+id/chat_types"
             android:layout_below="@id/types_label"
             android:layout_alignLeft="@id/chat_skills"
-            android:layout_alignStart="@id/chat_skills"
-            android:numColumns="2"/>
+            android:layout_alignStart="@id/chat_skills" />
 
     </RelativeLayout>
 
