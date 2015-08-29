@@ -46,3 +46,4 @@ public abstract class AuthenticationActivity extends AppCompatActivity{
         return true;
     }
 }
+

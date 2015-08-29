@@ -41,7 +41,7 @@ public class ProfileArrayAdapter extends ArrayAdapter<String> {
         if( convertView == null ) {
             convertView = inflater.inflate(R.layout.profile_item, parent, false );
             holder = new ViewHolder();
-            holder.itemName = (TextView) convertView.findViewById( R.id.item_name ); //Get the TextView "itemName" from newly created profile_item
+            holder.itemName = (TextView) convertView.findViewById(R.id.item_name); //Get the TextView "itemName" from newly created profile_item
             holder.deleteButton = (Button) convertView.findViewById(R.id.delete_button); //Get the Button "delete_button" from profile_item
             convertView.setTag(holder); //Set tag so the contents of the project_item can be recycled later
         }

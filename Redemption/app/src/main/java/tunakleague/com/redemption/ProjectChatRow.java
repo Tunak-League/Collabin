@@ -5,11 +5,15 @@ public class ProjectChatRow {
     private String username;
     private int profileId;
     private String projectName;
+    private int ownerId;
+    private int projectId;
 
-    public ProjectChatRow(String username, int profileId, String projectName) {
+    public ProjectChatRow(String username, int profileId, String projectName, int ownerId, int projectId) {
         this.username = username;
         this.profileId = profileId;
         this.projectName = projectName;
+        this.ownerId = ownerId;
+        this.projectId = projectId;
     }
 
     @Override
@@ -27,5 +31,13 @@ public class ProjectChatRow {
 
     public String getProjectName() {
         return projectName;
+    }
+
+    public int getOwnerId() {
+        return ownerId;
+    }
+
+    public int getProjectId() {
+        return projectId;
     }
 }

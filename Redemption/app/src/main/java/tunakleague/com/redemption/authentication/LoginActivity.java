@@ -142,8 +142,8 @@ public class LoginActivity extends AuthenticationActivity {
                                 }
                                 /*Arrived here from RegistrationActivity, no need to update device id*/
                                 else{
-                                startActivity(homeIntent);
-                                LoginActivity.this.finish();
+                                    startActivity(homeIntent);
+                                    LoginActivity.this.finish();
                                 }
 
 

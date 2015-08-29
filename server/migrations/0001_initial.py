@@ -55,7 +55,11 @@ class Migration(migrations.Migration):
                 ('user_summary', models.CharField(default=None, max_length=500, null=True, blank=True)),
                 ('location', models.CharField(default=None, max_length=30, null=True, blank=True)),
                 ('image_path', models.CharField(default=None, max_length=50, null=True, blank=True)),
+<<<<<<< HEAD
                 ('device', models.ForeignKey(default=None, to='push_notifications.GCMDevice')),
+=======
+                ('device', models.ForeignKey(to='push_notifications.GCMDevice')),
+>>>>>>> andrew
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
