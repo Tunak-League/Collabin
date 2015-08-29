@@ -20,6 +20,8 @@ public class ServerConstants {
         USER_SEARCH( ROOT.string + "user-search/" ),
         PROJECT_SEARCH( ROOT.string + "project-search/" ),
         SKILLS(ROOT.string + "skills/" ),
+        USER_SWIPE(ROOT.string + "user-swipe/"),
+        PROJECT_SWIPE(ROOT.string + "project-swipe/"),
 	    ;
         public final String string;
         private URLS(final String text ){

@@ -1,21 +1,21 @@
 package tunakleague.com.redemption.messaging;
 
-import android.os.AsyncTask;
+
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
@@ -26,31 +26,24 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import tunakleague.com.redemption.HomeActivity;
 import tunakleague.com.redemption.MyApplication;
+
 import tunakleague.com.redemption.app_constants.PreferencesKeys;
 import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.app_constants.ServerConstants;
 
 public class ChatMainActivity extends AppCompatActivity {
-	private MessageSender appUtil;
-	private String userName;
-
-	private int toUser;
-	private EditText message;
-	private Button btnSendMessage;
-	private ListView listView;
+    private int toUser, project;
     private String username, first_name, last_name, email;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat_main);
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_chat_main);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        appUtil = new MessageSender(this);
         toUser = getIntent().getIntExtra("recipient", -1);
-        listView = (ListView) findViewById(R.id.chatLog);
-
+        project = getIntent().getIntExtra("project", -1);
         String url = ServerConstants.URLS.USER_GET.string + Integer.toString(toUser) + "/";
         StringRequest jsonRequest = new StringRequest
                 (url, new Response.Listener<String>() {
@@ -86,68 +79,142 @@ public class ChatMainActivity extends AppCompatActivity {
         };
         MyApplication.requestQueue.add(jsonRequest);
 
-        //DbHelper dbHelper = new DbHelper(ChatMainActivity.this);
-        //SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {
-                DataProvider.COL_MESSAGE,
-        };
-        //device = models.ForeignKey('push_notifications.GCMDevice', null = True, blank = True, default = None)Cursor c = db.rawQuery("SELECT message from " + dbHelper.getDatabaseName() + " WHERE " +
-        //        DataProvider.COL_SENDER + " =? AND " + DataProvider.COL_RECIPIENT + " =?", new String[] {"", Integer.toString(toUser)});
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.chat_tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Chat"));
+        tabLayout.addTab(tabLayout.newTab().setText("User Profile"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        // ChatCursorAdapter adapter = new ChatCursorAdapter(this, c, 2);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.chat_pager);
+        final ChatPagerAdapter adapter = new ChatPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+    }
 
-        // listView.setAdapter(adapter);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_user_chat, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-		// to send message to another device via Google GCM
-		btnSendMessage = (Button) findViewById(R.id.sendMessage);
-		btnSendMessage.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				message = (EditText) findViewById(R.id.message);
-				String messageToSend = message.getText().toString();
-
-				if (TextUtils.isEmpty(messageToSend)) {
-					Toast.makeText(getApplicationContext(), "Please enter a message.", Toast.LENGTH_LONG).show();
-				}
-                else {
-					Log.d("ChatMainActivity", "Sending message to user: " + toUser);
-					sendMessageToGCMAppServer(Integer.toString(toUser), messageToSend);
-
-				}
-			}
-		});
-	}
-
-	private void sendMessageToGCMAppServer(final String toUserName, final String messageToSend) {
-		new AsyncTask<Void, Void, String>() {
-
-			@Override
-			protected String doInBackground(Void... params) {
-				return appUtil.sendMessage(toUserName, messageToSend);
-			}
-
-			@Override
-			protected void onPostExecute(String msg) {
-				Log.d("ChatMainActivity", "Result: " + msg);
-			}
-		}.execute(null, null, null);
-	}
-
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_user_chat, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case (R.id.action_unmatch):
+                new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Unmatch Action")
+                        .setMessage("Are you sure you want to unmatch?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                unmatch();
+                                Toast.makeText(ChatMainActivity.this, "Unmatched.", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(ChatMainActivity.this, HomeActivity.class));
+                            }
+
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-	}
+    }
+
+    public void unmatch() {
+        if (getIntent().getStringExtra("match_type").equals("UserMatch")) {
+            userUnmatch();
+        }
+        else {
+            projectUnmatch();
+        }
+    }
+
+    public void userUnmatch() {
+        String url = ServerConstants.URLS.USER_SWIPE.string + Integer.toString(project) + "/";
+        StringRequest jsonRequest = new StringRequest
+                (Request.Method.PUT, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject data = new JSONObject(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }) {
+            @Override
+            //Create the body of the request
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_likes", "NO");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "Token " +
+                        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(PreferencesKeys.AUTH_TOKEN, "noTokenFound"));
+                return params;
+            }
+        };
+        MyApplication.requestQueue.add(jsonRequest);
+    }
+
+    public void projectUnmatch() {
+        String url = ServerConstants.URLS.PROJECT_SWIPE.string + Integer.toString(project) + "/" + Integer.toString(toUser) + "/";
+        StringRequest jsonRequest = new StringRequest
+                (Request.Method.PUT, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject data = new JSONObject(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }) {
+            @Override
+            //Create the body of the request
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("project_likes", "NO");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "Token " +
+                        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(PreferencesKeys.AUTH_TOKEN, "noTokenFound"));
+                return params;
+            }
+        };
+        MyApplication.requestQueue.add(jsonRequest);
+    }
 }

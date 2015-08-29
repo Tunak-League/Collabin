@@ -3,11 +3,9 @@ package tunakleague.com.redemption.messaging;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
@@ -19,7 +17,8 @@ public class DataProvider extends ContentProvider {
     public static final String COL_MESSAGE = "message";
     public static final String COL_RECIPIENT = "recipient";
     public static final String COL_SENDER = "sender";
-    // public static final String COL_TIME_SENT = "time_sent";
+    public static final String COL_TIME_SENT = "time_sent";
+    public static final String RECEIVED_OR_SENT = "received_or_sent";
 
     private DbHelper dbHelper;
 
@@ -101,8 +100,6 @@ public class DataProvider extends ContentProvider {
             case MESSAGES:
                 count = db.update(TABLE_CHAT, values, selection, selectionArgs);
                 break;
-
-
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
