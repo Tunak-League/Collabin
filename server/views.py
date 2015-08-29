@@ -225,7 +225,7 @@ def project_swipe( request, **kwargs ):
                 project_owner_device = project.owner.device
                 user_device = user.device
                 project_owner_device.send_message( "MatchNotification" + " " +  "Project: " + project.project_name + " has found a match!" )
-                user_device.send_message("MatchNotificaion" + " " + "You have found a match!" )
+                user_device.send_message("MatchNotification" + " " + "You have found a match!" )
             return Response(serializer.data)
 
     except Swipes.DoesNotExist: #Create a new entry in swipes table if it doesn't exist

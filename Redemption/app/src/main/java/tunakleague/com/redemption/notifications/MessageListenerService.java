@@ -1,7 +1,6 @@
 package tunakleague.com.redemption.notifications;
 
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
@@ -9,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,7 +17,6 @@ import com.google.android.gms.gcm.GcmListenerService;
 
 import tunakleague.com.redemption.MainActivity;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.messaging.ChatFragment;
 import tunakleague.com.redemption.messaging.DataProvider;
 import tunakleague.com.redemption.messaging.DbHelper;
 
@@ -57,6 +54,7 @@ public class MessageListenerService extends GcmListenerService {
             String time_sent = data.getString(DataProvider.COL_TIME_SENT);
 
             ContentValues values = new ContentValues();
+            values.put(DataProvider.RECEIVED_OR_SENT, "received");
             values.put(DataProvider.COL_RECIPIENT, recipient);
             values.put(DataProvider.COL_SENDER, sender);
             values.put(DataProvider.COL_MESSAGE, sendMessage);

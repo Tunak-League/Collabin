@@ -16,7 +16,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TABLE_NAME + " (_id INTEGER PRIMARY KEY, message TEXT, " +
+        db.execSQL("CREATE TABLE " + TABLE_NAME + " (_id INTEGER PRIMARY KEY, received_or_sent TEXT, message TEXT, " +
                 "sender TEXT, recipient TEXT, time_sent TEXT);");
     }
 
