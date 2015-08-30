@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -14,7 +15,7 @@ import org.json.JSONException;
 import tunakleague.com.redemption.DrawerActivity;
 import tunakleague.com.redemption.profiles.BaseProfileFragment;
 
-public abstract class SearchActivity extends DrawerActivity {
+public abstract class SearchActivity extends DrawerActivity implements View.OnTouchListener {
     public final String TAG = "SearchActivity";
     private GestureDetector gestureDetector;
 
@@ -33,12 +34,22 @@ public abstract class SearchActivity extends DrawerActivity {
     /*Placeholder for the actual left/right swipe listener. All this does is load the next profile to the screen on every touch*/
 
 
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        Toast.makeText(getApplicationContext(), "TOUHEDC!", Toast.LENGTH_SHORT).show();
+//        if (gestureDetector.onTouchEvent(event)) {
+//            return true;
+//        }
+//        return super.onTouchEvent(event);
+//    }
+
+        /*Placeholder for the actual left/right swipe listener. All this does is load the next profile to the screen on every touch*/
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (gestureDetector.onTouchEvent(event)) {
-            return true;
-        }
-        return super.onTouchEvent(event);
+    public boolean onTouch(View v, MotionEvent event) {
+        //TODO: Call sendSwipe here after implementing it in the child class.
+        gestureDetector.onTouchEvent(event);
+
+        return true;
     }
 
     private void onLeftSwipe() {
@@ -106,15 +117,11 @@ public abstract class SearchActivity extends DrawerActivity {
                     return false;
 
                 // Left swipe
-                if (diff > SWIPE_MIN_DISTANCE
-                        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                if (diff > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     SearchActivity.this.onLeftSwipe();
-
-                    // Right swipe
                 }
-                //
-                else if (-diff > SWIPE_MIN_DISTANCE
-                        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                // Right swipe
+                else if (-diff > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     SearchActivity.this.onRightSwipe();
                 }
             } catch (Exception e) {

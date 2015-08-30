@@ -31,7 +31,7 @@ public class UserSearchActivity extends SearchActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-         contentView = inflater.inflate(R.layout.activity_user_search, null, false);
+        contentView = inflater.inflate(R.layout.activity_user_search, null, false);
         //contentView.setId(R.id.user_search);
         mDrawerLayout.addView(contentView, 0);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED); //Stop opening of drawer by swiping to prevent conflict with Swipes in this activity
@@ -39,6 +39,8 @@ public class UserSearchActivity extends SearchActivity {
 
         initializeData();
 //        findViewById(R.id.user_search).setOnTouchListener(this); //Set the UI to respond to touch events using SearchActivity's touch listener
+        contentView.setOnTouchListener(this);
+
 
     }
 
