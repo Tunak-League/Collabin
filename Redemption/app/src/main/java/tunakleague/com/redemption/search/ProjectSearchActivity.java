@@ -42,6 +42,8 @@ public class ProjectSearchActivity extends SearchActivity {
         projectID = getIntent().getIntExtra(Constants.PROJECT_ID, 0);
         initializeData();
 //        findViewById(R.id.user_search).setOnTouchListener(this); //Set the UI to respond to touch events using SearchActivity's touch listener
+        contentView.setOnTouchListener(this);
+
 
     }
 
