@@ -46,7 +46,7 @@ class ProjectSearch(APIView):
         user_list = [userProfile_id['userprofiles_id'] for userProfile_id in userProfile_ids] # Put the ids into a list
         userProfiles = UserProfiles.objects.filter(pk__in = user_list) # Get those users' user profiles
         # Get all userprofile ids that have been swiped by the project already
-        usersAlreadySwiped = Swipes.objects.filter(Q(user_likes=Swipes.YES) | Q(user_likes=Swipes.NO),
+        usersAlreadySwiped = Swipes.objects.filter(Q(project_likes=Swipes.YES) | Q(project_likes=Swipes.NO),
                 project_id = project.id, user_profile_id__in = users).values('user_profile_id')
         # Get all userprofile ids that have the skills required by the project that also have not been swiped yet 
         userProfiles = userProfiles.filter(pk__in = users).exclude(pk__in = usersAlreadySwiped)
@@ -98,7 +98,7 @@ class UserSearch(APIView):
         projects = Projects.objects.filter(pk__in = projectIDs) # Get the actual project instances from the IDs
         projects_list = list(projects) # Turn queryset into a list
         projects_list.sort(key = lambda project: projectIDs.index(project.id)) #Sort projects back to proper order based on projectIDs
-        
+ 
         #Exclude projects that the requesting user has already swiped on, AND projects the user owns
         swiped_projects = Swipes.objects.filter(  Q( user_likes=Swipes.YES) | Q( user_likes=Swipes.NO ), user_profile=profile )
         swiped_project_ids =  [x.project.id for x in swiped_projects]
@@ -205,14 +205,15 @@ Inserts the result of a project swiping on a UserProfile into the Swipes table, 
 @api_view(['PUT'])
 #@permission_classes( (IsAuthenticated,) )
 def project_swipe( request, **kwargs ):
-
+    print "hi"
     #Try to obtain the project and user specified in the URL. 
     project = getProject( kwargs['project'] )
+    print "got the project"
     if not isOwner(request, project):
         return Response(status = status.HTTP_403_FORBIDDEN)
     #TODO: IMPLEMENT PERMISSION CHECK TO SEE IF REQUESTING USER OWNS THE PROJECT
     user = getUser( kwargs['user'] ) 
-
+    print "got thet user"
     #Attempt to update the swipe in the Swipes table if it exists
     try:
         swipe = Swipes.objects.get(user_profile=user, project=project )
@@ -230,9 +231,13 @@ def project_swipe( request, **kwargs ):
 
     except Swipes.DoesNotExist: #Create a new entry in swipes table if it doesn't exist
         #Populate request.data with the project and user for creation of new Swipe
-        request.data['user_profile'] = user.id
-        request.data['project'] = project.id
-        serializer = SwipesSerializer(data=request.data)
+        requestData = request.data.copy()
+        print "IT DOESN'T EXIST OKAY?"
+        requestData['user_profile'] = user.id
+        print "got the user profile..... AGAIN"
+        requestData['project'] = project.id
+        print "got user and project already..."
+        serializer = SwipesSerializer(data=requestData)
  
         if serializer.is_valid():
             serializer.save()
