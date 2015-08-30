@@ -12,11 +12,13 @@ import android.view.View;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.google.gson.JsonObject;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import tunakleague.com.redemption.app_constants.Constants;
@@ -92,9 +94,47 @@ public class ProjectSearchActivity extends SearchActivity {
     }
 
     @Override
-    protected void sendSwipe(JsonObject profile, boolean answer) {
-        //TODO: Implement the actual sending of the swipe request. For this one you have to remember to do /projectPK/userPK in the URL
+    protected void sendSwipe(JSONObject profile,final String answer) {
+        //TODO: Implement the actual sending of the swipe request
 
+        /*Get the ID of the user being swiped on*/
+        int id = 0;
+        try{
+            id = profile.getInt(PROJECTS.PK.string);
+        }
+        catch( JSONException ex ){
+            Log.d(TAG, "Error extracting profile ID in sendSwipe" );
+        }
+        final int userID = id;
+
+        /*Make the swipe request*/
+        String url = URLS.PROJECT_SWIPE.string + projectID + "/" + userID + "/";
+        StringRequest projectSwipeRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d( TAG, "Swipe sent: " + response );
+                    }
+                },
+                new DetailedErrorListener(this)
+        )
+        {
+            @Override
+            //Create the body of the request
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put(SWIPES.USER_PROFILE.string, String.valueOf(userID));
+                params.put( SWIPES.PROJECT_LIKES.string, answer );
+                return params;
+            }
+
+            @Override
+            //Add header of request
+            public Map<String, String> getHeaders() {
+                return MyApplication.getAuthenticationHeader(ProjectSearchActivity.this);
+            }
+        };
+        MyApplication.requestQueue.add(projectSwipeRequest);
 
     }
 

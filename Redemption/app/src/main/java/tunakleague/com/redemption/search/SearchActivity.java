@@ -11,12 +11,16 @@ import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import tunakleague.com.redemption.DrawerActivity;
 import tunakleague.com.redemption.profiles.BaseProfileFragment;
 
 public abstract class SearchActivity extends DrawerActivity implements View.OnTouchListener {
     public final String TAG = "SearchActivity";
+    public static final String LIKE = "YES";
+    public static final String DISLIKE = "NO";
+
     private GestureDetector gestureDetector;
 
     public final String PROFILE_TAG = "Profile Fragment Tag"; //tag used to retrieve the fragment used for displaying profiles
@@ -52,12 +56,16 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
         return true;
     }
 
-    private void onLeftSwipe() {
-        Toast.makeText(getApplicationContext(), "RECRUIT!", Toast.LENGTH_SHORT).show();
-    }
-
-    private void onRightSwipe() {
-        Toast.makeText(getApplicationContext(), "NEXT ONE!", Toast.LENGTH_SHORT).show();
+    /*Sends the swipe request to the server to indicate if the user likes/dislikes this profile.
+      Then loads the next profile from profileList onto the screen*/
+    private void swipe( String answer ){
+        try {
+            sendSwipe(profileList.getJSONObject(position), answer);
+        } catch (JSONException e) {
+            Log.d( TAG, "Error calling sendSwipe");
+            e.printStackTrace();
+        }
+        loadNextProfile();
     }
 
 
@@ -73,7 +81,7 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
         @param profile - A JSONObject representing the profile that the user is swiping on.
         @param answer - boolean, true if the user likes the profile, false if they do not.
      */
-    protected abstract void sendSwipe( JsonObject profile, boolean answer );
+    protected abstract void sendSwipe( JSONObject profile, final String answer );
 
     /*
         Increments "position" and displays the next profile from "profileList" to the screen
@@ -118,11 +126,13 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
 
                 // Left swipe
                 if (diff > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    SearchActivity.this.onLeftSwipe();
+                    Toast.makeText(getApplicationContext(), "NOPE!", Toast.LENGTH_SHORT).show();
+                    SearchActivity.this.swipe(DISLIKE);
                 }
                 // Right swipe
                 else if (-diff > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    SearchActivity.this.onRightSwipe();
+                    Toast.makeText(getApplicationContext(), "LIKE!", Toast.LENGTH_SHORT).show();
+                    SearchActivity.this.swipe(LIKE);
                 }
             } catch (Exception e) {
                 Log.e("SearchActivity", "Error on gestures");

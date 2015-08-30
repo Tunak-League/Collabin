@@ -12,11 +12,13 @@ import android.view.View;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.google.gson.JsonObject;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import tunakleague.com.redemption.DetailedErrorListener;
@@ -89,9 +91,47 @@ public class UserSearchActivity extends SearchActivity {
     }
 
     @Override
-    protected void sendSwipe(JsonObject profile, boolean answer) {
+    protected void sendSwipe(JSONObject profile,final String answer) {
         //TODO: Implement the actual sending of the swipe request
 
+        /*Get the ID of the project being swiped on*/
+        int id = 0;
+        try{
+            id = profile.getInt(PROJECTS.PK.string);
+        }
+        catch( JSONException ex ){
+            Log.d(TAG, "Error extracting profile ID in sendSwipe" );
+        }
+        final int projectID = id;
+
+        /*Make the swipe request*/
+        String url = URLS.USER_SWIPE.string + projectID + "/";
+        StringRequest userSwipeRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d( TAG, "Swipe sent: " + response );
+                    }
+                },
+                new DetailedErrorListener(this)
+        )
+        {
+            @Override
+            //Create the body of the request
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put(SWIPES.PROJECT.string, String.valueOf(projectID));
+                params.put( SWIPES.USER_LIKES.string, answer );
+                return params;
+            }
+
+            @Override
+            //Add header of request
+            public Map<String, String> getHeaders() {
+                return MyApplication.getAuthenticationHeader(UserSearchActivity.this);
+            }
+        };
+        MyApplication.requestQueue.add(userSwipeRequest);
 
     }
 
