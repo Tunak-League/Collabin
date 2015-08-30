@@ -419,11 +419,20 @@ class UserGet(APIView):
         return Response(serializer.data)
 
 
+
 @api_view(['GET'])
 def skills(request):
     all_skills = Skills.objects.all()
     serializer = SkillsSerializer( all_skills, many=True )
     return Response( data = serializer.data )
+
+class UserImageList(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, format = None):
+        image = UserImages.objects.get()
+
 
 
 def isOwner(request, project):
