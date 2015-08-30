@@ -41,7 +41,8 @@ INSTALLED_APPS = (
     'server',
     'rest_framework',
     'rest_framework.authtoken',
-    "push_notifications",
+    'push_notifications',
+    'storages',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -76,15 +77,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'tunak_server.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#    }
-#}
 
 
 # Internationalization
@@ -106,6 +98,18 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+AWS_STORAGE_BUCKET_NAME = 'django-heroku-app'
+AWS_ACCESS_KEY_ID = 'AKIAJ33NURXFZ5MFIQPQ'
+AWS_SECRET_ACCESS_KEY = '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'
+
+# Tell django-storages that when coming up with the URL for an item in S3 storage, keep
+# it simple - just use this domain plus the path. (If this isn't set, things get complicated).
+# This controls how the `static` template tag from `staticfiles` gets expanded, if you're using it.
+# We also use it in the next setting.
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 #REST FRAMEWORK SETTINGS
 REST_FRAMEWORK = {
@@ -119,8 +123,6 @@ PUSH_NOTIFICATIONS_SETTINGS = {
     "GCM_API_KEY": "AIzaSyBxuuBPDpWw8LEt1AbkkN7Z929-yi-gAOM",
 }
 
-#if not os.environ.get("HOME") == '/home/park':
-    # Parse database configuration from $DATABASE_URL
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config()
 

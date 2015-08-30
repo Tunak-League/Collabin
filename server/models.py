@@ -9,10 +9,14 @@ from push_notifications.models import  GCMDevice
 class UserProfiles(models.Model):
     user_summary = models.CharField(max_length = 500, null=True, blank=True, default=None)
     location = models.CharField(max_length = 30, null=True, blank=True, default=None)
-    image_path = models.CharField(max_length = 50, null = True, blank = True, default = None)
+    user_image = models.ImageField(upload_to='users')
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    device = models.ForeignKey( 'push_notifications.GCMDevice', default = None )
-
+    device = models.ForeignKey('push_notifications.GCMDevice', default = None)
+'''
+class UserImages(models.Model):
+    user = models.ForeignKey('UserProfiles')
+    image = models.ImageField(upload_to='users')
+'''
 class Skills(models.Model):
     skill_name = models.CharField(max_length = 30, unique = True)
     user_profiles = models.ManyToManyField('UserProfiles', related_name = "skills")
@@ -28,8 +32,12 @@ class Projects(models.Model):
     project_summary = models.CharField(max_length = 500)
     date_created = models.DateField(null = True, blank = True, default = None)
     owner = models.ForeignKey('UserProfiles')
-    image_path = models.CharField(max_length = 50, null = True, blank = True, default = None)
-
+    project_image = models.ImageField(upload_to='projects')
+'''
+class ProjectImages(models.Model):
+    project = models.ForeignKey('Projects')
+    image = models.ImageField(upload_to='projects')
+'''
 class Swipes(models.Model):
     YES = 'YES'
     NO = 'NO'
