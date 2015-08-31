@@ -76,7 +76,8 @@ public class ProjectSearchActivity extends SearchActivity {
                             }
                         }
                         else{ //TODO: Properly handle no matches with some screen that says "no matches"
-                            Log.d( TAG, "No matches found" );
+                            Log.d( TAG, "No profiles found" );
+                            showNoProfilesStart();
                         }
                     }
                 }

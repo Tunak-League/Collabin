@@ -1,8 +1,10 @@
 package tunakleague.com.redemption.search;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -14,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import tunakleague.com.redemption.DrawerActivity;
+import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.profiles.BaseProfileFragment;
 
 public abstract class SearchActivity extends DrawerActivity implements View.OnTouchListener {
@@ -21,6 +24,7 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
     public static final String LIKE = "YES";
     public static final String DISLIKE = "NO";
 
+    private LayoutInflater inflater;
     private GestureDetector gestureDetector;
 
     public final String PROFILE_TAG = "Profile Fragment Tag"; //tag used to retrieve the fragment used for displaying profiles
@@ -31,6 +35,7 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         gestureDetector = new GestureDetector(getApplicationContext(), new SwipeGestureDetector());
         position = 0;
     }
@@ -104,8 +109,25 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
         else{
             //TODO: Proper screen telling you you're done searching
             Log.d(TAG, "No more profiles left to show" );
+            showNoProfilesEnd();
         }
     }
+
+    protected void showNoProfilesStart(){
+        View noProfileView = inflater.inflate(R.layout.fragment_no_potential_matches, null, false);
+        //contentView.setId(R.id.user_search);
+        mDrawerLayout.addView(noProfileView, 0);
+    }
+
+    protected void showNoProfilesEnd(){
+        View noProfileView = inflater.inflate(R.layout.fragment_no_potential_matches, null, false);
+        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().remove( manager.findFragmentByTag(PROFILE_TAG) ).commit();
+        //contentView.setId(R.id.user_search);
+        mDrawerLayout.addView(noProfileView, 0);
+
+    }
+
 
     // Private class for gestures
     public class SwipeGestureDetector extends GestureDetector.SimpleOnGestureListener {

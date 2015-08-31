@@ -29,10 +29,12 @@ import tunakleague.com.redemption.profiles.BaseProfileFragment;
 
 public class UserSearchActivity extends SearchActivity {
     View contentView;
+    LayoutInflater inflater;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         contentView = inflater.inflate(R.layout.activity_user_search, null, false);
         //contentView.setId(R.id.user_search);
         mDrawerLayout.addView(contentView, 0);
@@ -73,7 +75,8 @@ public class UserSearchActivity extends SearchActivity {
                             }
                         }
                         else{ //TODO: Properly handle no matches with some screen that says "no matches"
-                            Log.d( TAG, "No matches found" );
+                            Log.d( TAG, "No profiles found" );
+                            showNoProfilesStart();
                         }
                     }
                 }
