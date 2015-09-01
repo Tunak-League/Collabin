@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('project_name', models.CharField(unique=True, max_length=30)),
                 ('project_summary', models.CharField(max_length=500)),
                 ('date_created', models.DateField(default=None, null=True, blank=True)),
-                ('image_path', models.CharField(default=None, max_length=50, null=True, blank=True)),
+                ('project_image', models.ImageField(default=None, null=True, upload_to=b'projects', blank=True)),
             ],
         ),
         migrations.CreateModel(
@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('user_summary', models.CharField(default=None, max_length=500, null=True, blank=True)),
                 ('location', models.CharField(default=None, max_length=30, null=True, blank=True)),
-                ('image_path', models.CharField(default=None, max_length=50, null=True, blank=True)),
+                ('user_image', models.ImageField(default=None, null=True, upload_to=b'users', blank=True)),
                 ('device', models.ForeignKey(default=None, to='push_notifications.GCMDevice')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],

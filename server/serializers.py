@@ -3,6 +3,55 @@ from rest_framework import serializers
 from server.models import UserProfiles, Skills, Types, Projects, Swipes
 from django.contrib.auth.models import User
 
+class Base64ImageField(serializers.ImageField):
+    """
+    A Django REST framework field for handling image-uploads through raw post data.
+    It uses base64 for encoding and decoding the contents of the file.
+
+    Heavily based on
+    https://github.com/tomchristie/django-rest-framework/pull/1268
+
+    Updated for Django REST framework 3.
+    """
+
+    def to_internal_value(self, data):
+        from django.core.files.base import ContentFile
+        import base64
+        import six
+        import uuid
+
+        # Check if this is a base64 string
+        if isinstance(data, six.string_types):
+            # Check if the base64 string is in the "data:" format
+            if 'data:' in data and ';base64,' in data:
+                # Break out the header from the base64 content
+                header, data = data.split(';base64,')
+
+            # Try to decode the file. Return validation error if it fails.
+            try:
+                decoded_file = base64.b64decode(data)
+            except TypeError:
+                self.fail('invalid_image')
+
+            # Generate file name:
+            file_name = str(uuid.uuid4())[:12] # 12 characters are more than enough.
+            # Get the file name extension:
+            file_extension = self.get_file_extension(file_name, decoded_file)
+
+            complete_file_name = "%s.%s" % (file_name, file_extension, )
+
+            data = ContentFile(decoded_file, name=complete_file_name)
+
+        return super(Base64ImageField, self).to_internal_value(data)
+
+    def get_file_extension(self, file_name, decoded_file):
+        import imghdr
+
+        extension = imghdr.what(file_name, decoded_file)
+        extension = "jpg" if extension == "jpeg" else extension
+
+        return extension
+
 class UsersSerializer(serializers.ModelSerializer):
     username = serializers.CharField(error_messages = {'required': 'Please enter a username',})
     email = serializers.CharField(required = True, error_messages = {'required': 'Please enter your email address',})  
@@ -59,9 +108,11 @@ class UserProfilesSerializer(serializers.ModelSerializer):
     first_name= serializers.ReadOnlyField(source = 'user.first_name')
     email = serializers.ReadOnlyField(source = 'user.email')
     username = serializers.ReadOnlyField(source = 'user.username')
+    user_image = Base64ImageField( max_length=None, use_url=True ) 
+
     class Meta:
         model = UserProfiles
-        fields = ('id', 'last_name', 'first_name', 'email', 'username', 'user_summary', 'location', 'image_path', 'skills', 'types', 'user', 'device')
+        fields = ('id', 'last_name', 'first_name', 'email', 'username', 'user_summary', 'location',  'skills', 'types', 'user', 'device', 'user_image')
 
 class SkillsSerializer(serializers.ModelSerializer):
     #users = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
@@ -89,6 +140,7 @@ class ProjectsSerializer(serializers.ModelSerializer):
     )
     owner_name = serializers.ReadOnlyField(source='owner.user.username')
     project_name = serializers.CharField(error_messages = {'required': 'Please enter a name for your project',})
+    project_image = Base64ImageField( max_length=None, use_url=True ) 
 
     def validate_project_name(self, value):
         try:
@@ -99,7 +151,7 @@ class ProjectsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Projects
-        fields = ('id', 'project_name', 'project_summary', 'owner', 'date_created', 'image_path','types', 'skills', 'owner_name')
+        fields = ('id', 'project_name', 'project_summary', 'owner', 'date_created', 'types', 'skills', 'owner_name', 'project_image' )
         read_only_fields = ('owner',)
 
 class SwipesSerializer(serializers.ModelSerializer):
@@ -126,3 +178,5 @@ class UserMatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Swipes
         fields = ('project', 'project_name', 'owner', 'ownerId', 'userProfileId', 'projectId') 
+
+

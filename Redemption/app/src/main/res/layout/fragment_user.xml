@@ -24,13 +24,21 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/user_image"
+        android:layout_below="@id/profile_title"
+        android:layout_centerHorizontal="true"
+        />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Username"
         android:id="@+id/textView4"
-        android:layout_below="@+id/profile_title"
+        android:layout_below="@+id/user_image"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="32dp"

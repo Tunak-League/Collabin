@@ -9,7 +9,7 @@ from push_notifications.models import  GCMDevice
 class UserProfiles(models.Model):
     user_summary = models.CharField(max_length = 500, null=True, blank=True, default=None)
     location = models.CharField(max_length = 30, null=True, blank=True, default=None)
-    user_image = models.ImageField(upload_to='users')
+    user_image = models.ImageField(upload_to='users', null = True, blank = True, default=None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     device = models.ForeignKey('push_notifications.GCMDevice', default = None)
 '''
@@ -32,7 +32,7 @@ class Projects(models.Model):
     project_summary = models.CharField(max_length = 500)
     date_created = models.DateField(null = True, blank = True, default = None)
     owner = models.ForeignKey('UserProfiles')
-    project_image = models.ImageField(upload_to='projects')
+    project_image = models.ImageField(upload_to='projects', null=True, blank=True, default=None)
 '''
 class ProjectImages(models.Model):
     project = models.ForeignKey('Projects')

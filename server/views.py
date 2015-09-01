@@ -297,7 +297,7 @@ class UserList( APIView):
 		requestData['device'] = device.id 
 		print requestData 
 		skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
-		if not check_skills(skillsList): 
+		if (skillsList != None) and (not check_skills(skillsList) ): 
 			return Response(status = status.HTTP_400_BAD_REQUEST)
 
 		serializer = UserProfilesSerializer(data = requestData)
