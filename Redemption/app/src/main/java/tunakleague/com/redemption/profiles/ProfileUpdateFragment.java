@@ -3,21 +3,25 @@ package tunakleague.com.redemption.profiles;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +40,10 @@ import tunakleague.com.redemption.app_constants.ServerConstants.*;
  */
 public abstract class ProfileUpdateFragment extends BaseProfileFragment {
     HideTabsListener mListener;
+    protected String base64Image;
 
     /*Keys are all EditText fields for the profile whose input values need to be extracted and sent to the server on update; values are the name of the parameter in the app server*/
     Map<View, String> fieldsToExtract;
-
 
     public ProfileUpdateFragment() {
         // Required empty public constructor
@@ -203,7 +207,7 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
 
                         @Override
                         public void onClick(DialogInterface dialog, int typeSelected) {
-                            addItem(typesField, types[typeSelected]); //Add the selected type based on its position in the "types" array
+                            addItem(typesField, types[typeSelected]); //Add the se.lected type based on its position in the "types" array
                             dialog.dismiss();
                         }
 
@@ -222,6 +226,19 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
         /*Attached to an "Update Profile" button. Calls the updateProfile method to be implemented by subclasses of this class*/
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            image.setImageBitmap(imageBitmap);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        }
+    }
+
 
 
 }

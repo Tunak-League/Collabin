@@ -1,10 +1,20 @@
 package tunakleague.com.redemption.profiles;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 
 import com.google.gson.reflect.TypeToken;
@@ -19,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.app_constants.ServerConstants.*;
 import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
 
@@ -27,6 +38,9 @@ import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
  */
 public abstract class BaseProfileFragment extends android.support.v4.app.Fragment {
     public final String TAG = "BaseProfileFragment";
+    public static int PICK_IMAGE_REQUEST = 4;
+    protected Bitmap imageBitmap; //bitmap of the image user selects from gallery
+    protected ImageView image = null;
     JSONObject profileData; //all the fields in the profile retrieved from the app server
 
     /*Keys are all EditText fields for the profile that need to be populated upon opening the profile; values are the name of the parameter in the app server's database for HTTP params*/
@@ -128,6 +142,58 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
         }
 
         return list;
+    }
+
+    /*
+    Opens the gallery for users to selct a profile picture
+     */
+    public void loadImagefromGallery() {
+        // Create intent to Open Image applications like Gallery, Google Photos
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // Start the Intent
+        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            // When an Image is picked
+            if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
+                    && null != data) {
+                // Get the Image from data
+
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+                // Get the cursor
+                Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                        filePathColumn, null, null, null);
+                // Move to first row
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String imgDecodableString = cursor.getString(columnIndex);
+                cursor.close();
+                imageBitmap = BitmapFactory.decodeFile(imgDecodableString); //convert image string to image bitmap for use in extending classes
+
+//                ImageView imgView = (ImageView) findViewById(R.id.imgView);
+                // Set the Image in ImageView after decoding the String
+/*
+                imgView.setImageBitmap(BitmapFactory
+                        .decodeFile(imgDecodableString));
+*/
+
+            } else {
+                Toast.makeText(getActivity(), "You haven't picked Image",
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG)
+                    .show();
+        }
+
     }
 
 

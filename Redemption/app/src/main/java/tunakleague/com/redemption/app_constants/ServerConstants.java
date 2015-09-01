@@ -7,7 +7,7 @@ public class ServerConstants {
     public enum URLS {
         /*Names of server endpoints */
         //ROOT("https://tunak-server.herokuapp.com/"),
-        ROOT("http://192.168.1.71:8000/"),
+        ROOT("http://192.168.1.73:8000/"),
         USER_LIST( ROOT.string + "user-list/"),
         USER_DETAIL( ROOT.string + "user-detail/" ),
         PROJECT_LIST( ROOT.string + "project-list/" ),
@@ -43,6 +43,8 @@ public class ServerConstants {
             TOKEN("token"),
             SKILLS("skills"),
             TYPES("types"),
+            USER_IMAGE("user_image")
+
             ;
             public final String string;
             private USERS(final String text){
@@ -56,7 +58,8 @@ public class ServerConstants {
             PROJECT_NAME("project_name"),
             PROJECT_SUMMARY("project_summary"),
             SKILLS("skills"),
-            TYPES("types")
+            TYPES("types"),
+            PROJECT_IMAGE("project_image")
             ;
             public final String string;
             private PROJECTS(final String text){

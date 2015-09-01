@@ -1,17 +1,20 @@
 package tunakleague.com.redemption.profiles;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -73,6 +76,16 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
         Button updateButton = (Button) view.findViewById(R.id.update_button);
         updateButton.setOnClickListener(new UpdateListener());
 
+        /*Add listener to imageview*/
+        image = (ImageView) view.findViewById(R.id.user_image);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadImagefromGallery();
+                //image.postInvalidate();
+            }
+        });
+
 
         /*Specify all EditText fields in the UI that need to be POPULATED upon retrieving profile info and  and their corresponding server model keys*/
         fieldsToPopulate.put( view.findViewById(R.id.username), USERS.USERNAME.string );
@@ -123,7 +136,7 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
     @Override
     protected void updateProfile() {
         JSONObject updatedInfo = extractFields(); //Extract required information from UI and place into JSONObject for request body
-        Log.d(TAG, updatedInfo.toString());
+        putImage(updatedInfo);
         /*Create request to update the User's profile*/
         String url = URLS.USER_DETAIL.string;
         JsonObjectRequest updateProfileRequest = new JsonObjectRequest(Request.Method.PUT, url, updatedInfo,
@@ -146,7 +159,17 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
             }
         };
         MyApplication.requestQueue.add(updateProfileRequest);
+        Log.d(TAG, "I sent the request");
 
+    }
+
+    protected void putImage(JSONObject data){
+ /*       try {
+            data.put(USERS.USER_IMAGE.string, base64Image);
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to put image" );
+            e.printStackTrace();
+        }*/
     }
 
 
