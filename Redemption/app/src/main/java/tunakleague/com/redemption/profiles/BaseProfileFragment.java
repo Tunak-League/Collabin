@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -29,7 +32,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.R;
+import tunakleague.com.redemption.app_constants.Constants;
 import tunakleague.com.redemption.app_constants.ServerConstants.*;
 import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
 
@@ -39,8 +44,12 @@ import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
 public abstract class BaseProfileFragment extends android.support.v4.app.Fragment {
     public final String TAG = "BaseProfileFragment";
     public static int PICK_IMAGE_REQUEST = 4;
-    protected Bitmap imageBitmap; //bitmap of the image user selects from gallery
+
+    /*Members for handling images*/
+    protected Bitmap imageBitmap; //bitmap of the image user selects from gallery.
     protected ImageView image = null;
+    private String imageFieldName = null; //The name of the image field when retrieving from the server. (Different for users and projects)
+
     JSONObject profileData; //all the fields in the profile retrieved from the app server
 
     /*Keys are all EditText fields for the profile that need to be populated upon opening the profile; values are the name of the parameter in the app server's database for HTTP params*/
@@ -63,6 +72,11 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
         fieldsToPopulate = new HashMap<View, String>();
     }
 
+    @Override
+    public void onDestroy(){
+//        imageBitmap.recycle();
+    }
+
     /*
         Takes the given profile data and renders it to the UI.
         @param profile - JSONObject containing all the data fields for a profile
@@ -82,7 +96,11 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
         /*Set text in each view in fieldsToPopulate to the corresponding value of the field in profileData*/
         for (View view : fieldsToPopulate.keySet()) {
             try {
-                ((EditText) view).setText(profileData.getString(fieldsToPopulate.get(view)));
+                String fieldValue = profileData.getString(fieldsToPopulate.get(view) );
+
+                /*Only set the EditText field if the value isn't null*/
+                if(! fieldValue.equals(Constants.NULL_STRING) )
+                    ((EditText) view).setText(profileData.getString(fieldsToPopulate.get(view)));
             } catch (JSONException ex) {
 
             }
@@ -90,6 +108,34 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
 
         /*Set up adapters for list data (skills, types) and populate their fields.*/
         configureListData();
+
+        /*Handle image downloading*/
+        try {
+            String imageURL = profileData.getString( imageFieldName );
+            Log.d( TAG, "Image URL: " + imageURL );
+            /*If the returned image field isn't null, request the image from AWS and set it to this profile's ImageView*/
+            if( ! imageURL.equals(Constants.NULL_STRING)){
+                imageURL = imageURL.replace("\\", ""); //Clean the URL by removing any added backslashes from the server
+
+                ImageRequest request = new ImageRequest(imageURL,
+                        new Response.Listener<Bitmap>() {
+                            @Override
+                            public void onResponse(Bitmap bitmap) {
+                                image.setImageBitmap(bitmap);
+                                Log.d( TAG, "I JUST SET THE IMAGE" );
+                            }
+                        }, 0, 0, null, null,
+                        new Response.ErrorListener() {
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d( TAG, "Profile has no image" );
+                            }
+                        });
+                MyApplication.requestQueue.add( request );
+            }
+        } catch (JSONException e) {
+            Log.d( TAG, "JSON Error during image downloading");
+            e.printStackTrace();
+        }
     }
 
 
@@ -178,15 +224,9 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
                 cursor.close();
                 imageBitmap = BitmapFactory.decodeFile(imgDecodableString); //convert image string to image bitmap for use in extending classes
 
-//                ImageView imgView = (ImageView) findViewById(R.id.imgView);
-                // Set the Image in ImageView after decoding the String
-/*
-                imgView.setImageBitmap(BitmapFactory
-                        .decodeFile(imgDecodableString));
-*/
 
             } else {
-                Toast.makeText(getActivity(), "You haven't picked Image",
+                Toast.makeText(getActivity(), "You haven't picked an Image",
                         Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
@@ -196,5 +236,10 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
 
     }
 
+    /*Initialize the image data that is specific to User or Project profiles, namely the ImageView and the imageFieldName*/
+    protected void initializeImageData( ImageView image, String imageName ){
+        this.image = image;
+        this.imageFieldName = imageName;
+    }
 
 }

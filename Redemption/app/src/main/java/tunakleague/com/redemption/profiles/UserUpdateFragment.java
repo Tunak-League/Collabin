@@ -76,8 +76,8 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
         Button updateButton = (Button) view.findViewById(R.id.update_button);
         updateButton.setOnClickListener(new UpdateListener());
 
-        /*Add listener to imageview*/
-        image = (ImageView) view.findViewById(R.id.user_image);
+        /*Initialize image data, and Add listener to imageview*/
+        initializeImageData( (ImageView) view.findViewById(R.id.user_image), USERS.USER_IMAGE.string );
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,12 +164,13 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
     }
 
     protected void putImage(JSONObject data){
- /*       try {
+        try {
             data.put(USERS.USER_IMAGE.string, base64Image);
+            Log.d(TAG, "I put the image in");
         } catch (JSONException e) {
             Log.d(TAG, "failed to put image" );
             e.printStackTrace();
-        }*/
+        }
     }
 
 

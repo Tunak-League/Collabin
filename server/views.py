@@ -87,7 +87,7 @@ class UserSearch(APIView):
         
         # If user did not specify a preferred type, return all projects
         if not preferredTypes:
-            projects = Projects.objects.all()
+            projects = Projects.objects.all().exclude(owner=profile)
             serializer = ProjectsSerializer(projects, many = True)
             return Response(serializer.data)
         
@@ -341,6 +341,7 @@ class UserDetail(APIView):
         serializer = UserProfilesSerializer(profile, data = requestData, partial=True)
         if serializer.is_valid():
             serializer.save()
+            print serializer.data
             return Response(serializer.data)
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 

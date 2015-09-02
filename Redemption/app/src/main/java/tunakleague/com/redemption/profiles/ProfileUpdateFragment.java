@@ -232,7 +232,7 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 40, byteArrayOutputStream);
             image.setImageBitmap(imageBitmap);
             byte[] byteArray = byteArrayOutputStream.toByteArray();
             base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT);

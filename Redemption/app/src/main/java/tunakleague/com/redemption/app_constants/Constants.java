@@ -19,5 +19,6 @@ public class Constants {
     public static final String PROJECT_ID = "project id";
 
     public static final String NO_DEVICE = "no device id";
+    public static final String NULL_STRING = "null";
 
 }

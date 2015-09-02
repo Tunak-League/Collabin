@@ -108,7 +108,7 @@ class UserProfilesSerializer(serializers.ModelSerializer):
     first_name= serializers.ReadOnlyField(source = 'user.first_name')
     email = serializers.ReadOnlyField(source = 'user.email')
     username = serializers.ReadOnlyField(source = 'user.username')
-    user_image = Base64ImageField( max_length=None, use_url=True ) 
+    user_image = Base64ImageField( max_length=None, use_url=True, required=False ) 
 
     class Meta:
         model = UserProfiles
@@ -140,7 +140,7 @@ class ProjectsSerializer(serializers.ModelSerializer):
     )
     owner_name = serializers.ReadOnlyField(source='owner.user.username')
     project_name = serializers.CharField(error_messages = {'required': 'Please enter a name for your project',})
-    project_image = Base64ImageField( max_length=None, use_url=True ) 
+    project_image = Base64ImageField( max_length=None, use_url=True , required=False) 
 
     def validate_project_name(self, value):
         try:
