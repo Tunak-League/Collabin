@@ -12,11 +12,15 @@ class UserProfiles(models.Model):
     user_image = models.ImageField(upload_to='users', null = True, blank = True, default=None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     device = models.ForeignKey('push_notifications.GCMDevice', default = None)
-'''
-class UserImages(models.Model):
-    user = models.ForeignKey('UserProfiles')
-    image = models.ImageField(upload_to='users')
-'''
+    
+    def save(self, *args, **kwargs):
+        try:
+            this = UserProfiles.objects.get(id=self.id)
+            if this.user_image != self.user_image:
+                this.user_image.delete(save=False)
+        except: pass # when new photo then we do nothing, normal case  	    
+        super(UserProfiles, self).save(*args, **kwargs)
+
 class Skills(models.Model):
     skill_name = models.CharField(max_length = 30, unique = True)
     user_profiles = models.ManyToManyField('UserProfiles', related_name = "skills")
@@ -33,11 +37,15 @@ class Projects(models.Model):
     date_created = models.DateField(null = True, blank = True, default = None)
     owner = models.ForeignKey('UserProfiles')
     project_image = models.ImageField(upload_to='projects', null=True, blank=True, default=None)
-'''
-class ProjectImages(models.Model):
-    project = models.ForeignKey('Projects')
-    image = models.ImageField(upload_to='projects')
-'''
+
+    def save(self, *args, **kwargs):
+        try:
+            this = Projects.objects.get(id=self.id)
+            if this.project_image != self.project_image:
+                this.project_image.delete(save=False)
+        except: pass # when new photo then we do nothing, normal case  	    
+        super(Projects, self).save(*args, **kwargs)
+
 class Swipes(models.Model):
     YES = 'YES'
     NO = 'NO'
