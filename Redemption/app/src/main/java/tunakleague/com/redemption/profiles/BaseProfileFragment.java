@@ -1,13 +1,16 @@
 package tunakleague.com.redemption.profiles;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -48,7 +51,9 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
     /*Members for handling images*/
     protected Bitmap imageBitmap; //bitmap of the image user selects from gallery.
     protected ImageView image = null;
-    private String imageFieldName = null; //The name of the image field when retrieving from the server. (Different for users and projects)
+    protected String imageFieldName = null; //The name of the image field when retrieving from the server. (Different for users and projects)
+    private boolean redownload = false;
+
 
     JSONObject profileData; //all the fields in the profile retrieved from the app server
 
@@ -73,8 +78,41 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
     }
 
     @Override
-    public void onDestroy(){
-//        imageBitmap.recycle();
+    public void onStop(){
+        super.onStop();
+
+
+        PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
+
+        boolean screenOn;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            screenOn = pm.isInteractive();
+        } else {
+            screenOn = pm.isScreenOn();
+        }
+
+        if( screenOn && imageBitmap != null ) {
+            Log.d(TAG, "recycling");
+            image.setImageBitmap(null);
+            imageBitmap.recycle();
+            imageBitmap = null;
+            System.gc();
+            redownload = true;
+        }
+        else{
+            redownload = false;
+        }
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Log.d(TAG, "activity started");
+        /*Re-download and display the image again, if activity was stopped*/
+        if( profileData != null && imageBitmap == null && redownload) {
+            Log.d(TAG, "re-downloading image");
+            downloadImage();
+        }
     }
 
     /*
@@ -110,6 +148,11 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
         configureListData();
 
         /*Handle image downloading*/
+      downloadImage();
+    }
+
+/*Gets the profile's image from AWS if the image field url is not null and displays it */
+    protected void downloadImage(){
         try {
             String imageURL = profileData.getString( imageFieldName );
             Log.d( TAG, "Image URL: " + imageURL );
@@ -121,7 +164,8 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
                         new Response.Listener<Bitmap>() {
                             @Override
                             public void onResponse(Bitmap bitmap) {
-                                image.setImageBitmap(bitmap);
+                                imageBitmap = bitmap;
+                                image.setImageBitmap(imageBitmap);
                                 Log.d( TAG, "I JUST SET THE IMAGE" );
                             }
                         }, 0, 0, null, null,
@@ -137,7 +181,6 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
             e.printStackTrace();
         }
     }
-
 
     /*
         Configures any data that must be displayed in a list (skills, types) by setting their adapters and attaching them
@@ -222,6 +265,13 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String imgDecodableString = cursor.getString(columnIndex);
                 cursor.close();
+
+                /*A precaution?*/
+                if( imageBitmap != null ){
+                    Log.d( TAG, "recycled a stray one" );
+                    imageBitmap.recycle();
+                }
+
                 imageBitmap = BitmapFactory.decodeFile(imgDecodableString); //convert image string to image bitmap for use in extending classes
 
 

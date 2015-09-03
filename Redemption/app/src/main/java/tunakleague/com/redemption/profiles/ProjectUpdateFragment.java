@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -133,6 +134,16 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
             }
         });
 
+        /*Initialize image data, and Add listener to imageview*/
+        initializeImageData((ImageView) view.findViewById(R.id.project_image), PROJECTS.PROJECT_IMAGE.string);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadImagefromGallery();
+                //image.postInvalidate();
+            }
+        });
+
 
         /*Specify all EditText fields in the UI that need to be POPULATED upon retrieving profile info and  and their corresponding server model keys*/
         fieldsToPopulate.put(view.findViewById(R.id.project_name), PROJECTS.PROJECT_NAME.string);
@@ -154,6 +165,7 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
     @Override
     protected void updateProfile() {
         JSONObject updatedInfo = extractFields();
+        putImage(updatedInfo);
 
         /*Add project_name to request body "updatedInfo" only if its name has changed from the name retrieved from the server*/
         String project_name = ( (EditText) getView().findViewById(R.id.project_name) ).getText().toString();//Extract project_name
@@ -195,6 +207,7 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
         };
         MyApplication.requestQueue.add(updateProjectRequest);
     }
+
 
     /*Deletes a project from the app server and reloads the updated list of projects on the screen*/
     public void deleteProject(){

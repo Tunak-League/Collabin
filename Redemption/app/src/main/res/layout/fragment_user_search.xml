@@ -16,32 +16,42 @@
 
 
 
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:id="@+id/user_image"
+            android:layout_centerHorizontal="true"
+            />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Username"
-            android:id="@+id/textView4"
-            android:layout_below="@+id/profile_title"
-            android:layout_alignParentLeft="true"
+            android:id="@+id/username_label"
+            android:layout_below="@+id/user_image"
+            android:layout_marginRight="30dp"
+            android:layout_marginEnd="30dp"
             android:layout_alignParentStart="true"
-            android:layout_marginLeft="32dp"
-            android:layout_marginStart="32dp" />
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="30dp"
+         />
 
         <!--Username input field-->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/username"
-            android:layout_below="@+id/textView4"
-            android:layout_alignLeft="@+id/textView4"
-            android:layout_alignStart="@+id/textView4"
+            android:layout_below="@+id/user_image"
             android:clickable="false"
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:layout_marginRight="30dp"
-            android:layout_marginEnd="30dp"/>
+            android:layout_marginEnd="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="30dp" />
 
 
         <TextView
