@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.app_constants.ServerConstants;
@@ -56,6 +57,16 @@ public class ProjectSearchFragment extends BaseProfileFragment {
 
         /*Initialize the skillsField*/
         skillsField = (ExpandableHeightGridView) view.findViewById(R.id.skills );
+
+        /*Initialize image data, and Add listener to imageview*/
+        initializeImageData( (ImageView) view.findViewById(R.id.user_image), ServerConstants.USERS.USER_IMAGE.string );
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadImagefromGallery();
+                //image.postInvalidate();
+            }
+        });
 
         /*Specify all EditText fields in the UI that need to be POPULATED upon retrieving profile info and  and their corresponding server model keys*/
         fieldsToPopulate.put( view.findViewById(R.id.username), ServerConstants.USERS.USERNAME.string );

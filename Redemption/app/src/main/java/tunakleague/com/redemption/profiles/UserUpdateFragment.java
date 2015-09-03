@@ -163,15 +163,6 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
 
     }
 
-    protected void putImage(JSONObject data){
-        try {
-            data.put(USERS.USER_IMAGE.string, base64Image);
-            Log.d(TAG, "I put the image in");
-        } catch (JSONException e) {
-            Log.d(TAG, "failed to put image" );
-            e.printStackTrace();
-        }
-    }
 
 
 }

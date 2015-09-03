@@ -130,8 +130,8 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
     protected void reloadProjects() {
         Intent reloadIntent = new Intent(getActivity(), getActivity().getClass());
         reloadIntent.setAction(Constants.ACTION_PROJECT);
-        startActivity(reloadIntent);
         getActivity().finish();
+        startActivity(reloadIntent);
     }
 
     /*
@@ -227,6 +227,7 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
 
     }
 
+    /*Gets the image selected by user and sets it as the profile picture. Also encodes it to a base64 string to update to the server*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -239,6 +240,15 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
         }
     }
 
+    protected void putImage(JSONObject data){
+        try {
+            data.put(imageFieldName, base64Image);
+            Log.d(TAG, "I put the image in");
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to put image" );
+            e.printStackTrace();
+        }
+    }
 
 
 }
