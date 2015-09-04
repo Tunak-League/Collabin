@@ -60,17 +60,11 @@ public class ProjectSearchFragment extends BaseProfileFragment {
 
         /*Initialize image data, and Add listener to imageview*/
         initializeImageData( (ImageView) view.findViewById(R.id.user_image), ServerConstants.USERS.USER_IMAGE.string );
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadImagefromGallery();
-                //image.postInvalidate();
-            }
-        });
+
 
         /*Specify all EditText fields in the UI that need to be POPULATED upon retrieving profile info and  and their corresponding server model keys*/
-        fieldsToPopulate.put( view.findViewById(R.id.username), ServerConstants.USERS.USERNAME.string );
-        fieldsToPopulate.put( view.findViewById(R.id.user_summary), ServerConstants.USERS.USER_SUMMARY.string );
+        fieldsToPopulate.put(view.findViewById(R.id.username), ServerConstants.USERS.USERNAME.string );
+        fieldsToPopulate.put(view.findViewById(R.id.user_summary), ServerConstants.USERS.USER_SUMMARY.string );
         fieldsToPopulate.put(view.findViewById(R.id.location), ServerConstants.USERS.LOCATION.string);
 
         return view;

@@ -320,6 +320,7 @@ class UserDetail(APIView):
 
     # Modifies the profile of the requesting user
     def put(self, request, format = None):
+        
         profile = UserProfiles.objects.get(user_id = request.user.id) 
         requestData = request.data.copy() # Make a mutable copy of the request
         requestData['user'] = profile.user_id # Set the user field to requesting user

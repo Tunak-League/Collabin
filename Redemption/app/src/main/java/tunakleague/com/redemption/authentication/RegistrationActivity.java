@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -38,7 +39,7 @@ public class RegistrationActivity extends AuthenticationActivity {
 
     //Input fields for creating new User
     private EditText username;
-    private EditText password;
+    private EditText password, passwordConfirm;
     private EditText email;
 
     @Override
@@ -49,6 +50,7 @@ public class RegistrationActivity extends AuthenticationActivity {
         //Assign input fields to instance variables
         username = (EditText) findViewById(R.id.user_input);
         password = (EditText) findViewById(R.id.password_input);
+        passwordConfirm = (EditText) findViewById(R.id.password_confirm);
         email = (EditText) findViewById(R.id.email_input);
     }
 
@@ -83,6 +85,12 @@ public class RegistrationActivity extends AuthenticationActivity {
         /*User-entered inputs for username and password fields. Needed for login after registration*/
         final String username_input = username.getText().toString();
         final String password_input = password.getText().toString();
+        final String password_confirm = passwordConfirm.getText().toString();
+
+        if (!password_input.equals(password_confirm)) {
+            Toast.makeText(this, "Passwords do not match. Please try again.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         tokenBroadcastReceiver = new DeviceIDReceiver() { //Wait for IDRegistrationService to send you the deviceID from GCM
 

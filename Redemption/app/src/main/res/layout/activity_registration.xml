@@ -68,6 +68,20 @@
         android:layout_alignBaseline="@id/password_label"
         />
 
+    <!--Password confirm field -->
+    <EditText
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/password_confirm"
+        android:layout_below="@id/password_input"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@id/password_label"
+        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@id/password_label"
+        />
+
     <!--Email label -->
     <TextView
         android:layout_width="wrap_content"

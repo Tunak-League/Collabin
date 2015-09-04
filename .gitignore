@@ -63,3 +63,7 @@ target/
 *.swp
 *.swo
 *.swn
+<<<<<<< HEAD
+=======
+settings.py
+>>>>>>> e55a57c94710b7ec503f35177abea6411015141f

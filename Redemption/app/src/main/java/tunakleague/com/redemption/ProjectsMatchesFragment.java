@@ -27,7 +27,7 @@ import tunakleague.com.redemption.app_constants.ServerConstants;
 import tunakleague.com.redemption.messaging.ChatMainActivity;
 
 
-// Returns all of user's projects matches
+// Returns all of project's user matches
 public class ProjectsMatchesFragment extends Fragment {
     private View view;
     private ListView listView;

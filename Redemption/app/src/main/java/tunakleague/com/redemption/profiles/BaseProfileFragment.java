@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -217,8 +216,6 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
     Converts a JSONArray to a list of strings.Used for extracting the "skills" and "types" fields from profileData.
      */
     protected List<String> fieldToList(JSONArray array) {
-        Type listType = new TypeToken<List<String>>() {
-        }.getType();
         List<String> list = new ArrayList<String>();
 
         for( int i = 0; i < array.length(); i++ ) {

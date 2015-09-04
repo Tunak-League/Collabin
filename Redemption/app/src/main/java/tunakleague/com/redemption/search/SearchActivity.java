@@ -9,7 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
