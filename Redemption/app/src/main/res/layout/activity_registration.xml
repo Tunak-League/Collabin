@@ -70,17 +70,17 @@
 
     <!--Password confirm field -->
     <EditText
-        android:layout_width="0dip"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/password_confirm"
-        android:layout_below="@id/password_input"
-        android:layout_centerHorizontal="true"
-        android:layout_toRightOf="@id/password_label"
+        android:layout_below="@+id/password_input"
         android:layout_alignParentRight="true"
-        android:layout_alignBaseline="@id/password_label"
-        />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="24dp"
+        android:layout_alignLeft="@+id/user_input"
+        android:layout_alignStart="@+id/user_input" />
 
     <!--Email label -->
     <TextView
@@ -90,7 +90,7 @@
         android:text="Email"
         android:id="@+id/email_label"
         android:layout_marginTop="92dp"
-        android:layout_below="@+id/user_input"
+        android:layout_below="@id/password_confirm"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
