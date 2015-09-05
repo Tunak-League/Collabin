@@ -1,6 +1,7 @@
 from server.models import Projects, UserProfiles, Skills, Types, Swipes
 from server.serializers import UsersSerializer, ProjectsSerializer, UserProfilesSerializer, TypesSerializer, SkillsSerializer, SwipesSerializer, ProjectMatchSerializer, UserMatchSerializer
 
+from datetime import date, datetime
 from django.http import Http404
 from django.db.models import Count
 from django.contrib.auth.models import User
@@ -12,7 +13,6 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
-from datetime import date, datetime
 
 from push_notifications.models import GCMDevice
 from server.permissions import IsOwnerOrReadOnly
@@ -205,15 +205,12 @@ Inserts the result of a project swiping on a UserProfile into the Swipes table, 
 @api_view(['PUT'])
 #@permission_classes( (IsAuthenticated,) )
 def project_swipe( request, **kwargs ):
-    print "hi"
     #Try to obtain the project and user specified in the URL. 
     project = getProject( kwargs['project'] )
-    print "got the project"
     if not isOwner(request, project):
         return Response(status = status.HTTP_403_FORBIDDEN)
-    #TODO: IMPLEMENT PERMISSION CHECK TO SEE IF REQUESTING USER OWNS THE PROJECT
+    
     user = getUser( kwargs['user'] ) 
-    print "got thet user"
     #Attempt to update the swipe in the Swipes table if it exists
     try:
         swipe = Swipes.objects.get(user_profile=user, project=project )
@@ -232,11 +229,8 @@ def project_swipe( request, **kwargs ):
     except Swipes.DoesNotExist: #Create a new entry in swipes table if it doesn't exist
         #Populate request.data with the project and user for creation of new Swipe
         requestData = request.data.copy()
-        print "IT DOESN'T EXIST OKAY?"
         requestData['user_profile'] = user.id
-        print "got the user profile..... AGAIN"
         requestData['project'] = project.id
-        print "got user and project already..."
         serializer = SwipesSerializer(data=requestData)
  
         if serializer.is_valid():
@@ -245,9 +239,6 @@ def project_swipe( request, **kwargs ):
 
     return Response(serializer.errors, status.HTTP_400_BAD_REQUEST ) #If neither an update or create occurred (data was invalid)
 
-
-
-
 '''
     Returns all projects matched with the requesting user
 '''
@@ -255,11 +246,9 @@ def project_swipe( request, **kwargs ):
 def user_matches(request):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
     profile = UserProfiles.objects.get(user = request.user) # Get the requesting user's profile
     matched_swipes = Swipes.objects.filter(user_profile=profile, user_likes=Swipes.YES, project_likes=Swipes.YES) # Get all swipes that user is involved in with mutual likes
-    #project_list = [matched_swipe.project_id for matched_swipe in matched_swipes]
-    #projects = Projects.objects.filter(id__in = project_list)
-    #serializer = ProjectsSerializer(projects, many=True, context = {'request': request})
     serializer = UserMatchSerializer(matched_swipes, many = True)
     return Response(serializer.data)
 
@@ -281,35 +270,34 @@ def project_matches(request):
 '''
     Makes a new user and user profile in the database
 '''
-class UserList( APIView):
+class UserList(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = UsersSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
-	def post(self, request, *args, **kwargs):
-		serializer = UsersSerializer(data = request.data)
-		if serializer.is_valid():
-			serializer.save()
-		else:
-			return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+        device = GCMDevice.objects.create(registration_id=request.data.get('device_id')  ) #create new GCMDevice with the given device_id
+        user = User.objects.get(username = request.data.get('username'))
+        requestData = request.data.copy() # Make a mutable copy of the request
+        requestData['user'] = user.id # Set the user field to requesting user
+        requestData['device'] = device.id 
+        print requestData 
+        skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
+        if (skillsList != None) and (not check_skills(skillsList) ): 
+                return Response(status = status.HTTP_400_BAD_REQUEST)
 
-		device = GCMDevice.objects.create(registration_id=request.data.get('device_id')  ) #create new GCMDevice with the given device_id
-		user = User.objects.get(username = request.data.get('username'))
-		requestData = request.data.copy() # Make a mutable copy of the request
-		requestData['user'] = user.id # Set the user field to requesting user
-		requestData['device'] = device.id 
-		print requestData 
-		skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
-		if (skillsList != None) and (not check_skills(skillsList) ): 
-			return Response(status = status.HTTP_400_BAD_REQUEST)
-
-		serializer = UserProfilesSerializer(data = requestData)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data, status = status.HTTP_201_CREATED)
-		return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-	
-	def get( self, request, *args, **kwargs ):
-		user_profile = UserProfiles.objects.get( user=request.user);
-		serializer = UserProfilesSerializer(user_profile);
-		return Response( serializer.data );
+        serializer = UserProfilesSerializer(data = requestData)
+        if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status = status.HTTP_201_CREATED)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+    
+    def get( self, request, *args, **kwargs ):
+        user_profile = UserProfiles.objects.get( user=request.user);
+        serializer = UserProfilesSerializer(user_profile);
+        return Response( serializer.data );
 
 '''
     Modifies or deletes a user
@@ -319,8 +307,7 @@ class UserDetail(APIView):
     permission_classes = (IsAuthenticated,)
 
     # Modifies the profile of the requesting user
-    def put(self, request, format = None):
-        
+    def put(self, request, format = None): 
         profile = UserProfiles.objects.get(user_id = request.user.id) 
         requestData = request.data.copy() # Make a mutable copy of the request
         requestData['user'] = profile.user_id # Set the user field to requesting user
@@ -332,17 +319,13 @@ class UserDetail(APIView):
             device.registration_id = device_id;
             device.save();
         
-        #print requestData['skills']
         skillsList = request.data.get('skills') # Get a list of all skills associated with this user
-        print "Before check skills"
         #If user has submitted skills, check if the skills exist in the database, create them if they don't
         if (skillsList != None) and ( not check_skills(skillsList) ): 
             return Response(status = status.HTTP_400_BAD_REQUEST)
-        print "After"
         serializer = UserProfilesSerializer(profile, data = requestData, partial=True)
         if serializer.is_valid():
             serializer.save()
-            print serializer.data
             return Response(serializer.data)
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
@@ -403,13 +386,6 @@ class Chat(APIView):
         recipient_device.send_message("ChatNotification" + " " + request.data['message'], extra = {'sender': str(profile.id), 'recipient': str(recipient.id), 'time_sent': str(datetime.now())})
 	# recipient_device.send_message(None, extra = {'sender': str(profile.id), 'recipient': str(recipient.id), 'time_sent': str(datetime.now())})
         return Response(requestData, status = status.HTTP_201_CREATED)
-        '''
-            serializer = ChatSerializer(data = requestData)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status = status.HTTP_201_CREATED)
-            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-        '''
 
 class UserGet(APIView): 
     authentication_classes = (TokenAuthentication,)
@@ -425,8 +401,6 @@ class UserGet(APIView):
         serializer = UserProfilesSerializer(profile)
         return Response(serializer.data)
 
-
-
 @api_view(['GET'])
 def skills(request):
     all_skills = Skills.objects.all()
@@ -439,8 +413,6 @@ class UserImageList(APIView):
 
     def get(self, request, format = None):
         image = UserImages.objects.get()
-
-
 
 def isOwner(request, project):
     return request.user == project.owner.user

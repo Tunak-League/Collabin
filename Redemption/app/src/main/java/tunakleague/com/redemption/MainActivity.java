@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPostResume() {
-        super.onResume();
+        super.onPostResume();
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = settings.edit();
 

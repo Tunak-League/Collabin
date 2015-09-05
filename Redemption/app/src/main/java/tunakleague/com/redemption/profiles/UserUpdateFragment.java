@@ -88,17 +88,19 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
 
 
         /*Specify all EditText fields in the UI that need to be POPULATED upon retrieving profile info and  and their corresponding server model keys*/
-        fieldsToPopulate.put( view.findViewById(R.id.username), USERS.USERNAME.string );
-        fieldsToPopulate.put( view.findViewById(R.id.email), USERS.EMAIL.string );
-        fieldsToPopulate.put( view.findViewById(R.id.user_summary), USERS.USER_SUMMARY.string );
-        fieldsToPopulate.put( view.findViewById(R.id.location), USERS.LOCATION.string );
+        fieldsToPopulate.put(view.findViewById(R.id.username), USERS.USERNAME.string);
+        fieldsToPopulate.put(view.findViewById(R.id.email), USERS.EMAIL.string);
+        fieldsToPopulate.put(view.findViewById(R.id.user_summary), USERS.USER_SUMMARY.string );
+        fieldsToPopulate.put(view.findViewById(R.id.location), USERS.LOCATION.string );
+        fieldsToPopulate.put(view.findViewById(R.id.first_name_edit), USERS.FIRST_NAME.string);
+        fieldsToPopulate.put(view.findViewById(R.id.last_name_edit), USERS.LAST_NAME.string);
 
         /*Specify all EditText fields in the UI that need to be EXTRACTED upon update and their corresponding server model keys*/
-        fieldsToExtract.put( view.findViewById(R.id.email), USERS.EMAIL.string );
-        fieldsToExtract.put( view.findViewById(R.id.location), USERS.LOCATION.string );
-        fieldsToExtract.put( view.findViewById(R.id.user_summary), USERS.USER_SUMMARY.string );
-
-        //TODO: Put in email ONLY if it has changed (probably in updateProfile)
+        fieldsToExtract.put(view.findViewById(R.id.email), USERS.EMAIL.string );
+        fieldsToExtract.put(view.findViewById(R.id.location), USERS.LOCATION.string );
+        fieldsToExtract.put(view.findViewById(R.id.user_summary), USERS.USER_SUMMARY.string );
+        fieldsToExtract.put(view.findViewById(R.id.first_name_edit), USERS.FIRST_NAME.string);
+        fieldsToExtract.put(view.findViewById(R.id.last_name_edit), USERS.LAST_NAME.string);
 
         return view;
     }
@@ -118,7 +120,7 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
                             Log.d(TAG, "Response: " + profileData.toString() );
                     }
                 },
-                new DetailedErrorListener(getActivity()) //TODO: Need to override and make something to STOP/EXIT the Fragment if request fails (or else you operate on null data)
+                new DetailedErrorListener(getActivity())
 
         )
         {

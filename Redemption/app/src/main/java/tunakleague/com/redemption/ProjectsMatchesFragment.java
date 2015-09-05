@@ -2,6 +2,7 @@ package tunakleague.com.redemption;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,13 +22,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
+import tunakleague.com.redemption.app_constants.PreferencesKeys;
 import tunakleague.com.redemption.app_constants.ServerConstants;
 import tunakleague.com.redemption.messaging.ChatMainActivity;
 
-
-// Returns all of project's user matches
+// Returns all users matched with the requesting project (owner)
 public class ProjectsMatchesFragment extends Fragment {
     private View view;
     private ListView listView;
@@ -38,7 +40,6 @@ public class ProjectsMatchesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.tab_projects_matches, container, false);
 
-        final String URL = ServerConstants.URLS.PROJECTS_MATCHES.string;
         listView = (ListView) view.findViewById(R.id.project_chat_list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -52,6 +53,12 @@ public class ProjectsMatchesFragment extends Fragment {
             }
         });
 
+        return view;
+    }
+    @Override
+    public void onActivityCreated(Bundle savedInstance) {
+        super.onActivityCreated(savedInstance);
+        final String URL = ServerConstants.URLS.PROJECTS_MATCHES.string;
         JsonArrayRequest projectMatchRequest = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -88,15 +95,18 @@ public class ProjectsMatchesFragment extends Fragment {
                         Log.d(TAG, "Failed to display user matches");
                     }
                 }
-        ) {
+        )
+        {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return MyApplication.getAuthenticationHeader(getActivity());
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "Token " +
+                        PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(PreferencesKeys.AUTH_TOKEN, "noTokenFound"));
+                return params;
             }
         };
 
         MyApplication.requestQueue.add(projectMatchRequest);
 
-        return view;
     }
 }

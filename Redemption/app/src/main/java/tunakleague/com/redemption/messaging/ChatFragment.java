@@ -40,7 +40,11 @@ import tunakleague.com.redemption.app_constants.PreferencesKeys;
 import tunakleague.com.redemption.app_constants.ServerConstants;
 import tunakleague.com.redemption.notifications.NotificationsPreferences;
 
-
+/**
+ * Fragment displayed as a tab as a part of the ChatMainActivity.
+ * Displays the chat log between two users and provides a UI for
+ * the users to send messages to one another
+ */
 public class ChatFragment extends Fragment  {
     private View view;
     private int toUser, sender;
@@ -49,7 +53,7 @@ public class ChatFragment extends Fragment  {
     private ListView listView;
     private ChatCursorAdapter adapter;
     private Cursor c;
-    private BroadcastReceiver tokenBroadcastReceiver;
+    private BroadcastReceiver tokenBroadcastReceiver; // detects incoming chat message and displays it
     private String result;
 
     @Override
@@ -87,7 +91,7 @@ public class ChatFragment extends Fragment  {
                 c = db.query(
                         DbHelper.TABLE_NAME, // table name
                         projection, // columns to be returned by the query
-                        whereClause, //
+                        whereClause,
                         whereArgs,
                         null,
                         null,
@@ -123,7 +127,7 @@ public class ChatFragment extends Fragment  {
         c = db.query(
                 DbHelper.TABLE_NAME, // table name
                 projection, // columns to be returned by the query
-                whereClause, //
+                whereClause,
                 whereArgs,
                 null,
                 null,
@@ -155,21 +159,33 @@ public class ChatFragment extends Fragment  {
         return view;
     }
 
+    /**
+     * Sends a message to the specified recipient
+     * @param recipient
+     *          id of the recipient
+     * @param messageToSend
+     *          message to be sent
+     */
     private void sendMessageToGCMAppServer(final String recipient, final String messageToSend) {
         new AsyncTask<Void, Void, String>() {
-
             @Override
             protected String doInBackground(Void... params) {
                 return sendMessage(recipient, messageToSend);
             }
-
             @Override
             protected void onPostExecute(String msg) {
-
             }
         }.execute(null, null, null);
     }
 
+    /**
+     * Sends request to the app server to send a chat message
+     * @param toUserName
+     *          recipient id
+     * @param messageToSend
+     *          message body
+     * @return result of the request
+     */
     public final String sendMessage(final String toUserName, final String messageToSend) {
         String url = ServerConstants.URLS.CHAT.string;
 
@@ -218,13 +234,13 @@ public class ChatFragment extends Fragment  {
                             c = db.query(
                                     DbHelper.TABLE_NAME, // table name
                                     projection, // columns to be returned by the query
-                                    whereClause, //
-                                    whereArgs,
+                                    whereClause, // rows to be returned by the query
+                                    whereArgs, // rows to be returned by the query
                                     null,
                                     null,
-                                    orderBy
+                                    orderBy // order messages in the order they are sent
                             );
-                            adapter.changeCursor(c);
+                            adapter.changeCursor(c); // change the cursor
                             db.close();
                             result = jsonResponse.getString("recipient") + ": " + jsonResponse.getString("message");
                         } catch (JSONException e) {

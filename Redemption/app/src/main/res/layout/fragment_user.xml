@@ -13,8 +13,6 @@
     android:layout_height="wrap_content" tools:context="tunakleague.com.redemption.profiles.UserUpdateFragment"
     >
 
-    <!-- TODO: Update blank fragment layout -->
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,14 +56,58 @@
         android:focusableInTouchMode="false"
         android:layout_marginRight="30dp"
         android:layout_marginEnd="30dp"/>
+    <!-- First Name -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="First Name"
+        android:id="@+id/first_name"
+        android:layout_below="@+id/username"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp" />
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/first_name_edit"
+        android:layout_below="@+id/first_name"
+        android:layout_alignLeft="@+id/first_name"
+        android:layout_alignStart="@+id/first_name"
+        android:layout_marginRight="30dp" />
+
+    <!-- Last Name -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Last Name"
+        android:id="@+id/last_name"
+        android:layout_below="@+id/first_name_edit"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/last_name_edit"
+        android:layout_below="@+id/last_name"
+        android:layout_alignLeft="@+id/last_name"
+        android:layout_alignStart="@+id/last_name"
+        android:layout_marginRight="30dp" />
+
+    <!-- Email -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Email"
         android:id="@+id/email_label"
-        android:layout_below="@+id/username"
+        android:layout_below="@+id/last_name_edit"
         android:layout_alignLeft="@+id/username"
         android:layout_alignStart="@+id/username" />
 

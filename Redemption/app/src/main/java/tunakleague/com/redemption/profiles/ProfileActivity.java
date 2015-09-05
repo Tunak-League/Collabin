@@ -48,15 +48,14 @@ public class ProfileActivity extends DrawerActivity implements BaseProjectListFr
         mDrawerLayout.addView(contentView, 0);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new ProfileFragmentPagerAdapter(getSupportFragmentManager(),
-                ProfileActivity.this));
+        viewPager.setAdapter(new ProfileFragmentPagerAdapter(getSupportFragmentManager(), ProfileActivity.this));
         // Give the TabLayout the ViewPager
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setVisibility(View.VISIBLE);
 
         /*Displays the Projects tab upon opening if the last action completed was a project update or project create*/
-        if( getIntent().getAction() != null && getIntent().getAction().equals(Constants.ACTION_PROJECT)) {
+        if (getIntent().getAction() != null && getIntent().getAction().equals(Constants.ACTION_PROJECT)) {
             TabLayout.Tab tab = tabLayout.getTabAt(1);
             tab.select();
         }

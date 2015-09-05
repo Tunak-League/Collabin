@@ -2,6 +2,7 @@ package tunakleague.com.redemption.messaging;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,10 @@ import tunakleague.com.redemption.app_constants.ServerConstants;
 import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
 import tunakleague.com.redemption.profiles.BaseProfileFragment;
 
+/**
+ * Fragment displayed as a tab as a part of the ChatMainActivity.
+ * Displays the profile of the selected user
+ */
 public class ChatProfileFragment extends BaseProfileFragment {
     private View view;
     private int profileId;
@@ -43,6 +48,8 @@ public class ChatProfileFragment extends BaseProfileFragment {
         fieldsToPopulate.put(view.findViewById(R.id.email), ServerConstants.USERS.EMAIL.string);
         fieldsToPopulate.put(view.findViewById(R.id.user_summary), ServerConstants.USERS.USER_SUMMARY.string );
         fieldsToPopulate.put(view.findViewById(R.id.location), ServerConstants.USERS.LOCATION.string );
+        fieldsToPopulate.put(view.findViewById(R.id.last_name_edit), ServerConstants.USERS.LAST_NAME.string);
+        fieldsToPopulate.put(view.findViewById(R.id.first_name_edit), ServerConstants.USERS.FIRST_NAME.string);
 
         profileId = getActivity().getIntent().getIntExtra("recipient", -1);
         String url = ServerConstants.URLS.USER_GET.string + Integer.toString(profileId) + "/";
@@ -52,6 +59,7 @@ public class ChatProfileFragment extends BaseProfileFragment {
                     public void onResponse(String response) {
                         try {
                             JSONObject data = new JSONObject(response);
+                            Log.d("ChatProfileFragment", data.toString());
                             renderUI(data);
                         }
 

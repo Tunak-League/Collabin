@@ -35,9 +35,9 @@ public abstract class DrawerActivity extends AppCompatActivity {
     private CharSequence mTitle;
 
     /*Constants for items in the navigation drawer*/
-    public static final int LOGOUT = 0;
+    public static final int LOGOUT = 2;
     public static final int PROFILE = 1;
-    public static final int HOME = 2;
+    public static final int HOME = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

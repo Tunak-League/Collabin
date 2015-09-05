@@ -85,7 +85,6 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
         @throws JSONException ex - if an error occurs while attempting to put items into the ProfileUpdateFragment
      */
     protected JSONObject extractFields() {
-        //TODO: Implement this.
         /*Extract all fields except skills and types*/
         JSONObject data = new JSONObject();
         for (View view : fieldsToExtract.keySet()) {
@@ -207,7 +206,7 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
 
                         @Override
                         public void onClick(DialogInterface dialog, int typeSelected) {
-                            addItem(typesField, types[typeSelected]); //Add the se.lected type based on its position in the "types" array
+                            addItem(typesField, types[typeSelected]); //Add the selected type based on its position in the "types" array
                             dialog.dismiss();
                         }
 

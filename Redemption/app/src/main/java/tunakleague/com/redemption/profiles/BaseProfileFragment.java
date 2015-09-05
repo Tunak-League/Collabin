@@ -147,7 +147,7 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
         configureListData();
 
         /*Handle image downloading*/
-      downloadImage();
+        downloadImage();
     }
 
 /*Gets the profile's image from AWS if the image field url is not null and displays it */

@@ -14,18 +14,13 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
         switch (position) {
             case 0:
-                HomeFragment home = new HomeFragment();
-                return home;
+                return new HomeFragment();
             case 1:
-                MatchesFragment matches = new MatchesFragment();
-                return matches;
+                return new MatchesFragment();
             case 2:
-                ProjectsMatchesFragment projectMatches = new ProjectsMatchesFragment();
-                return projectMatches;
-
+                return new ProjectsMatchesFragment();
             default:
                 return null;
         }

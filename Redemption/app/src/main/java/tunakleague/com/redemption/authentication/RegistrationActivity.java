@@ -41,6 +41,7 @@ public class RegistrationActivity extends AuthenticationActivity {
     private EditText username;
     private EditText password, passwordConfirm;
     private EditText email;
+    private EditText first_name, last_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,8 @@ public class RegistrationActivity extends AuthenticationActivity {
         password = (EditText) findViewById(R.id.password_input);
         passwordConfirm = (EditText) findViewById(R.id.password_confirm);
         email = (EditText) findViewById(R.id.email_input);
+        first_name = (EditText) findViewById(R.id.first_name_edit);
+        last_name = (EditText) findViewById(R.id.last_name_edit);
     }
 
     @Override
@@ -148,6 +151,8 @@ public class RegistrationActivity extends AuthenticationActivity {
                         params.put(USERS.PASSWORD.string, password_input );
                         params.put(USERS.EMAIL.string, email.getText().toString() );
                         params.put(USERS.DEVICE_ID.string,deviceID );
+                        params.put(USERS.FIRST_NAME.string, first_name.getText().toString());
+                        params.put(USERS.LAST_NAME.string, last_name.getText().toString());
                         params.put("Content-Type","application/json");
                         return params;
                     }

@@ -46,7 +46,6 @@ public class HomeActivity extends DrawerActivity {
 
             }
         });
-
     }
 
     /*Handler for clicking "Find Projects" button. Launches UserSearchActivity*/
@@ -59,8 +58,8 @@ public class HomeActivity extends DrawerActivity {
     /*Handler for clicking "Find Collaborators" button. Launches a ProjectSelectActivity */
     public void findCollaborators( View v) {
         Log.d( TAG, "clicked Find Collab" );
-        Intent projectSelectIntent = new Intent( this, ProjectSelectActivity.class);
-        startActivity( projectSelectIntent);
+        Intent projectSelectIntent = new Intent(this, ProjectSelectActivity.class);
+        startActivity(projectSelectIntent);
     }
 
 

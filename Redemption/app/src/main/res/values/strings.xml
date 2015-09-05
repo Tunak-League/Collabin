@@ -3,7 +3,6 @@
 
     <string name="action_settings">Settings</string>
 
-
     <string name="title_activity_registration">RegistrationActivity</string>
     <string name="title_activity_welcome">WelcomeActivity</string>
 
@@ -14,15 +13,13 @@
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Open drawer</string>
 
-
     <!-- Options in the Navigation Drawer-->
     <string-array
         name="navigation_options">
-        <item>Logout</item>
-        <item>Profile</item>
         <item>Home</item>
+        <item>Profile</item>
+        <item>Logout</item>
     </string-array>
-
 
     <!-- SharedPreferences Keys-->
     <string name="auth_token">Authentication Token</string>

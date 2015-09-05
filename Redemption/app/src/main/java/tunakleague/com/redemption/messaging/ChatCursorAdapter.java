@@ -17,16 +17,30 @@ public class ChatCursorAdapter extends CursorAdapter {
         super(context, cursor, 0);
     }
 
-
-    // The newView method is used to inflate a new view and return it,
-    // you don't bind any data to the view at this point.
+    /**
+     * Inflates a new view
+     * @param context
+     *          application context
+     * @param cursor
+     *          cursor for queried data
+     * @param parent
+     *          ViewGroup instance
+     * @return view of layout containing a single message
+     */
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return LayoutInflater.from(context).inflate(R.layout.chat_message, parent, false);
     }
 
-    // The bindView method is used to bind all data to a given view
-    // such as setting the text on a TextView.
+    /**
+     * Binds all data to a given view, such as setting the text on a TextView.
+     * @param view
+     *          view to bind data to
+     * @param context
+     *          app context
+     * @param cursor
+     *          cursor for queried data
+     */
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         // Find fields to populate in inflated template
@@ -39,7 +53,7 @@ public class ChatCursorAdapter extends CursorAdapter {
         else {
             params.gravity = Gravity.RIGHT;
         }
-        msg.setLayoutParams(params);
+        msg.setLayoutParams(params); // Aligns messages left or right depending on whether they are sent or received
 
         String body = cursor.getString(cursor.getColumnIndexOrThrow("message"));
         String dateSent = getDate(cursor.getString(cursor.getColumnIndexOrThrow("time_sent")));
@@ -47,6 +61,12 @@ public class ChatCursorAdapter extends CursorAdapter {
         msg.setText(body + "\n" + dateSent);
     }
 
+    /**
+     * Returns a more readable date format
+     * @param rawDate
+     *          date format sent from the app server
+     * @return readable date format
+     */
     public String getDate(String rawDate) {
         String[] dateTime = rawDate.split(" ");
         String[] time = dateTime[1].split(":");

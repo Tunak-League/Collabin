@@ -56,6 +56,8 @@ class UsersSerializer(serializers.ModelSerializer):
     username = serializers.CharField(error_messages = {'required': 'Please enter a username',})
     email = serializers.CharField(required = True, error_messages = {'required': 'Please enter your email address',})  
     password = serializers.CharField(required = True, error_messages = {'required': 'Please enter a password'})
+    first_name = serializers.CharField(required = True, error_messages = {'required': 'Please enter your first name'})
+    last_name = serializers.CharField(required = True, error_messages = {'required': 'Please enter your last name'})
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
@@ -99,16 +101,18 @@ class UserProfilesSerializer(serializers.ModelSerializer):
         queryset = Skills.objects.all(),
         slug_field = 'skill_name',
     )
+
     types = serializers.SlugRelatedField (
         many = True,
         queryset = Types.objects.all(),
         slug_field = 'type_name'
     )
+    
     last_name = serializers.ReadOnlyField(source = 'user.last_name')
     first_name= serializers.ReadOnlyField(source = 'user.first_name')
     email = serializers.ReadOnlyField(source = 'user.email')
     username = serializers.ReadOnlyField(source = 'user.username')
-    user_image = Base64ImageField( max_length=None, use_url=True, required=False ) 
+    user_image = Base64ImageField(max_length=None, use_url=True, required=False) 
 
     class Meta:
         model = UserProfiles
