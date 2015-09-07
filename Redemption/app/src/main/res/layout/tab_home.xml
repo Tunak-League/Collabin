@@ -19,7 +19,7 @@
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:backgroundTint="#FFFFFF" />
-    
+
     <ImageButton
         android:src="@drawable/simple_globe_search"
         android:layout_width="150dp"
