@@ -4,36 +4,72 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="tunakleague.com.redemption.authentication.LoginActivity">
+    tools:context="tunakleague.com.redemption.authentication.LoginActivity"
+    android:id="@+id/relativelayout2"
+    android:background="@drawable/wallpaper4"
+    android:touchscreenBlocksFocus="true">
 
-    <EditText
-        android:layout_width="fill_parent"
+    <TextView android:text="Collabin "
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/user_login"
+        android:autoText="false"
+        android:textIsSelectable="false"
+        android:textSize="55dp"
+        android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:hint="Enter your Username" />
+        android:layout_marginTop="100dp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#FFFFFF" />
+
 
     <EditText
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/password_login"
-        android:layout_below="@+id/user_login"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="77dp"
-        android:hint="Enter your password" />
+        android:layout_height="45dp"
+        android:id="@+id/user_login"
+        android:hint=" Username"
+        android:textSize="23sp"
+        android:textColorHint="@color/grey"
+        android:singleLine="true"
+        android:background="@drawable/rounded_edittext"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <!-- Login button-->
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Log in"
+        android:layout_height="45dp"
+        android:text="Log In"
+        android:textSize="27dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@color/blue"
         android:id="@+id/login_button"
+        android:layout_marginBottom="69dp"
+        android:onClick="login"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="102dp"
-        android:onClick="login"/>
+        android:layout_alignRight="@+id/password_login"
+        android:layout_alignEnd="@+id/password_login"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/password_login"
+        android:hint=" Password"
+        android:textSize="23sp"
+        android:textColorHint="@color/grey"
+        android:layout_above="@id/login_button"
+        android:layout_alignParentLeft="true"
+        android:singleLine="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="38dp"
+        android:background="@drawable/rounded_edittext"
+        android:layout_alignRight="@id/user_login"
+        android:layout_alignEnd="@id/user_login" />
+
 </RelativeLayout>

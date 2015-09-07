@@ -3,30 +3,84 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/wallpaper4">
 
-    <Button
+    <TextView android:text="Collabin "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoText="false"
+        android:textIsSelectable="false"
+        android:textSize="55dp"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#FFFFFF" />
+    
+    <ImageButton
+        android:src="@drawable/simple_globe_search"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/imageButton_find_projects"
+        android:onClick="findProjects"
+        android:clickable="true"
+        android:layout_above="@+id/find_projects"
+        android:layout_toLeftOf="@+id/find_collaborators"
+        android:layout_toStartOf="@+id/find_collaborators"
+        android:layout_marginRight="22dp"
+        android:layout_marginEnd="22dp"
+        android:background="@drawable/wallpaper4"
+        android:scaleType="centerCrop" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Find Projects"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
         android:id="@+id/find_projects"
-        android:layout_gravity="left|center_vertical"
-        android:layout_marginTop="189dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:onClick="findProjects"/>
 
-    <Button
+        android:onClick="findProjects"
+        android:layout_marginBottom="103dp"
+
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/imageButton_find_projects"
+        android:layout_alignStart="@+id/imageButton_find_projects"
+        android:layout_alignRight="@+id/imageButton_find_projects"
+        android:layout_alignEnd="@+id/imageButton_find_projects" />
+
+
+    <ImageButton
+        android:src="@drawable/magnifying_class_2"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/imageButton_find_collaborators"
+        android:onClick="findCollaborators"
+        android:clickable="true"
+        android:layout_above="@+id/find_collaborators"
+        android:layout_alignLeft="@+id/find_collaborators"
+        android:layout_alignStart="@+id/find_collaborators"
+        android:background="@drawable/wallpaper4"
+        android:scaleType="centerCrop" />
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Find Collaborators"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
         android:id="@+id/find_collaborators"
         android:layout_gravity="right|center_vertical"
+        android:onClick="findCollaborators"
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_alignTop="@+id/find_projects"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="findCollaborators"/>
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

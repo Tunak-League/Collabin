@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,16 +25,16 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import tunakleague.com.redemption.app_constants.Constants;
 import tunakleague.com.redemption.DetailedErrorListener;
 import tunakleague.com.redemption.MyApplication;
-import tunakleague.com.redemption.app_constants.PreferencesKeys;
 import tunakleague.com.redemption.R;
-import tunakleague.com.redemption.app_constants.ServerConstants.*;
+import tunakleague.com.redemption.app_constants.Constants;
+import tunakleague.com.redemption.app_constants.PreferencesKeys;
+import tunakleague.com.redemption.app_constants.ServerConstants.URLS;
+import tunakleague.com.redemption.app_constants.ServerConstants.USERS;
 import tunakleague.com.redemption.notifications.NotificationsPreferences;
 
 public class RegistrationActivity extends AuthenticationActivity {
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "RegistrationActivity";
     private DeviceIDReceiver tokenBroadcastReceiver; //listens for REGISTRATION_COMPLETE message from IDRegistrationService
 
@@ -46,6 +47,7 @@ public class RegistrationActivity extends AuthenticationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_registration);
 
         //Assign input fields to instance variables
@@ -53,8 +55,8 @@ public class RegistrationActivity extends AuthenticationActivity {
         password = (EditText) findViewById(R.id.password_input);
         passwordConfirm = (EditText) findViewById(R.id.password_confirm);
         email = (EditText) findViewById(R.id.email_input);
-        first_name = (EditText) findViewById(R.id.first_name_edit);
-        last_name = (EditText) findViewById(R.id.last_name_edit);
+        first_name = (EditText) findViewById(R.id.first_name_input);
+        last_name = (EditText) findViewById(R.id.last_name_input);
     }
 
     @Override
@@ -62,6 +64,18 @@ public class RegistrationActivity extends AuthenticationActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_registration, menu);
         return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
     }
 
     @Override

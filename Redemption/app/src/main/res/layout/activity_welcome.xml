@@ -4,62 +4,59 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="tunakleague.com.redemption.authentication.WelcomeActivity">
+    tools:context="tunakleague.com.redemption.authentication.WelcomeActivity"
+    android:background="@drawable/wallpaper4"
+    android:id="@+id/relativelayout1">
 
-    <TextView android:text="WELCOME" android:layout_width="wrap_content"
+    <TextView android:text="Collabin "
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoText="false"
         android:textIsSelectable="false"
-        android:textSize="30dp"
+        android:textSize="55dp"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="131dp"
-        android:textStyle="bold" />
+        android:layout_marginTop="100dp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#FFFFFF" />
 
-    <!-- Signup button-->
+    <!-- SIGN UP button-->
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:layout_height="46dp"
+        android:text="New User"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="27dp"
+        android:background="@drawable/welcome_button_dimen"
         android:id="@+id/signup_button"
         android:onClick="launchSignup"
-        android:layout_marginBottom="106dp"
+        android:layout_marginBottom="123dp"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/textView"
-        android:layout_toStartOf="@+id/textView" />
+        android:layout_alignRight="@+id/signin_button"
+        android:layout_alignEnd="@+id/signin_button"
+        android:layout_alignLeft="@+id/signin_button"
+        android:layout_alignStart="@+id/signin_button" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="New User"
-        android:id="@+id/textView2"
-        android:layout_marginBottom="27dp"
-        android:layout_above="@+id/signup_button"
-        android:layout_alignLeft="@+id/signup_button"
-        android:layout_alignStart="@+id/signup_button"
-        android:singleLine="false" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Returning User"
-        android:id="@+id/textView3"
-        android:layout_alignTop="@+id/textView2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <!-- Signin button-->
+    <!-- LOGIN button-->
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign In"
+        android:layout_height="46dp"
+        android:text="Login"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="27dp"
+        android:background="@drawable/welcome_button_dimen"
         android:id="@+id/signin_button"
-        android:layout_alignTop="@+id/signup_button"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView"
-        android:onClick="launchSignin"/>
+        android:onClick="launchSignin"
+        android:layout_marginBottom="53dp"
+        android:layout_above="@+id/signup_button"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView" />
 
 </RelativeLayout>
