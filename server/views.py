@@ -323,6 +323,13 @@ class UserDetail(APIView):
         #If user has submitted skills, check if the skills exist in the database, create them if they don't
         if (skillsList != None) and ( not check_skills(skillsList) ): 
             return Response(status = status.HTTP_400_BAD_REQUEST)
+
+        serializer = UsersSerializer(request.user, data = requestData, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
         serializer = UserProfilesSerializer(profile, data = requestData, partial=True)
         if serializer.is_valid():
             serializer.save()

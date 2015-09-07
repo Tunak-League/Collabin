@@ -2,12 +2,15 @@ package tunakleague.com.redemption;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import tunakleague.com.redemption.search.ProjectSelectActivity;
 import tunakleague.com.redemption.search.UserSearchActivity;
@@ -16,14 +19,29 @@ public class HomeActivity extends DrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Collabin");
+
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_home, null, false);
         mDrawerLayout.addView(contentView, 0);
 
+        TextView homeText = new TextView(getApplicationContext());
+        homeText.setText("Home");
+        homeText.setTextColor(Color.parseColor("#FFFFFF"));
+
+        TextView matchesText = new TextView(getApplicationContext());
+        matchesText.setText("My Matches");
+        matchesText.setTextColor(Color.parseColor("#FFFFFF"));
+
+        TextView projectMatchesText = new TextView(getApplicationContext());
+        projectMatchesText.setText("My Projects Matches");
+        projectMatchesText.setTextColor(Color.parseColor("#FFFFFF"));
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Home"));
-        tabLayout.addTab(tabLayout.newTab().setText("My Matches"));
-        tabLayout.addTab(tabLayout.newTab().setText("My Projects Matches"));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(homeText));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(matchesText));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(projectMatchesText));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
