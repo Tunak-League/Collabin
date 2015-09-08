@@ -74,8 +74,6 @@ public class BaseProjectListFragment extends android.support.v4.app.Fragment imp
     }
 
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

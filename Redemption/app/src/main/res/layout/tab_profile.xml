@@ -90,6 +90,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:id="@+id/first_name_input"
                 android:layout_below="@id/first_name"
                 android:layout_marginBottom="20dp"
@@ -112,6 +116,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:id="@+id/last_name_input"
                 android:layout_below="@id/last_name"
                 android:layout_marginBottom="20dp"
@@ -135,6 +143,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:inputType="textEmailAddress"
                 android:ems="10"
                 android:id="@+id/email_input"
@@ -159,6 +171,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/location"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:layout_below="@id/location_label"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
@@ -179,7 +195,7 @@
                 android:layout_alignLeft="@+id/location"
                 android:layout_alignStart="@id/first_name"
                 android:textColor="@color/blue"
-                android:layout_marginBottom="20dp" />
+                />
 
             <tunakleague.com.redemption.experimental.ExpandableHeightGridView
                 android:layout_width="fill_parent"
@@ -205,14 +221,15 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/user_summary"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:layout_below="@+id/summary_label"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignStart="@id/first_name"
                 android:layout_alignLeft="@id/summary_label"
-                android:layout_marginRight="0dp"
-                android:layout_marginEnd="0dp"
-                android:textColor="@color/blue"
                 android:background="@null"
                 android:layout_marginBottom="20dp" />
 
@@ -226,7 +243,7 @@
                 android:layout_alignLeft="@+id/summary_label"
                 android:layout_alignStart="@id/first_name"
                 android:textColor="@color/blue"
-                android:layout_marginBottom="20dp" />
+                />
 
             <tunakleague.com.redemption.experimental.ExpandableHeightGridView
                 android:layout_width="fill_parent"

@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -32,10 +33,12 @@ import tunakleague.com.redemption.MyApplication;
 import tunakleague.com.redemption.app_constants.PreferencesKeys;
 import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.app_constants.ServerConstants;
+import tunakleague.com.redemption.profiles.ProfileUpdateFragment;
 
-public class ChatMainActivity extends AppCompatActivity {
+public class ChatMainActivity extends AppCompatActivity implements ProfileUpdateFragment.HideTabsListener {
     private int toUser, project;
     private String username, first_name, last_name, email;
+    TabLayout tabLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,9 +82,10 @@ public class ChatMainActivity extends AppCompatActivity {
         };
         MyApplication.requestQueue.add(jsonRequest);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.chat_tab_layout);
+        tabLayout = (TabLayout) findViewById(R.id.chat_tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Chat"));
         tabLayout.addTab(tabLayout.newTab().setText("User Profile"));
+        tabLayout.addTab(tabLayout.newTab().setText("Project Profile"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.chat_pager);
@@ -216,5 +220,10 @@ public class ChatMainActivity extends AppCompatActivity {
             }
         };
         MyApplication.requestQueue.add(jsonRequest);
+    }
+
+    @Override
+    public void setTabsVisible(boolean visible) {
+        tabLayout.setVisibility((visible == true) ? View.VISIBLE : View.INVISIBLE);
     }
 }

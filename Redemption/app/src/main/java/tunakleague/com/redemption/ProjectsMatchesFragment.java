@@ -81,7 +81,7 @@ public class ProjectsMatchesFragment extends Fragment {
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                            android.R.layout.simple_list_item_1, chatRows);
+                            R.layout.match_layout, chatRows);
                     listView.setAdapter(adapter);
 
                 } catch (JSONException e) {

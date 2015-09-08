@@ -31,7 +31,7 @@ import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.app_constants.ServerConstants.*;
 
 public class ProfileActivity extends DrawerActivity implements BaseProjectListFragment.OnProjectSelectedListener
-, ProjectListCreateFragment.OnProjectCreateListener, ProfileUpdateFragment.HideTabsListener{
+, ProjectListCreateFragment.OnProjectCreateListener, ProfileUpdateFragment.HideTabsListener {
     public static final String TAG = "ProfileActivity";
     public static final String SKILL_NAME_FIELD = "skill_name";
 
@@ -136,7 +136,6 @@ public class ProfileActivity extends DrawerActivity implements BaseProjectListFr
     @Override
     public void setTabsVisible(boolean visible) {
         tabLayout.setVisibility((visible == true) ? View.VISIBLE : View.INVISIBLE);
-
     }
 
     /*Return the collection of skills stored in the server's database*/

@@ -20,6 +20,8 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter {
                 return new ChatFragment();
             case 1:
                 return new ChatProfileFragment();
+            case 2:
+                return new ChatProjectFragment();
             default:
                 return null;
         }

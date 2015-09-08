@@ -17,18 +17,8 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:layout_width="0px"
-            android:layout_height="0px"/>
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="80dp"
-            android:layout_height="45dp"
-            android:text="Update"
-            android:id="@+id/update_button"
-            android:textSize="10dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_height="0px"
+            android:id="@+id/linearLayout" />
 
         <TextView
             android:layout_width="match_parent"
@@ -45,9 +35,9 @@
             android:id="@+id/project_image"
             android:background="@color/white"
             android:layout_gravity="center"
-            android:layout_below="@+id/update_button"
+            android:layout_below="@+id/linearLayout"
             android:layout_centerHorizontal="true"
-            />
+            android:layout_marginTop="38dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -118,7 +108,7 @@
                 android:layout_alignStart="@id/summary_label"/>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Project Types"
                 android:textColor="@color/blue"
@@ -137,7 +127,7 @@
                 android:numColumns="2"/>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Preferred User Skills"
                 android:textColor="@color/blue"
@@ -156,40 +146,6 @@
                 android:numColumns="2"
                 android:paddingBottom="100dp"
                 />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text = "Delete Project"
-                android:id="@+id/delete_button"
-                android:layout_centerHorizontal= "true"
-                android:layout_alignBottom="@id/skills"
-                android:layout_marginBottom="50dp"
-                />
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="30dp"
-                android:layout_height="31dp"
-                android:text="+"
-                android:id="@+id/types_add"
-                android:textSize="12sp"
-                android:layout_alignBottom="@+id/types"
-                android:layout_toRightOf="@+id/type_label"
-                android:layout_toEndOf="@+id/type_label"
-                android:layout_alignBaseline="@+id/type_label" />
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="30dp"
-                android:layout_height="31dp"
-                android:text="+"
-                android:id="@+id/skills_add"
-                android:textSize="12sp"
-                android:layout_above="@+id/delete_button"
-                android:layout_toRightOf="@+id/skills_label"
-                android:layout_toEndOf="@+id/skills_label"
-                android:layout_alignBaseline="@+id/skills_label" />
 
         </RelativeLayout>
 
