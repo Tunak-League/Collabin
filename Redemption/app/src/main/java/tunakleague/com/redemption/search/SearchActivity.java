@@ -27,7 +27,7 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
     private GestureDetector gestureDetector;
 
     public final String PROFILE_TAG = "Profile Fragment Tag"; //tag used to retrieve the fragment used for displaying profiles
-    JSONArray profileList; //List of profiles to be displayed to the user.
+    JSONArray profileList = new JSONArray(); //List of profiles to be displayed to the user.
     int position; //Keeps track of which profile you are currently displaying to the user
     BaseProfileFragment profileDisplay; //fragment to display a single profile on the screen
 
@@ -91,14 +91,13 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
         Increments "position" and displays the next profile from "profileList" to the screen
      */
     private void loadNextProfile() {
-        position++;
         /*Get the profile fragment  */
         android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
         BaseProfileFragment profileFragment = (BaseProfileFragment) manager.findFragmentByTag(PROFILE_TAG);
+        position++; //Increment position so the next swipe will use the next profile
 
-
-        /*call fragment's renderUI() method to update the display with the next profile's data, only if there are profiles left*/
-        if( position < profileList.length() ) {
+        if (position < profileList.length()) {
+        /*call fragment's renderUI() method to update the display with the next profile's data=left*/
             try {
                 profileFragment.renderUI(profileList.getJSONObject(position));
             } catch (JSONException e) {
@@ -138,27 +137,32 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            try {
-                float diffAbs = Math.abs(e1.getY() - e2.getY());
-                float diff = e1.getX() - e2.getX();
+            if (position < profileList.length() ) {
+                Log.d(TAG, "Attempting to swipe " + position);
+                try {
+                    float diffAbs = Math.abs(e1.getY() - e2.getY());
+                    float diff = e1.getX() - e2.getX();
 
-                if (diffAbs > SWIPE_MAX_OFF_PATH)
-                    return false;
+                    if (diffAbs > SWIPE_MAX_OFF_PATH)
+                        return false;
 
-                // Left swipe
-                if (diff > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(getApplicationContext(), "NOPE!", Toast.LENGTH_SHORT).show();
-                    SearchActivity.this.swipe(DISLIKE);
+                    // Left swipe
+                    if (diff > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                        Toast.makeText(getApplicationContext(), "NOPE!", Toast.LENGTH_SHORT).show();
+                        SearchActivity.this.swipe(DISLIKE);
+                    }
+                    // Right swipe
+                    else if (-diff > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                        Toast.makeText(getApplicationContext(), "LIKE!", Toast.LENGTH_SHORT).show();
+                        SearchActivity.this.swipe(LIKE);
+                    }
+                } catch (Exception e) {
+                    Log.e("SearchActivity", "Error on gestures");
                 }
-                // Right swipe
-                else if (-diff > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(getApplicationContext(), "LIKE!", Toast.LENGTH_SHORT).show();
-                    SearchActivity.this.swipe(LIKE);
-                }
-            } catch (Exception e) {
-                Log.e("SearchActivity", "Error on gestures");
             }
+
             return false;
+
         }
     }
 
