@@ -311,18 +311,29 @@ class UserDetail(APIView):
         profile = UserProfiles.objects.get(user_id = request.user.id) 
         requestData = request.data.copy() # Make a mutable copy of the request
         requestData['user'] = profile.user_id # Set the user field to requesting user
-        
+        print "WHAT'S HAPPENING" 
         #Check if user has a new device id. Update it if there is 
         device_id = request.data.get('device_id')
+        print device_id
         if device_id != None:
             device = profile.device 
+            print "???"
             device.registration_id = device_id;
+            print "why"
             device.save();
+            print "i saved it"
         
         skillsList = request.data.get('skills') # Get a list of all skills associated with this user
+
         #If user has submitted skills, check if the skills exist in the database, create them if they don't
         if (skillsList != None) and ( not check_skills(skillsList) ): 
             return Response(status = status.HTTP_400_BAD_REQUEST)
+        
+        oldEmail = request.user.email
+        print "is it here?"
+        if (oldEmail == requestData.get('email') ):
+            print "email same"
+            del requestData['email']
 
         serializer = UsersSerializer(request.user, data = requestData, partial=True)
         if serializer.is_valid():
