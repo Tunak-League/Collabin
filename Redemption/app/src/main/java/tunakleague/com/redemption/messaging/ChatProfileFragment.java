@@ -45,11 +45,11 @@ public class ChatProfileFragment extends BaseProfileFragment {
         initializeImageData((ImageView) view.findViewById(R.id.user_image), ServerConstants.USERS.USER_IMAGE.string);
 
         fieldsToPopulate.put(view.findViewById(R.id.username), ServerConstants.USERS.USERNAME.string);
-        fieldsToPopulate.put(view.findViewById(R.id.email), ServerConstants.USERS.EMAIL.string);
+        fieldsToPopulate.put(view.findViewById(R.id.email_input), ServerConstants.USERS.EMAIL.string);
         fieldsToPopulate.put(view.findViewById(R.id.user_summary), ServerConstants.USERS.USER_SUMMARY.string );
         fieldsToPopulate.put(view.findViewById(R.id.location), ServerConstants.USERS.LOCATION.string );
-        fieldsToPopulate.put(view.findViewById(R.id.last_name_edit), ServerConstants.USERS.LAST_NAME.string);
-        fieldsToPopulate.put(view.findViewById(R.id.first_name_edit), ServerConstants.USERS.FIRST_NAME.string);
+        fieldsToPopulate.put(view.findViewById(R.id.last_name_input), ServerConstants.USERS.LAST_NAME.string);
+        fieldsToPopulate.put(view.findViewById(R.id.first_name_input), ServerConstants.USERS.FIRST_NAME.string);
 
         profileId = getActivity().getIntent().getIntExtra("recipient", -1);
         String url = ServerConstants.URLS.USER_GET.string + Integer.toString(profileId) + "/";
