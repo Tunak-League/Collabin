@@ -13,13 +13,6 @@
         tools:context="tunakleague.com.redemption.profiles.UserFragment"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:layout_width="0px"
-            android:layout_height="0px"
-            android:id="@+id/linearLayout" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="250dp"
@@ -79,29 +72,25 @@
             android:layout_alignStart="@id/first_name"
             android:id="@+id/relativeLayout2">
 
-            <LinearLayout
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:layout_width="0px"
-                android:layout_height="0px"/>
-
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Project Summary"
                 android:textColor="@color/blue"
                 android:id="@+id/summary_label"
-                android:layout_below="@id/project_name"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginLeft="20dp"/>
-
 
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:id="@+id/project_summary"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:layout_below="@id/summary_label"
                 android:layout_marginBottom="20dp"
                 android:background="@null"
@@ -144,7 +133,6 @@
                 android:layout_alignLeft="@+id/skills_label"
                 android:layout_alignStart="@+id/skills_label"
                 android:numColumns="2"
-                android:paddingBottom="100dp"
                 />
 
         </RelativeLayout>

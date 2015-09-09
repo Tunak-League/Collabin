@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -19,7 +18,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
@@ -28,16 +26,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import tunakleague.com.redemption.MyApplication;
-import tunakleague.com.redemption.R;
 import tunakleague.com.redemption.app_constants.Constants;
-import tunakleague.com.redemption.app_constants.ServerConstants.*;
+import tunakleague.com.redemption.app_constants.ServerConstants.USERS;
 import tunakleague.com.redemption.experimental.ExpandableHeightGridView;
 
 /**
@@ -54,7 +50,7 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
     private boolean redownload = false;
 
 
-    JSONObject profileData; //all the fields in the profile retrieved from the app server
+    protected JSONObject profileData; //all the fields in the profile retrieved from the app server
 
     /*Keys are all EditText fields for the profile that need to be populated upon opening the profile; values are the name of the parameter in the app server's database for HTTP params*/
     protected Map<View, String> fieldsToPopulate;
@@ -153,7 +149,7 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
 /*Gets the profile's image from AWS if the image field url is not null and displays it */
     protected void downloadImage(){
         try {
-            String imageURL = profileData.getString( imageFieldName );
+            String imageURL = profileData.getString(imageFieldName);
             Log.d( TAG, "Image URL: " + imageURL );
             /*If the returned image field isn't null, request the image from AWS and set it to this profile's ImageView*/
             if( ! imageURL.equals(Constants.NULL_STRING)){

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.android.volley.AuthFailureError;
@@ -17,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import tunakleague.com.redemption.MyApplication;
@@ -80,6 +82,37 @@ public class ChatProjectFragment extends ProjectUpdateFragment {
         };
         MyApplication.requestQueue.add(jsonRequest);
         return view;
+    }
+
+
+    /*
+        Override to use eArrayAdapter,
+    */
+    @Override
+    protected void configureListData(){
+                /*Initialize the skills/types adapters and attach them to their respective GridViews*/
+        ArrayAdapter skillsAdapter = null;
+        ArrayAdapter typesAdapter = null;
+        try {
+            List<String> skillsList = fieldToList(profileData.getJSONArray(ServerConstants.USERS.SKILLS.string));
+            List<String> typesList = fieldToList(profileData.getJSONArray(ServerConstants.USERS.TYPES.string));
+            skillsAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, skillsList);
+            typesAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, typesList);
+        }
+        catch(JSONException ex ) {
+            Log.d("ProfileFrag: ", "Issue with getting JSONArray from skills/types" );
+        }
+
+        /*Set the adapters for each view, only if it is not null*/
+        if (skillsField != null ) {
+            skillsField.setAdapter(skillsAdapter);
+            skillsField.setExpanded(true);
+
+        }
+        if( typesField != null ) {
+            typesField.setAdapter(typesAdapter);
+            typesField.setExpanded(true);
+        }
     }
 
 }

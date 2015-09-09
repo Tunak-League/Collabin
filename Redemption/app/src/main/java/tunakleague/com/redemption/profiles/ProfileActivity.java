@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,6 +43,8 @@ public class ProfileActivity extends DrawerActivity implements BaseProjectListFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Your Profile");
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View contentView = inflater.inflate(R.layout.activity_profile, null, false);
@@ -96,7 +99,6 @@ public class ProfileActivity extends DrawerActivity implements BaseProjectListFr
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-
             return true;
         }
 
@@ -110,7 +112,7 @@ public class ProfileActivity extends DrawerActivity implements BaseProjectListFr
     public void onProjectSelected(JSONObject project) {
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-       fragmentTransaction.add(R.id.profile, (Fragment) ProjectUpdateFragment.newInstance(project));
+        fragmentTransaction.add(R.id.profile, (Fragment) ProjectUpdateFragment.newInstance(project));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 

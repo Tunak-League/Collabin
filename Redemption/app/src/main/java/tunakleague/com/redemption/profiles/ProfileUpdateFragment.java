@@ -147,7 +147,8 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
             List<String> skillsList = fieldToList(profileData.getJSONArray(USERS.SKILLS.string));
             List<String> typesList = fieldToList(profileData.getJSONArray(USERS.TYPES.string));
             skillsAdapter = new ProfileArrayAdapter(getActivity(), R.layout.profile_item,R.id.item_name, skillsList);
-            typesAdapter = new ProfileArrayAdapter(getActivity(), R.layout.profile_item,R.id.item_name, typesList);        }
+            typesAdapter = new ProfileArrayAdapter(getActivity(), R.layout.profile_item,R.id.item_name, typesList);
+        }
         catch(JSONException ex ) {
             Log.d("ProfileFrag: ", "Issue with getting JSONArray from skills/types" );
         }

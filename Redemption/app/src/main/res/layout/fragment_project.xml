@@ -65,10 +65,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/project_name"
-            android:clickable="false"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
             android:gravity="center_horizontal"
             android:background="@null"
             android:textColor="@color/white"
@@ -101,7 +97,6 @@
                 android:text="Project Summary"
                 android:textColor="@color/blue"
                 android:id="@+id/summary_label"
-                android:layout_below="@id/project_name"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginLeft="20dp"/>

@@ -2,7 +2,6 @@ package tunakleague.com.redemption.profiles;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -69,7 +68,6 @@ public class ProjectListCreateFragment extends BaseProjectListFragment  {
         // handle item selection
         switch (item.getItemId()) {
             case R.id.createproject_item:
-                Log.d( TAG, "CREATING A NEW PROJECT" );
                 mListener.onCreateProject(); //Call activity to load a ProjectCreateFragment
                 return true;
             default:

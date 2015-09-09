@@ -42,7 +42,6 @@ public class ProjectCreateFragment extends ProfileUpdateFragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,7 +49,7 @@ public class ProjectCreateFragment extends ProfileUpdateFragment {
         View view =  inflater.inflate(R.layout.fragment_project, container, false);
 
         /*Initialize the skillsField and typesField GridViews and their adapters*/
-        skillsField = (ExpandableHeightGridView) view.findViewById(R.id.skills );
+        skillsField = (ExpandableHeightGridView) view.findViewById(R.id.skills);
         typesField = (ExpandableHeightGridView) view.findViewById(R.id.types);
         skillsField.setExpanded(true);
         typesField.setExpanded(true);

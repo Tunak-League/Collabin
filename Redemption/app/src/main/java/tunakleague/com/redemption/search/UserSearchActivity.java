@@ -35,6 +35,8 @@ public class UserSearchActivity extends SearchActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Collabin");
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         contentView = inflater.inflate(R.layout.activity_user_search, null, false);
         //contentView.setId(R.id.user_search);
@@ -47,18 +49,6 @@ public class UserSearchActivity extends SearchActivity {
         contentView.setOnTouchListener(this);
 
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
     }
 
     @Override
