@@ -79,10 +79,11 @@ public class ProjectsMatchesFragment extends Fragment {
                     for (int i = 0; i < chatRow.size(); i++) {
                         chatRows[i] = chatRow.get(i).toString();
                     }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                            R.layout.match_layout, chatRows);
-                    listView.setAdapter(adapter);
+                    if (chatRows.length > 0) {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                                R.layout.match_layout, chatRows);
+                        listView.setAdapter(adapter);
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

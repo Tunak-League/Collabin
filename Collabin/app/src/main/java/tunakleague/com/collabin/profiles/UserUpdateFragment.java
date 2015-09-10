@@ -1,6 +1,8 @@
 package tunakleague.com.collabin.profiles;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +75,25 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
         /*Add listener to the Update button */
         Button updateButton = (Button) view.findViewById(R.id.update_button);
         updateButton.setOnClickListener(new UpdateListener());
+
+        Button deleteButton = (Button) view.findViewById(R.id.delete_button );
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Create confirm dialog to confimrm that user wishes to delete the project*/
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Delete Account")
+                        .setMessage("Delete this account and all its data permanently?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                deleteAccount();
+                                Log.d(TAG, "I did a delete");
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
+            }
+        });
 
         /*Initialize image data, and Add listener to imageview*/
         initializeImageData( (ImageView) view.findViewById(R.id.user_image), USERS.USER_IMAGE.string );

@@ -98,7 +98,7 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text=" First Name"
+                android:text="First Name"
                 android:textColor="@color/blue"
                 android:id="@+id/first_name"
                 android:layout_below="@id/user_input"
@@ -122,7 +122,7 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text=" Last Name"
+                android:text="Last Name"
                 android:textColor="@color/blue"
                 android:id="@+id/last_name"
                 android:layout_below="@id/first_name_input"
@@ -144,7 +144,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/email"
-                android:text=" Email"
+                android:text="Email"
                 android:textColor="@color/blue"
                 android:layout_below="@id/last_name_input"
                 android:layout_alignParentRight="true"
@@ -276,6 +276,16 @@
                 android:layout_toEndOf="@+id/types_label"
                 android:layout_alignBaseline="@+id/types_label"
                 android:textSize="12sp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text = "Delete Account"
+                android:id="@+id/delete_button"
+                android:layout_centerHorizontal= "true"
+                android:layout_below="@id/types"
+                android:layout_marginBottom="10dp"
+                />
 
         </RelativeLayout>
 

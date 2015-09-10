@@ -115,7 +115,7 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
         Button updateButton = (Button) view.findViewById(R.id.update_button);
         updateButton.setOnClickListener(new UpdateListener());
 
-        Button deleteButton = (Button) view.findViewById( R.id.delete_button );
+        Button deleteButton = (Button) view.findViewById(R.id.delete_button );
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,7 +210,7 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
 
 
     /*Deletes a project from the app server and reloads the updated list of projects on the screen*/
-    public void deleteProject(){
+    public void deleteProject() {
         String url = URLS.PROJECT_DETAIL.string + projectID + "/";
         StringRequest deleteProjectRequest = new StringRequest(Request.Method.DELETE, url,
                 new Response.Listener<String >() {

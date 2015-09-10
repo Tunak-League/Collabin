@@ -16,7 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Toast;
 
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,9 +32,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import tunakleague.com.collabin.DetailedErrorListener;
+import tunakleague.com.collabin.MainActivity;
+import tunakleague.com.collabin.MyApplication;
 import tunakleague.com.collabin.app_constants.Constants;
 import tunakleague.com.collabin.R;
 import tunakleague.com.collabin.app_constants.ServerConstants.*;
+import tunakleague.com.collabin.authentication.WelcomeActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -262,6 +271,32 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
             Log.d(TAG, "failed to put image" );
             e.printStackTrace();
         }
+    }
+
+    /*Deletes a project from the app server and reloads the updated list of projects on the screen*/
+    public void deleteAccount() {
+        String url = URLS.USER_DETAIL.string;
+        StringRequest deleteAccountRequest = new StringRequest(Request.Method.DELETE, url,
+                new Response.Listener<String >() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getActivity(), "Account Deleted", Toast.LENGTH_LONG).show();
+                        //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in BaseProjectListFragment
+                        Intent reloadIntent = new Intent(getActivity(), WelcomeActivity.class);
+                        getActivity().finish();
+                        startActivity(reloadIntent);
+                    }
+                },
+                new DetailedErrorListener(getActivity())
+        )
+        {
+            @Override
+            //Add header of request
+            public Map<String, String> getHeaders() {
+                return MyApplication.getAuthenticationHeader(getActivity());
+            }
+        };
+        MyApplication.requestQueue.add(deleteAccountRequest);
     }
 
 

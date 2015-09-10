@@ -282,7 +282,6 @@ class UserList(APIView):
         requestData = request.data.copy() # Make a mutable copy of the request
         requestData['user'] = user.id # Set the user field to requesting user
         requestData['device'] = device.id 
-        print requestData 
         skillsList = request.data.getlist('skills') # Get a list of all skills associated with this user
         if (skillsList != None) and (not check_skills(skillsList) ): 
                 return Response(status = status.HTTP_400_BAD_REQUEST)
