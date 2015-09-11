@@ -1,13 +1,14 @@
 package tunakleague.com.collabin.profiles;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +18,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
-
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -33,11 +33,11 @@ import java.util.List;
 import java.util.Map;
 
 import tunakleague.com.collabin.DetailedErrorListener;
-import tunakleague.com.collabin.MainActivity;
 import tunakleague.com.collabin.MyApplication;
-import tunakleague.com.collabin.app_constants.Constants;
 import tunakleague.com.collabin.R;
-import tunakleague.com.collabin.app_constants.ServerConstants.*;
+import tunakleague.com.collabin.app_constants.Constants;
+import tunakleague.com.collabin.app_constants.ServerConstants.URLS;
+import tunakleague.com.collabin.app_constants.ServerConstants.USERS;
 import tunakleague.com.collabin.authentication.WelcomeActivity;
 
 /**
@@ -107,9 +107,9 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
 
         /*Extract the skills and types field using their adapters*/
         try {
-            if( skillsField != null )
+            if (skillsField != null)
                 data.put(USERS.SKILLS.string, new JSONArray( ((ProfileArrayAdapter) skillsField.getAdapter()).getItems()) );
-            if( typesField != null )
+            if (typesField != null)
                 data.put(USERS.TYPES.string, new JSONArray( ( (ProfileArrayAdapter) typesField.getAdapter()).getItems()) ) ;
 
         } catch (JSONException ex) {
@@ -186,6 +186,7 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
             builder.setMessage("Enter a skill?");
 
             final AutoCompleteTextView inputField = new AutoCompleteTextView(getActivity());
+            inputField.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                     android.R.layout.simple_dropdown_item_1line, ( (ProfileActivity) getActivity() ).getSkillsCollection() );
             inputField.setAdapter(adapter);
@@ -197,10 +198,8 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    im.hideSoftInputFromWindow( inputField.getWindowToken(), 0);
+                    im.hideSoftInputFromWindow(inputField.getWindowToken(), 0);
                     addItem(skillsField, inputField.getText().toString());
-
-
                 }
             });
 

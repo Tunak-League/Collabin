@@ -225,6 +225,7 @@
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
                 android:id="@+id/user_summary"
                 android:layout_below="@+id/summary_label"
                 android:layout_alignParentRight="true"
