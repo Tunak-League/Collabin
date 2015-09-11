@@ -63,7 +63,7 @@ public class ProjectSearchActivity extends SearchActivity {
                         profileList = response;
 
                         /*Create the profile fragment and display the first profile on it*/
-                        if( profileList.length() > 0) {
+                        if (profileList.length() > 0) {
                             FragmentManager manager = getSupportFragmentManager();
                             FragmentTransaction transaction = manager.beginTransaction();
                             BaseProfileFragment profileFragment = ProjectSearchFragment.newInstance();
@@ -78,7 +78,7 @@ public class ProjectSearchActivity extends SearchActivity {
                                 Log.d(TAG, "Error rendering FIRST profile" );
                             }
                         }
-                        else{ //TODO: Properly handle no matches with some screen that says "no matches"
+                        else { //TODO: Properly handle no matches with some screen that says "no matches"
                             Log.d( TAG, "No profiles found" );
                             showNoProfilesStart();
                         }

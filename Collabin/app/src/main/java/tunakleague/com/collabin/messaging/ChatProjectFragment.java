@@ -41,13 +41,13 @@ public class ChatProjectFragment extends ProjectUpdateFragment {
         view = inflater.inflate(R.layout.tab_project, container, false);
 
         /*Initialize the skillsField*/
-        skillsField = (ExpandableHeightGridView) view.findViewById(R.id.skills );
+        skillsField = (ExpandableHeightGridView) view.findViewById(R.id.skills);
         typesField = (ExpandableHeightGridView) view.findViewById(R.id.types);
         /*Initialize image data, and Add listener to imageview*/
         initializeImageData((ImageView) view.findViewById(R.id.project_image), ServerConstants.PROJECTS.PROJECT_IMAGE.string);
 
         fieldsToPopulate.put(view.findViewById(R.id.project_name), ServerConstants.PROJECTS.PROJECT_NAME.string);
-        fieldsToPopulate.put( view.findViewById(R.id.project_summary), ServerConstants.PROJECTS.PROJECT_SUMMARY.string );
+        fieldsToPopulate.put(view.findViewById(R.id.project_summary), ServerConstants.PROJECTS.PROJECT_SUMMARY.string);
 
         projectId = getActivity().getIntent().getIntExtra("project", -1);
         String url = ServerConstants.URLS.PROJECT_DETAIL.string + Integer.toString(projectId) + "/";
@@ -86,7 +86,7 @@ public class ChatProjectFragment extends ProjectUpdateFragment {
 
 
     /*
-        Override to use eArrayAdapter,
+        Override to use ArrayAdapter,
     */
     @Override
     protected void configureListData(){
@@ -96,8 +96,10 @@ public class ChatProjectFragment extends ProjectUpdateFragment {
         try {
             List<String> skillsList = fieldToList(profileData.getJSONArray(ServerConstants.USERS.SKILLS.string));
             List<String> typesList = fieldToList(profileData.getJSONArray(ServerConstants.USERS.TYPES.string));
-            skillsAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, skillsList);
-            typesAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, typesList);
+            if (skillsList.size() > 0)
+                skillsAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, skillsList);
+            if (typesList.size() > 0)
+                typesAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, typesList);
         }
         catch(JSONException ex ) {
             Log.d("ProfileFrag: ", "Issue with getting JSONArray from skills/types" );

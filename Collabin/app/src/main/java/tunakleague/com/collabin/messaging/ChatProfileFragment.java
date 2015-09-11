@@ -39,7 +39,7 @@ public class ChatProfileFragment extends BaseProfileFragment {
         view = inflater.inflate(R.layout.tab_profile, container, false);
 
         /*Initialize the skillsField*/
-        skillsField = (ExpandableHeightGridView) view.findViewById(R.id.skills );
+        skillsField = (ExpandableHeightGridView) view.findViewById(R.id.skills);
         typesField = (ExpandableHeightGridView) view.findViewById(R.id.types);
         /*Initialize image data, and Add listener to imageview*/
         initializeImageData((ImageView) view.findViewById(R.id.user_image), ServerConstants.USERS.USER_IMAGE.string);
