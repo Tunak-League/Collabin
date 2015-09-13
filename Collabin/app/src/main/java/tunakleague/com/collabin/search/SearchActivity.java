@@ -39,17 +39,13 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
         position = 0;
     }
 
-    /*Placeholder for the actual left/right swipe listener. All this does is load the next profile to the screen on every touch*/
-
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        Toast.makeText(getApplicationContext(), "TOUHEDC!", Toast.LENGTH_SHORT).show();
-//        if (gestureDetector.onTouchEvent(event)) {
-//            return true;
-//        }
-//        return super.onTouchEvent(event);
-//    }
+    /*Let's gestureDetector process the swipes*/
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event ){
+        gestureDetector.onTouchEvent(event);
+       // return true;
+        return super.dispatchTouchEvent(event);
+    }
 
         /*Placeholder for the actual left/right swipe listener. All this does is load the next profile to the screen on every touch*/
     @Override

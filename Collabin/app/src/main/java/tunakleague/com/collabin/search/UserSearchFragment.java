@@ -51,7 +51,7 @@ public class UserSearchFragment extends BaseProfileFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.tab_project, container, false);
+        View view = inflater.inflate(R.layout.fragment_user_search, container, false);
 
         // Initialize the skills and types fields
         skillsField = (ExpandableHeightGridView) view.findViewById(R.id.skills);

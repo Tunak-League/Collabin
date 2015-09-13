@@ -14,8 +14,4 @@ public class SwipeFrameLayout extends FrameLayout {
         super(context, attrs);
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return true;
-    }
 }

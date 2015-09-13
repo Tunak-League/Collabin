@@ -49,18 +49,16 @@ public class ProjectSearchFragment extends BaseProfileFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.tab_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_project_search, container, false);
 
         /*Initialize the skillsField*/
         skillsField = (ExpandableHeightGridView) view.findViewById(R.id.skills);
-        typesField = (ExpandableHeightGridView) view.findViewById(R.id.types);
 
         /*Initialize image data, and Add listener to imageview*/
         initializeImageData((ImageView) view.findViewById(R.id.user_image), ServerConstants.USERS.USER_IMAGE.string);
 
         /*Specify all EditText fields in the UI that need to be POPULATED upon retrieving profile info and  and their corresponding server model keys*/
         fieldsToPopulate.put(view.findViewById(R.id.username), ServerConstants.USERS.USERNAME.string);
-        fieldsToPopulate.put(view.findViewById(R.id.email_input), ServerConstants.USERS.EMAIL.string);
         fieldsToPopulate.put(view.findViewById(R.id.user_summary), ServerConstants.USERS.USER_SUMMARY.string );
         fieldsToPopulate.put(view.findViewById(R.id.location), ServerConstants.USERS.LOCATION.string );
         fieldsToPopulate.put(view.findViewById(R.id.last_name_input), ServerConstants.USERS.LAST_NAME.string);
