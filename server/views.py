@@ -159,6 +159,13 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
         #Check if skills exist in database, create them if they don't. Check for errors after
         if skillsList != None and check_skills(skillsList) == False: 
             return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
+
+        #Check if the passed project_name is the same as the one in the database, don't update if they are the same
+        old_project_name = project.project_name
+        if old_project_name == request.data.get('project_name'):
+            print "same project"
+            del request.data['project_name']
+
         return self.partial_update(request, *args, **kwargs )
     
     # Get data for a specific project
@@ -321,7 +328,8 @@ class UserDetail(APIView):
         #If user has submitted skills, check if the skills exist in the database, create them if they don't
         if (skillsList != None) and ( not check_skills(skillsList) ): 
             return Response(status = status.HTTP_400_BAD_REQUEST)
-        
+       
+       #Check if user's email is the same as the one in the database, don't update it if it is
         oldEmail = request.user.email
         if (oldEmail == requestData.get('email') ):
             del requestData['email']

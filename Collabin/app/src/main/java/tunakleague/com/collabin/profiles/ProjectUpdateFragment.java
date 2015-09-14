@@ -151,6 +151,7 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
 
         /*Specify all EditText fields in the UI that need to be EXTRACTED (unconditionallY) upon update and their corresponding server model keys*/
         fieldsToExtract.put( view.findViewById(R.id.project_summary), PROJECTS.PROJECT_SUMMARY.string );
+        fieldsToExtract.put( view.findViewById(R.id.project_name), PROJECTS.PROJECT_NAME.string );
 
         //TODO: Put in email ONLY if it has changed (probably in updateProfile)
         populateFields(); //Populate the selected fields in the view with the project's info
@@ -166,20 +167,6 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
     protected void updateProfile() {
         JSONObject updatedInfo = extractFields();
         putImage(updatedInfo);
-
-        /*Add project_name to request body "updatedInfo" only if its name has changed from the name retrieved from the server*/
-        String project_name = ( (EditText) getView().findViewById(R.id.project_name) ).getText().toString();//Extract project_name
-        String original_name = "";
-        try{
-            original_name = profileData.getString( PROJECTS.PROJECT_NAME.string);
-            if( ! project_name.equals(original_name) ) {
-                updatedInfo.put(PROJECTS.PROJECT_NAME.string, project_name );
-            }
-        }
-        catch(JSONException ex ) {
-            Log.d(TAG, "Error checking if project_name has changed" );
-        }
-
         Log.d(TAG, "Sending this: " + updatedInfo.toString() );
 
         /*Create request to update the Project*/
