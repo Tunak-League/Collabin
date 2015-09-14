@@ -1,7 +1,7 @@
 # Collabin #
 
 Collabin is an upcoming project discovery and collaboration mobile app that aims to help bring innovators and ideas together. More specifically, Collabin connects people with a project idea seeking collaborators, with people who are looking to use their skills on a project they can believe in.
-
+![Alt text](/screenshots/collabin.png?raw=true "Collabin")
 ## Our Goals##
 1. Encourage people to work together, whether it’s a DIY for fun or a start-up. 
 1. Make it easier to form awesome teams for your awesome ideas.
