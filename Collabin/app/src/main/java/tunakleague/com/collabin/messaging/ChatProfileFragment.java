@@ -2,7 +2,6 @@ package tunakleague.com.collabin.messaging;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +58,6 @@ public class ChatProfileFragment extends BaseProfileFragment {
                     public void onResponse(String response) {
                         try {
                             JSONObject data = new JSONObject(response);
-                            Log.d("ChatProfileFragment", data.toString());
                             renderUI(data);
                         }
 

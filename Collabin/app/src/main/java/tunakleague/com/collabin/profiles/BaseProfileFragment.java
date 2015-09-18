@@ -103,9 +103,8 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
     public void onStart(){
         super.onStart();
         Log.d(TAG, "activity started");
-        /*Re-download and display the image again, if activity was stopped*/
+        // Re-download and display the image again, if activity was stopped
         if( profileData != null && imageBitmap == null && redownload) {
-            Log.d(TAG, "re-downloading image");
             downloadImage();
         }
     }
@@ -116,7 +115,6 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
      */
     public void renderUI( JSONObject profile ){
         profileData = profile;
-        Log.d(TAG, "Rendering: " + profileData.toString());
         populateFields();
     }
 
@@ -150,7 +148,6 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
     protected void downloadImage(){
         try {
             String imageURL = profileData.getString(imageFieldName);
-            Log.d( TAG, "Image URL: " + imageURL );
             /*If the returned image field isn't null, request the image from AWS and set it to this profile's ImageView*/
             if( ! imageURL.equals(Constants.NULL_STRING)){
                 imageURL = imageURL.replace("\\", ""); //Clean the URL by removing any added backslashes from the server
@@ -161,18 +158,15 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
                             public void onResponse(Bitmap bitmap) {
                                 imageBitmap = bitmap;
                                 image.setImageBitmap(imageBitmap);
-                                Log.d( TAG, "I JUST SET THE IMAGE" );
                             }
                         }, 0, 0, null, null,
                         new Response.ErrorListener() {
                             public void onErrorResponse(VolleyError error) {
-                                Log.d( TAG, "Profile has no image" );
                             }
                         });
                 MyApplication.requestQueue.add( request );
             }
         } catch (JSONException e) {
-            Log.d( TAG, "JSON Error during image downloading");
             e.printStackTrace();
         }
     }
@@ -269,7 +263,7 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
 
 
             } else {
-                Toast.makeText(getActivity(), "You haven't picked an Image",
+                Toast.makeText(getActivity(), "No image selected",
                         Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {

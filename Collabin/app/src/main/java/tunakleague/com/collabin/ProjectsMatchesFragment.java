@@ -1,5 +1,6 @@
 package tunakleague.com.collabin;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -55,9 +56,10 @@ public class ProjectsMatchesFragment extends Fragment {
 
         return view;
     }
+
     @Override
-    public void onActivityCreated(Bundle savedInstance) {
-        super.onActivityCreated(savedInstance);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
         final String URL = ServerConstants.URLS.PROJECTS_MATCHES.string;
         JsonArrayRequest projectMatchRequest = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
             @Override
@@ -79,10 +81,13 @@ public class ProjectsMatchesFragment extends Fragment {
                     for (int i = 0; i < chatRow.size(); i++) {
                         chatRows[i] = chatRow.get(i).toString();
                     }
-                    if (chatRows.length > 0) {
+                    if (getActivity() != null) {
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
                                 R.layout.match_layout, chatRows);
                         listView.setAdapter(adapter);
+                    }
+                    else {
+                        Log.d("ProjectMatchesFragment", "Activity is null as fuck");
                     }
 
                 } catch (JSONException e) {
