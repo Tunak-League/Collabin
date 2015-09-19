@@ -78,7 +78,7 @@ public class MessageListenerService extends GcmListenerService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.gcm_cloud)
+                .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle("New Message!")
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
@@ -103,7 +103,7 @@ public class MessageListenerService extends GcmListenerService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_plusone_standard_off_client) // need something else here?
+                .setSmallIcon(R.drawable.notification_icon)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setContentTitle("New Match!")
                 .setContentText(message)

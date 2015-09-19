@@ -136,7 +136,6 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
                     @Override
                     public void onResponse(JSONObject  response) {
                             renderUI(response);
-                            Log.d(TAG, "Response: " + profileData.toString() );
                     }
                 },
                 new DetailedErrorListener(getActivity())
