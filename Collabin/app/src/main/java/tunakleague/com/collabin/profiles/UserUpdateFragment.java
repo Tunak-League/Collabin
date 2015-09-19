@@ -135,7 +135,7 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject  response) {
-                            renderUI(response);
+                        renderUI(response);
                     }
                 },
                 new DetailedErrorListener(getActivity())

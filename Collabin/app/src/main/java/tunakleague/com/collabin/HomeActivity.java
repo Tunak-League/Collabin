@@ -16,6 +16,8 @@ import tunakleague.com.collabin.search.ProjectSelectActivity;
 import tunakleague.com.collabin.search.UserSearchActivity;
 
 public class HomeActivity extends DrawerActivity {
+    public static final int TAB_LIMIT = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,7 @@ public class HomeActivity extends DrawerActivity {
 
             }
         });
+        viewPager.setOffscreenPageLimit(TAB_LIMIT);
     }
 
     /*Handler for clicking "Find Projects" button. Launches UserSearchActivity*/
