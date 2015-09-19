@@ -187,7 +187,9 @@
                 android:layout_marginEnd="0dp"
                 android:layout_marginRight="0dp"
                 android:background="@null"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="20dp"
+                android:inputType="text"
+                android:nextFocusDown="@id/user_summary"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -232,7 +234,8 @@
                 android:layout_alignStart="@id/first_name"
                 android:layout_alignLeft="@id/summary_label"
                 android:background="@null"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="20dp"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
