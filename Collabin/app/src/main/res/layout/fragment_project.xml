@@ -72,7 +72,8 @@
             android:layout_alignStart="@id/project_image"
             android:layout_alignRight="@id/project_image"
             android:layout_alignEnd="@id/project_image"
-            android:inputType="textNoSuggestions"/>
+            android:inputType="textNoSuggestions"
+           />
 
         <RelativeLayout
             android:layout_width="match_parent"
