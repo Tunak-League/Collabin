@@ -100,9 +100,6 @@ public class ChatProjectFragment extends ProjectUpdateFragment {
                 skillsAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, skillsList);
                 typesAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, typesList);
             }
-            else {
-                Log.d("ChatProjectFragment", "Activity is null as fuck for chat too");
-            }
         }
         catch(JSONException ex ) {
             Log.d("ProfileFrag: ", "Issue with getting JSONArray from skills/types" );

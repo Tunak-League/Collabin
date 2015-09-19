@@ -137,8 +137,7 @@ public class BaseProjectListFragment extends android.support.v4.app.Fragment imp
             // fragment is attached to one) that an item has been selected.
             try {
                 mListener.onProjectSelected(projects.getJSONObject(position));
-            }
-            catch(Exception ex ) {
+            } catch(Exception ex) {
                 Log.d(TAG, "JSONError - Passing the selected project from projectlist");
             }
         }

@@ -11,7 +11,7 @@ public class ProfileFragmentPagerAdapter extends FragmentPagerAdapter {
      */
 
     final int PAGE_COUNT = 2;
-    private String tabTitles[] = new String[] { "Personal", "Projects"};
+    private String tabTitles[] = new String[] {"Personal", "Projects"};
     private Context context;
 
     public ProfileFragmentPagerAdapter(FragmentManager fm, Context context) {

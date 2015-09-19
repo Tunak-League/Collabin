@@ -86,9 +86,6 @@ public class ProjectsMatchesFragment extends Fragment {
                                 R.layout.match_layout, chatRows);
                         listView.setAdapter(adapter);
                     }
-                    else {
-                        Log.d("ProjectMatchesFragment", "Activity is null as fuck");
-                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

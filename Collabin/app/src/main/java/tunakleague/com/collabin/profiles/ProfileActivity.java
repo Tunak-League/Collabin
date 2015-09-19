@@ -115,7 +115,6 @@ public class ProfileActivity extends DrawerActivity implements BaseProjectListFr
         fragmentTransaction.add(R.id.profile, (Fragment) ProjectUpdateFragment.newInstance(project));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-
         setTabsVisible(false);
     }
 

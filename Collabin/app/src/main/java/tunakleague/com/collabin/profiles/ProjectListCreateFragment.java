@@ -58,8 +58,7 @@ public class ProjectListCreateFragment extends BaseProjectListFragment  {
     }
 
     @Override
-    public void onCreateOptionsMenu(
-            Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_projectlist, menu); //Create the ProjectList menu with the "Create a Project" button
     }
 

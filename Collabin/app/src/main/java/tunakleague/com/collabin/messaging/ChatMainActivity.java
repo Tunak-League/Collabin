@@ -39,6 +39,8 @@ public class ChatMainActivity extends AppCompatActivity implements ProfileUpdate
     private int toUser, project;
     private String username, first_name, last_name, email;
     TabLayout tabLayout;
+    private final int TAB_LIMIT = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +106,7 @@ public class ChatMainActivity extends AppCompatActivity implements ProfileUpdate
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+        viewPager.setOffscreenPageLimit(TAB_LIMIT);
     }
 
     @Override

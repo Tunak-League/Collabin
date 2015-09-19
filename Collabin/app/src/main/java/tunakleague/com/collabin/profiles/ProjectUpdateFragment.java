@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,7 +26,8 @@ import java.util.Map;
 import tunakleague.com.collabin.DetailedErrorListener;
 import tunakleague.com.collabin.MyApplication;
 import tunakleague.com.collabin.R;
-import tunakleague.com.collabin.app_constants.ServerConstants.*;
+import tunakleague.com.collabin.app_constants.ServerConstants.PROJECTS;
+import tunakleague.com.collabin.app_constants.ServerConstants.URLS;
 import tunakleague.com.collabin.experimental.ExpandableHeightGridView;
 
 /**
@@ -89,8 +89,7 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(
-            Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_profile, menu); //Create the ProjectList menu with the "Create a Project" button
         menu.clear();
     }
@@ -155,7 +154,8 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
 
         //TODO: Put in email ONLY if it has changed (probably in updateProfile)
         populateFields(); //Populate the selected fields in the view with the project's info
-        return view;    }
+        return view;
+    }
 
     @Override
     public void onDestroy() {
