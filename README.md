@@ -33,8 +33,21 @@ When a project owner has specified interest in a user and that same user has spe
 
 
 ## Implementation Details ##
-For anyone who wants to contribute to this project, or is just interested in the nitty gritty details of the implementation behind this app:
+For anyone who wants to contribute to this project, or is just interested in the nitty gritty details of the implementation behind this app. Here is a very brief description of the parts of the app and the source code files associated with each part.
 Collabin consists of 2 main parts:
 ### ###
 1. The **REST API**
+  The source code can be found under the "server" folder in the root directory. The main files are as follows:
+  **urls.py** - Defines the URI routes for each resource in the REST API
+  **models.py** - The schema for the database expressed as models from Django's ORM
+  **views.py** - Receives and processes the actual requests and returns a response to the client. URIs from urls.py map to                    classes and functions in views.py
+  **serializers.py** - Handles conversion between formats when receiving and returning data as well as checking the validity                        of request data.
+
 2. The **Android Client**
+  The main source code can be found in the Collabin/app/src/main/java/tunakleague.com.collabin directory. It is divided into   several packages, grouped by functionality.
+  **authentication** - User login and registration
+  **messaging** - Messaging between users that have been matched.
+  **notifications** - Receiving of any push notifications from Google Cloud Messaging (GCM) such as when a match has    been                       found.
+  **profiles** - Display and editing of user and project profiles 
+  **search** - Searching for either potential projects to work on or users to recruit to a project.
+
