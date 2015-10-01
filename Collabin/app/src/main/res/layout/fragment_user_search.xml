@@ -105,7 +105,7 @@
                 android:layout_alignStart="@id/summary_label" />
 
             <!--project types-->
-            <tunakleague.com.collabin.experimental.ExpandableHeightGridView
+            <tunakleague.com.collabin.custom_views.ExpandableHeightGridView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/types"

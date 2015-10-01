@@ -64,7 +64,6 @@ public class WelcomeActivity extends AppCompatActivity {
         //Launch the signup page
         Intent signupIntent = new Intent(this, RegistrationActivity.class);
         startActivity(signupIntent);
-        Log.d(TAG, "WTF IS THIS");
     }
 
     /*

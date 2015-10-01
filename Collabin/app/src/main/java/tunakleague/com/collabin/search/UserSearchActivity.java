@@ -98,8 +98,6 @@ public class UserSearchActivity extends SearchActivity {
 
     @Override
     protected void sendSwipe(JSONObject profile,final String answer) {
-        //TODO: Implement the actual sending of the swipe request
-
         /*Get the ID of the project being swiped on*/
         int id = 0;
         try{

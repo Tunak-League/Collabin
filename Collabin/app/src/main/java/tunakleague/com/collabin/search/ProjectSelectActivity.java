@@ -17,6 +17,7 @@ import tunakleague.com.collabin.R;
 import tunakleague.com.collabin.app_constants.ServerConstants;
 import tunakleague.com.collabin.profiles.BaseProjectListFragment;
 
+/*This Activity presents the list of projects a user currently owns, so they can select one and discover/recruit users for it*/
 public class ProjectSelectActivity extends AppCompatActivity implements BaseProjectListFragment.OnProjectSelectedListener {
     public final String TAG = "ProjectSelectActivity";
 

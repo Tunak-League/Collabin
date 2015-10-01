@@ -23,7 +23,7 @@ import tunakleague.com.collabin.DetailedErrorListener;
 import tunakleague.com.collabin.MyApplication;
 import tunakleague.com.collabin.R;
 import tunakleague.com.collabin.app_constants.ServerConstants.*;
-import tunakleague.com.collabin.experimental.ExpandableHeightGridView;
+import tunakleague.com.collabin.custom_views.ExpandableHeightGridView;
 
 
 /**

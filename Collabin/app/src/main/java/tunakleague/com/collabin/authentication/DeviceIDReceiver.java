@@ -11,6 +11,7 @@ import tunakleague.com.collabin.notifications.NotificationsPreferences;
 
 public class DeviceIDReceiver extends BroadcastReceiver {
     private String deviceID;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         /*Abort and do nothing if the intent's action is not REGISTRATION_COMPLETE */

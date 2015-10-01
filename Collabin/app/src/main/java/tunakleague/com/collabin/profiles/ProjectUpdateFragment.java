@@ -28,7 +28,7 @@ import tunakleague.com.collabin.MyApplication;
 import tunakleague.com.collabin.R;
 import tunakleague.com.collabin.app_constants.ServerConstants.PROJECTS;
 import tunakleague.com.collabin.app_constants.ServerConstants.URLS;
-import tunakleague.com.collabin.experimental.ExpandableHeightGridView;
+import tunakleague.com.collabin.custom_views.ExpandableHeightGridView;
 
 /**
  Displays a specific project's information and allows users to edit them and save them to the app server.

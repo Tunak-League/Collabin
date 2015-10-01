@@ -34,7 +34,7 @@ import java.util.Map;
 import tunakleague.com.collabin.MyApplication;
 import tunakleague.com.collabin.app_constants.Constants;
 import tunakleague.com.collabin.app_constants.ServerConstants.USERS;
-import tunakleague.com.collabin.experimental.ExpandableHeightGridView;
+import tunakleague.com.collabin.custom_views.ExpandableHeightGridView;
 
 /**
  * Base class for displaying profile information in a fragment using
@@ -76,9 +76,9 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
     public void onStop(){
         super.onStop();
 
-
         PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
 
+        /*Check if the device's screen is ON*/
         boolean screenOn;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             screenOn = pm.isInteractive();
@@ -86,6 +86,7 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
             screenOn = pm.isScreenOn();
         }
 
+        /*Recycles the imageBitmap if fragment stopped and screen is still ON (Not stopped because of idle though as screen would be off) */
         if( screenOn && imageBitmap != null ) {
             Log.d(TAG, "recycling");
             image.setImageBitmap(null);
@@ -253,7 +254,7 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
                 String imgDecodableString = cursor.getString(columnIndex);
                 cursor.close();
 
-                /*A precaution?*/
+                /*A precaution in case the previous imageBitmap is still in memory*/
                 if( imageBitmap != null ){
                     Log.d( TAG, "recycled a stray one" );
                     imageBitmap.recycle();
@@ -267,7 +268,7 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
                         Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG)
+            Toast.makeText(getActivity(), "Image selection failed", Toast.LENGTH_LONG)
                     .show();
         }
 

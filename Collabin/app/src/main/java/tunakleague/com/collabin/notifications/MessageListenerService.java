@@ -21,7 +21,8 @@ import tunakleague.com.collabin.messaging.DataProvider;
 import tunakleague.com.collabin.messaging.DbHelper;
 
 public class MessageListenerService extends GcmListenerService {
-    private static final String TAG = "MyGcmListenerService";
+    private static final String TAG = "MessageListenerService";
+    private static final String MATCH_NOTIFICATION = "MatchNotification";
 
     /**
      * Called when message is received.
@@ -40,7 +41,7 @@ public class MessageListenerService extends GcmListenerService {
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
 
-        if (tag.equals("MatchNotification")) {
+        if (tag.equals(MATCH_NOTIFICATION)) {
             sendMatchNotification(sendMessage);
         }
         else {

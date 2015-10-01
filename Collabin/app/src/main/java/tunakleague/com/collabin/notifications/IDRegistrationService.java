@@ -23,7 +23,7 @@ public class IDRegistrationService extends IntentService {
      * 1. Obtaining the InstanceID token from the GCM server
      * 2. Sending this token to our REST server
      */
-    private static final String TAG = "RegIntentService";
+    private static final String TAG = "IDRegistrationService";
     private static final String[] TOPICS = {"global"};
 
     public IDRegistrationService() {
@@ -62,14 +62,12 @@ public class IDRegistrationService extends IntentService {
                 // Subscribe to topic channels
                 subscribeTopics(token);
 
-                // You should store a boolean that indicates whether the generated token has been
-                // sent to your server. If the boolean is false, send the token to your server,
-                // otherwise your server should have already received the token.
+                //TODO: This boolean may not be required since we send the token to server every login in case of user switching devices. Investigate.
                 sharedPreferences.edit().putBoolean(NotificationsPreferences.SENT_TOKEN_TO_SERVER, true).apply();
                 // [END register_for_gcm]
             }
         } catch (Exception e) {
-            Log.d(TAG, "Failed to complete token refresh", e);
+            Log.d(TAG, "Error retrieving GCM token", e);
             // If an exception happens while fetching the new token or updating our registration data
             // on a third-party server, this ensures that we'll attempt the update at a later time.
             sharedPreferences.edit().putBoolean(NotificationsPreferences.SENT_TOKEN_TO_SERVER, false).apply();

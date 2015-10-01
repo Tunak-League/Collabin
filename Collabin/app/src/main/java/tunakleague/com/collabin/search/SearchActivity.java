@@ -101,7 +101,6 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
             }
         }
         else{
-            //TODO: Proper screen telling you you're done searching
             Log.d(TAG, "No more profiles left to show" );
             showNoProfilesEnd();
         }
@@ -123,7 +122,7 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
     }
 
 
-    // Private class for gestures
+    // Private class for detecting the left and right swipe getures
     public class SwipeGestureDetector extends GestureDetector.SimpleOnGestureListener {
         // Swipe properties, you can change it to make the swipe
         // longer or shorter and speed

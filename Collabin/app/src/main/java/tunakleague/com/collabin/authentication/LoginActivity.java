@@ -139,7 +139,6 @@ public class LoginActivity extends AuthenticationActivity {
                             try {
                                 JSONObject jsonResponse = new JSONObject(response);
                                 String token = jsonResponse.getString(USERS.TOKEN.string);
-                                System.out.println("Token: " + token);
 
                                 // Store the token in SharedPreferences
                                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
@@ -149,7 +148,7 @@ public class LoginActivity extends AuthenticationActivity {
 
                                 Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class); //Prepare intent to go to Home Screen
 
-                                /*Compare device id obtained from GCM with the device id stored in preferences to see if user is on a different device and update*/
+                                /*On regular login (not from registration), need to update device ID on server*/
                                 if (update) {
                                     updateDeviceID(homeIntent); //Update device ID on server, and start HomeActivity after its successful
                                 }

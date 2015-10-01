@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 import tunakleague.com.collabin.R;
 import tunakleague.com.collabin.app_constants.ServerConstants;
-import tunakleague.com.collabin.experimental.ExpandableHeightGridView;
+import tunakleague.com.collabin.custom_views.ExpandableHeightGridView;
 import tunakleague.com.collabin.profiles.BaseProfileFragment;
 
 /**
