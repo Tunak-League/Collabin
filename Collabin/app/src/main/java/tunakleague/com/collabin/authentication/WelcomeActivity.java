@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -80,15 +79,13 @@ public class WelcomeActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        if(backButtonCount >= 1)
-        {
+        if(backButtonCount >= 1) {
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
-        else
-        {
+        else {
             Toast.makeText(this, "Press back again to close the application.", Toast.LENGTH_SHORT).show();
             backButtonCount++;
         }

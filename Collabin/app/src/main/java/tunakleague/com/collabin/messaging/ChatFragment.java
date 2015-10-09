@@ -53,7 +53,7 @@ public class ChatFragment extends Fragment  {
     private ListView listView;
     private ChatCursorAdapter adapter;
     private Cursor c;
-    private BroadcastReceiver tokenBroadcastReceiver; // detects incoming chat message and displays it
+    private BroadcastReceiver broadcastReceiver; // detects incoming chat message and displays it
     private String result;
 
     @Override
@@ -64,7 +64,7 @@ public class ChatFragment extends Fragment  {
         listView = (ListView) view.findViewById(R.id.chatLog);
         listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         listView.setStackFromBottom(true);
-        tokenBroadcastReceiver = new BroadcastReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (!intent.getAction().equals(NotificationsPreferences.INCOMING_CHAT_INSERTED)) {
@@ -281,13 +281,13 @@ public class ChatFragment extends Fragment  {
     public void onResume() {
         super.onResume();
         IntentFilter iff = new IntentFilter(NotificationsPreferences.INCOMING_CHAT_INSERTED);
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(tokenBroadcastReceiver, iff);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver, iff);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(tokenBroadcastReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
     }
 
 }

@@ -45,7 +45,7 @@ public class ChatMainActivity extends AppCompatActivity implements ProfileUpdate
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_main);
-
+        getSupportActionBar().setTitle("Welcome to Chat");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toUser = getIntent().getIntExtra("recipient", -1);
         project = getIntent().getIntExtra("project", -1);
