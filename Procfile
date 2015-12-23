@@ -1,1 +1,1 @@
-web: gunicorn tunak-server.wsgi --log-file -
+web: gunicorn tunak_server:app --log-file -
