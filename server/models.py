@@ -5,11 +5,14 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver 
 from rest_framework.authtoken.models import Token 
 from push_notifications.models import  GCMDevice
+from cloudinary.models import CloudinaryField
 
 class UserProfiles(models.Model):
     user_summary = models.CharField(max_length = 500, null=True, blank=True, default=None)
     location = models.CharField(max_length = 30, null=True, blank=True, default=None)
-    user_image = models.ImageField(upload_to='users', null = True, blank = True, default=None)
+    #user_image = models.ImageField(upload_to='users', null = True, blank = True, default=None)
+   # user_image = CloudinaryField('image', null = True, blank = True, default=None, max_length=None)
+    user_image = models.TextField( null=True, blank=True, default=None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     device = models.ForeignKey('push_notifications.GCMDevice', default = None)
     
@@ -36,7 +39,8 @@ class Projects(models.Model):
     project_summary = models.CharField(max_length = 500)
     date_created = models.DateField(null = True, blank = True, default = None)
     owner = models.ForeignKey('UserProfiles')
-    project_image = models.ImageField(upload_to='projects', null=True, blank=True, default=None)
+    #project_image = models.ImageField(upload_to='projects', null=True, blank=True, default=None)
+    project_image = models.TextField( null=True, blank=True, default=None)
 
     def save(self, *args, **kwargs):
         try:

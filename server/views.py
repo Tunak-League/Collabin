@@ -16,6 +16,13 @@ from rest_framework.decorators import api_view
 
 from push_notifications.models import GCMDevice
 from server.permissions import IsOwnerOrReadOnly
+
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+import re
 '''
     Lists all users that a project's required skills category matches. The more relevant skills the user has, 
     the user is prioritized in the list
@@ -137,7 +144,12 @@ class ProjectList(generics.GenericAPIView, mixins.CreateModelMixin):
         # Check if skills exist in database, create them if they don't. Check for errors after
         if skillsList != None and check_skills(skillsList) == False: 
             return Response( status=status.HTTP_400_BAD_REQUEST ) #TODO: Change to correct code + MORE SPECIFIC DETAILS FOR CLIENT '''
-    
+        
+        #Upload image and store url if an image was included in request
+        if request.data.get('project_image') != None:
+            url = cloudinary.uploader.upload("data:image/jpg;base64," +  request.data.get('project_image') )['url']
+            request.data['project_image'] = url
+        
         return self.create(request, *args, **kwargs ) # Use CreateModelMixin to create the Project
 
 '''
@@ -148,6 +160,12 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
     permission_classes = (IsAuthenticated,)
     queryset = Projects.objects.all()
     serializer_class = ProjectsSerializer
+
+
+    def deleteExistingProjectImage(self, profile):
+        if profile.project_image != None:
+            publicId = re.search('/([^/]+)\.(?:jpg|gif|png)', profile.project_image ).group(1)
+            cloudinary.uploader.destroy(publicId )
 
     # Update data for a specific Project
     def put(self, request, *args, **kwargs): 
@@ -166,6 +184,12 @@ class ProjectDetail(generics.GenericAPIView, mixins.UpdateModelMixin, mixins.Ret
             print "same project"
             del request.data['project_name']
 
+        #Update image if it was included
+        if request.data.get('project_image') != None:
+            self.deleteExistingProjectImage( project )
+            url = cloudinary.uploader.upload("data:image/jpg;base64," + request.data.get('project_image') )['url']
+            request.data['project_image'] = url
+            
         return self.partial_update(request, *args, **kwargs )
     
     # Get data for a specific project
@@ -304,12 +328,18 @@ class UserList(APIView):
         serializer = UserProfilesSerializer(user_profile);
         return Response( serializer.data );
 
+
 '''
     Modifies or deletes a user
 '''
 class UserDetail(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+    def deleteExistingUserImage(self, profile):
+        if profile.user_image != None:
+            publicId = re.search('/([^/]+)\.(?:jpg|gif|png)', profile.user_image ).group(1)
+            cloudinary.uploader.destroy(publicId )
 
     # Modifies the profile of the requesting user
     def put(self, request, format = None): 
@@ -334,6 +364,7 @@ class UserDetail(APIView):
         if (oldEmail == requestData.get('email') ):
             del requestData['email']
 
+        #Update the Django User model
         serializer = UsersSerializer(request.user, data = requestData, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -342,9 +373,18 @@ class UserDetail(APIView):
 
         serializer = UserProfilesSerializer(profile, data = requestData, partial=True)
         if serializer.is_valid():
-            serializer.save()
+            #Upload new image if there is one 
+            if request.data.get('user_image') != None:
+                self.deleteExistingUserImage(profile )
+                url = cloudinary.uploader.upload("data:image/jpg;base64," +  request.data.get('user_image') )['url']
+                serializer.save( user_image = url )
+            #No new image, update without it
+            else:
+                print "nothing new here"
+                serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
 
     # Deletes a user and the corresponding user profile
     def delete(self, request, format = None):
