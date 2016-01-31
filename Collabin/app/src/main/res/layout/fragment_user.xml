@@ -210,7 +210,8 @@
                 android:layout_below="@id/skill_label"
                 android:layout_alignLeft="@id/skill_label"
                 android:layout_alignStart="@id/skill_label"
-                android:numColumns="2" />
+                android:numColumns="2"
+                android:layout_marginTop="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -221,7 +222,8 @@
                 android:textColor="@color/blue"
                 android:layout_below="@+id/skills"
                 android:layout_alignLeft="@+id/skills"
-                android:layout_alignStart="@id/first_name" />
+                android:layout_alignStart="@id/first_name"
+                android:layout_marginTop="10dp" />
 
             <EditText
                 android:layout_width="fill_parent"
@@ -256,7 +258,8 @@
                 android:layout_below="@id/types_label"
                 android:layout_alignLeft="@id/skills"
                 android:layout_alignStart="@id/skills"
-                android:numColumns="2"/>
+                android:numColumns="2"
+                android:layout_marginTop="20dp" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"

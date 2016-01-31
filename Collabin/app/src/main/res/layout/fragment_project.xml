@@ -130,7 +130,8 @@
                 android:layout_below="@id/type_label"
                 android:layout_alignLeft="@id/type_label"
                 android:layout_alignStart="@id/type_label"
-                android:numColumns="2"/>
+                android:numColumns="2"
+                android:layout_marginTop="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -139,7 +140,8 @@
                 android:textColor="@color/blue"
                 android:id="@+id/skills_label"
                 android:layout_below="@id/types"
-                android:layout_alignStart="@id/summary_label" />
+                android:layout_alignStart="@id/summary_label"
+                android:layout_marginTop="10dp" />
 
             <!--preferred user skills-->
             <tunakleague.com.collabin.custom_views.ExpandableHeightGridView
@@ -151,7 +153,7 @@
                 android:layout_alignStart="@+id/skills_label"
                 android:numColumns="2"
                 android:paddingBottom="100dp"
-                />
+                android:layout_marginTop="20dp" />
 
             <Button
                 android:layout_width="wrap_content"
