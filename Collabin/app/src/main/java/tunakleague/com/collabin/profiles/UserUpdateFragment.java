@@ -166,6 +166,7 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
                         profileData = response;
                         Toast.makeText(getActivity(), "Personal Profile updated", Toast.LENGTH_LONG).show();
                         Log.d(TAG, "Updated info: " + profileData.toString());
+                        UserUpdateFragment.super.updateProfile();
                     }
                 }
                 ,

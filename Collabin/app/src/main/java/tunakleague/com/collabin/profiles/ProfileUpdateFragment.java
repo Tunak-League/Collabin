@@ -122,7 +122,9 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
         Updates the app server with the newly entered profile information.Places a copy of the updated
         information in profileData
      */
-    protected abstract void updateProfile();
+    protected void updateProfile(){
+        imageChanged = false; //If an update occurs, image should no longer be set as 'changed'
+    };
 
     /*
     Adds a profile_item to the specified GridView
@@ -264,12 +266,15 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
     }
 
     protected void putImage(JSONObject data){
-        try {
-            data.put(imageFieldName, base64Image);
-            Log.d(TAG, "I put the image in");
-        } catch (JSONException e) {
-            Log.d(TAG, "failed to put image" );
-            e.printStackTrace();
+        /*Include the profile image in the request parameters if it was changed*/
+        if( imageChanged ) {
+            try {
+                data.put(imageFieldName, base64Image);
+                Log.d(TAG, "I put the image in");
+            } catch (JSONException e) {
+                Log.d(TAG, "failed to put image");
+                e.printStackTrace();
+            }
         }
     }
 

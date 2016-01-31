@@ -48,6 +48,7 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
     protected ImageView image = null;
     protected String imageFieldName = null; //The name of the image field when retrieving from the server. (Different for users and projects)
     private boolean redownload = false;
+    protected boolean imageChanged = false; //indicates whether user has selected a new image for their profile.
 
 
     protected JSONObject profileData; //all the fields in the profile retrieved from the app server
@@ -94,6 +95,7 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
             imageBitmap = null;
             System.gc();
             redownload = true;
+            imageChanged = false; //Since we're redownloading original image, image is not changed.
         }
         else{
             redownload = false;
@@ -261,7 +263,7 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
                 }
 
                 imageBitmap = BitmapFactory.decodeFile(imgDecodableString); //convert image string to image bitmap for use in extending classes
-
+                imageChanged = true;
 
             } else {
                 Toast.makeText(getActivity(), "No image selected",

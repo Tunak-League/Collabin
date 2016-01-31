@@ -179,6 +179,7 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
                         Toast.makeText(getActivity(), "Project updated", Toast.LENGTH_LONG).show();
                         Log.d(TAG, "Updated info: " + profileData.toString());
                         //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in BaseProjectListFragment
+                        ProjectUpdateFragment.super.updateProfile();
                         reloadProjects();
                     }
                 }
