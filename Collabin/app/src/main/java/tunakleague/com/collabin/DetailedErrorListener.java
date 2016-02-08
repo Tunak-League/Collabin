@@ -1,6 +1,10 @@
 package tunakleague.com.collabin;
 
 import android.content.Context;
+import android.opengl.Visibility;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -15,6 +19,8 @@ import java.util.Iterator;
 
 public class DetailedErrorListener implements Response.ErrorListener {
     Context context;
+    ProgressBar spinner = null; //must hide this when error response received as well for update fragments
+    Button updateButton = null; //must re-enable the update button for update fragments.
 
     public DetailedErrorListener(Context context){
         super();
@@ -22,6 +28,16 @@ public class DetailedErrorListener implements Response.ErrorListener {
     }
 
     public void onErrorResponse(VolleyError error) {
+        /*Turn off any loading spinner if it exists*/
+        if( spinner != null ){
+            spinner.setVisibility(View.GONE);
+        }
+
+        /*Make update button clickable again if it exists*/
+        if( updateButton != null ){
+            updateButton.setClickable(true);
+        }
+
         String errorMessage = null;
 
         NetworkResponse response = error.networkResponse;
@@ -38,6 +54,18 @@ public class DetailedErrorListener implements Response.ErrorListener {
                 displayMessage(errorMessage); //Display the message as a Toast notification
             //TODO: Additional cases. Idk maybe  a generic "SERVER ERROR" in case it's not 400
         }
+    }
+
+    /*Adds an optional loading spinner, so that it can be turned off by this class on error response*/
+    public DetailedErrorListener withLoadingSpinner( ProgressBar spinner ){
+        this.spinner = spinner;
+        return this;
+    }
+
+    /*Adds an optional update button which is made clickable again on error response*/
+    public DetailedErrorListener withUpdateButton( Button updateButton ){
+        this.updateButton = updateButton;
+        return this;
     }
 
     /* Helper method.

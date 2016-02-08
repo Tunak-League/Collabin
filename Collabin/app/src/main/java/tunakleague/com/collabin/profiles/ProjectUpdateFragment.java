@@ -1,5 +1,6 @@
 package tunakleague.com.collabin.profiles;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -45,6 +48,8 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
     /*Bundle values*/
 
     int projectID = 0; //id of the project
+    private Button updateButton; //keep reference to this so button can be disabled during updates
+    private Button deleteButton; //keep reference to disable during updates.
 
     /*
     Stores the passed project info and its position in the list of all user's projects into a bundle and returns an instance
@@ -111,10 +116,10 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
         typesAddButton.setOnClickListener(new CreateTypeListener());
 
         /*Add listener to the Update button */
-        Button updateButton = (Button) view.findViewById(R.id.update_button);
+        updateButton = (Button) view.findViewById(R.id.update_button);
         updateButton.setOnClickListener(new UpdateListener());
 
-        Button deleteButton = (Button) view.findViewById(R.id.delete_button );
+        deleteButton = (Button) view.findViewById(R.id.delete_button );
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,12 +174,16 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
         putImage(updatedInfo);
         Log.d(TAG, "Sending this: " + updatedInfo.toString() );
 
+        final ProgressBar spinner = (ProgressBar) this.getView().findViewById( R.id.project_spinner);
+
         /*Create request to update the Project*/
         String url = URLS.PROJECT_DETAIL.string + projectID + "/";
         JsonObjectRequest updateProjectRequest = new JsonObjectRequest(Request.Method.PUT, url, updatedInfo,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        spinner.setVisibility(View.GONE);
+                        updateButton.setClickable(true);
                         profileData = response;
                         Toast.makeText(getActivity(), "Project updated", Toast.LENGTH_LONG).show();
                         Log.d(TAG, "Updated info: " + profileData.toString());
@@ -183,7 +192,7 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
                     }
                 }
                 ,
-                new DetailedErrorListener(getActivity()) //TODO: Need to override and make something to STOP/EXIT the Fragment if request fails (or else you operate on null data)
+                new DetailedErrorListener(getActivity()).withLoadingSpinner(spinner).withUpdateButton(updateButton) //TODO: Need to override and make something to STOP/EXIT the Fragment if request fails (or else you operate on null data)
         )
         {
             @Override
@@ -193,16 +202,21 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
             }
         };
         MyApplication.requestQueue.add(updateProjectRequest);
+        updateButton.setClickable(false);
+        spinner.setVisibility(View.VISIBLE); //show progress spinner while waiting for response
     }
 
 
     /*Deletes a project from the app server and reloads the updated list of projects on the screen*/
     public void deleteProject() {
+        final ProgressDialog progress = new ProgressDialog(this.getActivity());
+
         String url = URLS.PROJECT_DETAIL.string + projectID + "/";
         StringRequest deleteProjectRequest = new StringRequest(Request.Method.DELETE, url,
                 new Response.Listener<String >() {
                     @Override
                     public void onResponse(String response) {
+                        progress.dismiss();
                         Toast.makeText(getActivity(), "Project deleted", Toast.LENGTH_LONG).show();
                         //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in BaseProjectListFragment
                         reloadProjects();
@@ -218,5 +232,11 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
             }
         }   ;
         MyApplication.requestQueue.add(deleteProjectRequest);
+        progress.setIndeterminate(true);
+        progress.setMessage("Deleting project");
+        progress.show();
+
+
+        deleteButton.setClickable(false);
     }
 }

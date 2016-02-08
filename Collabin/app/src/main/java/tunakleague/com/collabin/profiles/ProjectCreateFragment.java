@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,6 +31,7 @@ import tunakleague.com.collabin.custom_views.ExpandableHeightGridView;
  */
 public class ProjectCreateFragment extends ProfileUpdateFragment {
     public static final String TAG = "ProjectCreateFragment";
+    private Button updateButton;
 
     public static ProjectCreateFragment newInstance() {
         ProjectCreateFragment fragment = new ProjectCreateFragment();
@@ -70,7 +72,7 @@ public class ProjectCreateFragment extends ProfileUpdateFragment {
         deleteButton.setVisibility(View.INVISIBLE);
 
         /*Add listener to the Update button */
-        Button updateButton = (Button) view.findViewById(R.id.update_button);
+        updateButton = (Button) view.findViewById(R.id.update_button);
         updateButton.setOnClickListener(new UpdateListener());
         updateButton.setText("Create"); //We're re-using ProjectUpdateFragment's layout, but need to change the name of this button from "Update"
 
@@ -104,6 +106,7 @@ public class ProjectCreateFragment extends ProfileUpdateFragment {
         JSONObject newProject = extractFields();
         putImage(newProject);
         Log.d(TAG, "Sending this: " + newProject.toString());
+        final ProgressBar spinner = (ProgressBar) getView().findViewById(R.id.project_spinner);
 
         /*Create request to update the Project*/
         String url = ServerConstants.URLS.PROJECT_LIST.string;
@@ -114,12 +117,13 @@ public class ProjectCreateFragment extends ProfileUpdateFragment {
                         profileData = response;
                         Toast.makeText(getActivity(), "Project created", Toast.LENGTH_LONG).show();
                         Log.d(TAG, "Created project: " + profileData.toString());
-                        //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in BaseProjectListFragment
+                        spinner.setVisibility(View.GONE);
+                        updateButton.setClickable(true);
                         reloadProjects(); //Take user back to updated list of projects
                     }
                 }
                 ,
-                new DetailedErrorListener(getActivity()) //TODO: Need to override and make something to STOP/EXIT the Fragment if request fails (or else you operate on null data)
+                new DetailedErrorListener(getActivity()).withLoadingSpinner(spinner).withUpdateButton(updateButton) //TODO: Need to override and make something to STOP/EXIT the Fragment if request fails (or else you operate on null data)
         )
         {
             @Override
@@ -129,6 +133,8 @@ public class ProjectCreateFragment extends ProfileUpdateFragment {
             }
         };
         MyApplication.requestQueue.add(createProjectRequest);
+        updateButton.setClickable(false);
+        spinner.setVisibility(View.VISIBLE);
     }
 
 

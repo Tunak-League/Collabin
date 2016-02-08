@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -58,9 +59,6 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
     /*These need to be separate from the views in "fields" since they have different behaviour/require extra handling*/
     protected ExpandableHeightGridView skillsField;
     protected ExpandableHeightGridView typesField;
-
-
-
 
     public BaseProfileFragment() {
         // Required empty public constructor

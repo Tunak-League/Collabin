@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -31,6 +32,7 @@ import tunakleague.com.collabin.custom_views.ExpandableHeightGridView;
  */
 public class UserUpdateFragment extends ProfileUpdateFragment {
     public final String TAG = "UserUpdateFragment";
+    private Button updateButton;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -73,7 +75,7 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
         typesAddButton.setOnClickListener(new CreateTypeListener());
 
         /*Add listener to the Update button */
-        Button updateButton = (Button) view.findViewById(R.id.update_button);
+        updateButton = (Button) view.findViewById(R.id.update_button);
         updateButton.setOnClickListener(new UpdateListener());
 
         Button deleteButton = (Button) view.findViewById(R.id.delete_button );
@@ -130,11 +132,14 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
         /*Request needs to be made here since DetailedErrorListener requires Activity context*/
         String url = URLS.USER_LIST.string;
 
+
         /*Create request to retrieve the User's profile information from the app server*/
         JsonObjectRequest userProfileRequest = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject  response) {
+                        ProgressBar downloadSpinner = (ProgressBar) getView().findViewById(R.id.download_spinner);
+                        downloadSpinner.setVisibility(View.GONE);
                         renderUI(response);
                     }
                 },
@@ -157,19 +162,23 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
     protected void updateProfile() {
         JSONObject updatedInfo = extractFields(); //Extract required information from UI and place into JSONObject for request body
         putImage(updatedInfo);
+        final ProgressBar spinner = (ProgressBar) getView().findViewById(R.id.user_spinner);
+
         /*Create request to update the User's profile*/
         String url = URLS.USER_DETAIL.string;
         JsonObjectRequest updateProfileRequest = new JsonObjectRequest(Request.Method.PUT, url, updatedInfo,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        spinner.setVisibility( View.GONE);
+                        updateButton.setClickable(true);
                         profileData = response;
                         Toast.makeText(getActivity(), "Personal Profile updated", Toast.LENGTH_LONG).show();
                         Log.d(TAG, "Updated info: " + profileData.toString());
                     }
                 }
                 ,
-                new DetailedErrorListener(getActivity()) //TODO: Need to override and make something to STOP/EXIT the Fragment if request fails (or else you operate on null data)
+                new DetailedErrorListener(getActivity()).withLoadingSpinner(spinner).withUpdateButton(updateButton) //TODO: Need to override and make something to STOP/EXIT the Fragment if request fails (or else you operate on null data)
         )
         {
             @Override
@@ -179,6 +188,8 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
             }
         };
         MyApplication.requestQueue.add(updateProfileRequest);
+        spinner.setVisibility( View.VISIBLE ); //show progress spinner while waiting for response
+        updateButton.setClickable( false );
         Log.d(TAG, "I sent the request");
 
     }

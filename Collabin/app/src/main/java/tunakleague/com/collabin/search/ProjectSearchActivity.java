@@ -1,5 +1,6 @@
 package tunakleague.com.collabin.search;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -54,6 +55,8 @@ public class ProjectSearchActivity extends SearchActivity {
 
     @Override
     protected void initializeData() {
+        final ProgressDialog progress = new ProgressDialog(this);
+
         /*Send request to get list of users that this project might be interested in*/
         String url = URLS.PROJECT_SEARCH.string + projectID + "/";
         JsonArrayRequest projectSearchRequest = new JsonArrayRequest(Request.Method.GET, url,
@@ -82,6 +85,7 @@ public class ProjectSearchActivity extends SearchActivity {
                             Log.d( TAG, "No profiles found" );
                             showNoProfilesStart();
                         }
+                        progress.dismiss();
                     }
                 }
                 ,
@@ -95,6 +99,11 @@ public class ProjectSearchActivity extends SearchActivity {
             }
         };
         MyApplication.requestQueue.add(projectSearchRequest);
+
+        /*Show loading indicator*/
+        progress.setMessage("Finding collaborators");
+        progress.setIndeterminate(true);
+        progress.show();
     }
 
     @Override

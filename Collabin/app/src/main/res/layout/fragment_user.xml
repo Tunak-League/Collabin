@@ -12,11 +12,6 @@
         tools:context="tunakleague.com.collabin.profiles.UserFragment"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:layout_width="0px"
-            android:layout_height="0px"/>
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -37,6 +32,25 @@
             android:id="@+id/backgroundText"
             android:background="@drawable/rsz_wallpaper4"
             />
+
+        <ProgressBar
+            style="@android:style/Widget.ProgressBar.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_spinner"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:indeterminate="true"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            style="@android:style/Widget.ProgressBar.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/download_spinner"
+            android:layout_centerInParent="true"
+            android:indeterminate="true"
+        />
 
         <ImageView
             android:layout_width="120dp"
