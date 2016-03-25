@@ -100,7 +100,11 @@
         </activity>
         <activity
             android:name="tunakleague.com.collabin.HomeActivity"
-            android:label="@string/title_activity_home" >
+            android:label="@string/title_activity_home"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            >
+
         </activity>
         <activity
             android:name="tunakleague.com.collabin.messaging.ChatMainActivity"
