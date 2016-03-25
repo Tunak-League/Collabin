@@ -57,7 +57,6 @@ public class ChatProjectFragment extends ProjectUpdateFragment {
                     public void onResponse(String response) {
                         try {
                             JSONObject data = new JSONObject(response);
-                            Log.d("ChatProfileFragment", data.toString());
                             renderUI(data);
                         }
 

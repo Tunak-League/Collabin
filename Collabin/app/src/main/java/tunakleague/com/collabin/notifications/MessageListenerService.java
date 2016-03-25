@@ -38,9 +38,6 @@ public class MessageListenerService extends GcmListenerService {
         String tag = parsedMessage[0];
         String sendMessage = parsedMessage[1];
 
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + message);
-
         if (tag.equals(MATCH_NOTIFICATION)) {
             sendMatchNotification(sendMessage);
         }

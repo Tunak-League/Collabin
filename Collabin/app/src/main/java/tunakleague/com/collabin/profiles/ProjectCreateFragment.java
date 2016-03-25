@@ -105,7 +105,6 @@ public class ProjectCreateFragment extends ProfileUpdateFragment {
     protected void updateProfile() {
         JSONObject newProject = extractFields();
         putImage(newProject);
-        Log.d(TAG, "Sending this: " + newProject.toString());
         final ProgressBar spinner = (ProgressBar) getView().findViewById(R.id.project_spinner);
 
         /*Create request to update the Project*/
@@ -116,7 +115,6 @@ public class ProjectCreateFragment extends ProfileUpdateFragment {
                     public void onResponse(JSONObject response) {
                         profileData = response;
                         Toast.makeText(getActivity(), "Project created", Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "Created project: " + profileData.toString());
                         spinner.setVisibility(View.GONE);
                         updateButton.setClickable(true);
                         reloadProjects(); //Take user back to updated list of projects

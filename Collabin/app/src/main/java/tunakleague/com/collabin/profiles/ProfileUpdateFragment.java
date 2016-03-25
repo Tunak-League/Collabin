@@ -270,7 +270,6 @@ public abstract class ProfileUpdateFragment extends BaseProfileFragment {
         if( imageChanged ) {
             try {
                 data.put(imageFieldName, base64Image);
-                Log.d(TAG, "I put the image in");
             } catch (JSONException e) {
                 Log.d(TAG, "failed to put image");
                 e.printStackTrace();

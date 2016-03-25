@@ -98,7 +98,6 @@ public class RegistrationActivity extends AuthenticationActivity {
      *Submit the fields filled in by the user to the server to create a new user
      */
     public void registerUser(View view){
-        Log.d(TAG, URLS.ROOT.string );
         /*User-entered inputs for username and password fields. Needed for login after registration*/
         final String username_input = username.getText().toString();
         final String password_input = password.getText().toString();
@@ -157,9 +156,6 @@ public class RegistrationActivity extends AuthenticationActivity {
                     {
                         Map<String, String>  params = new HashMap<>();
 
-                        Log.d(TAG, username.getText().toString());
-                        Log.d(TAG, password.getText().toString());
-                        Log.d(TAG, email.getText().toString());
                         // Get the registration info from input fields and add them to the body of the request
                         params.put(USERS.USERNAME.string, username_input );
                         params.put(USERS.PASSWORD.string, password_input );
@@ -172,7 +168,6 @@ public class RegistrationActivity extends AuthenticationActivity {
                     }
                 };
                 MyApplication.requestQueue.add(postRequest); //Add the request to the requestQueue so it can be sent to the app server.
-                Log.d(TAG, "HOW MANY TIMES");
             }
 
         };
@@ -180,7 +175,6 @@ public class RegistrationActivity extends AuthenticationActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(tokenBroadcastReceiver,
                 new IntentFilter(NotificationsPreferences.REGISTRATION_COMPLETE)); //Set this receiver to look for the REGISTRATION_COMPLETE broadcast
         startIDRegistrationService(); //Start the service to obtain the device id
-        Log.d(TAG, "Is it null?:" + String.valueOf(MyApplication.requestQueue == null));
     }
 
 

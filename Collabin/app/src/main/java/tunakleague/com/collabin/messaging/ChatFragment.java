@@ -151,7 +151,6 @@ public class ChatFragment extends Fragment  {
                     Toast.makeText(getActivity(), "Please enter a message.", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Log.d("ChatMainActivity", "Sending message to user: " + toUser);
                     sendMessageToGCMAppServer(Integer.toString(toUser), messageToSend);
                 }
             }

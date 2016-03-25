@@ -71,14 +71,12 @@ public class HomeActivity extends DrawerActivity {
 
     /*Handler for clicking "Find Projects" button. Launches UserSearchActivity*/
     public void findProjects( View v ){
-        Log.d(TAG, "Clicked Find Projects");
         Intent userSearchIntent = new Intent(this, UserSearchActivity.class );
         startActivity(userSearchIntent);
     }
 
     /*Handler for clicking "Find Collaborators" button. Launches a ProjectSelectActivity */
     public void findCollaborators( View v) {
-        Log.d( TAG, "clicked Find Collab" );
         Intent projectSelectIntent = new Intent(this, ProjectSelectActivity.class);
         startActivity(projectSelectIntent);
     }

@@ -77,7 +77,6 @@ public class BaseProjectListFragment extends android.support.v4.app.Fragment imp
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d( TAG, "Creating the view" );
         View view = inflater.inflate(R.layout.fragment_projectitem_list, container, false);
         mListView = (AbsListView) view.findViewById(android.R.id.list);
 
@@ -132,7 +131,6 @@ public class BaseProjectListFragment extends android.support.v4.app.Fragment imp
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (null != mListener) {
-            Log.d(TAG, "clicked");
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
             try {

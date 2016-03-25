@@ -87,7 +87,6 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
 
         /*Recycles the imageBitmap if fragment stopped and screen is still ON (Not stopped because of idle though as screen would be off) */
         if( screenOn && imageBitmap != null ) {
-            Log.d(TAG, "recycling");
             image.setImageBitmap(null);
             imageBitmap.recycle();
             imageBitmap = null;
@@ -103,7 +102,6 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
     @Override
     public void onStart(){
         super.onStart();
-        Log.d(TAG, "activity started");
         // Re-download and display the image again, if activity was stopped
         if( profileData != null && imageBitmap == null && redownload) {
             downloadImage();
@@ -256,7 +254,6 @@ public abstract class BaseProfileFragment extends android.support.v4.app.Fragmen
 
                 /*A precaution in case the previous imageBitmap is still in memory*/
                 if( imageBitmap != null ){
-                    Log.d( TAG, "recycled a stray one" );
                     imageBitmap.recycle();
                 }
 

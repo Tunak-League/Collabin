@@ -91,7 +91,6 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 deleteAccount();
-                                Log.d(TAG, "I did a delete");
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
             }
@@ -174,7 +173,6 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
                         updateButton.setClickable(true);
                         profileData = response;
                         Toast.makeText(getActivity(), "Personal Profile updated", Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "Updated info: " + profileData.toString());
                         UserUpdateFragment.super.updateProfile();
                     }
                 }
@@ -191,7 +189,6 @@ public class UserUpdateFragment extends ProfileUpdateFragment {
         MyApplication.requestQueue.add(updateProfileRequest);
         spinner.setVisibility( View.VISIBLE ); //show progress spinner while waiting for response
         updateButton.setClickable( false );
-        Log.d(TAG, "I sent the request");
 
     }
 

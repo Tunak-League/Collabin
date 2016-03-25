@@ -62,7 +62,6 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
         try {
             sendSwipe(profileList.getJSONObject(position), answer);
         } catch (JSONException e) {
-            Log.d( TAG, "Error calling sendSwipe");
             e.printStackTrace();
         }
         loadNextProfile();
@@ -101,7 +100,6 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
             }
         }
         else{
-            Log.d(TAG, "No more profiles left to show" );
             showNoProfilesEnd();
         }
     }
@@ -133,7 +131,6 @@ public abstract class SearchActivity extends DrawerActivity implements View.OnTo
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if (position < profileList.length() ) {
-                Log.d(TAG, "Attempting to swipe " + position);
                 try {
                     float diffAbs = Math.abs(e1.getY() - e2.getY());
                     float diff = e1.getX() - e2.getX();

@@ -59,7 +59,6 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
     public static ProjectUpdateFragment newInstance(JSONObject project) {
         ProjectUpdateFragment fragment = new ProjectUpdateFragment();
         Bundle args = new Bundle();
-        Log.d(TAG, "PUTTING IN BUNDLE: " + project.toString() );
         args.putString(PROJECT, project.toString());
         fragment.setArguments(args);
         return fragment;
@@ -83,8 +82,6 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
                 catch(JSONException ex ){
                     Log.d(TAG, "Error retrieving project ID");
                 }
-
-                Log.d(TAG, "Received project: " + profileData.toString());
             }
             catch( Exception ex ) {
                 Log.d(TAG, "JSONError - Trying to extract project from Bundle");
@@ -132,7 +129,6 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 deleteProject();
-                                Log.d(TAG, "I did a delete");
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
             }
@@ -172,7 +168,6 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
     protected void updateProfile() {
         JSONObject updatedInfo = extractFields();
         putImage(updatedInfo);
-        Log.d(TAG, "Sending this: " + updatedInfo.toString() );
 
         final ProgressBar spinner = (ProgressBar) this.getView().findViewById( R.id.project_spinner);
 
@@ -186,7 +181,6 @@ public class ProjectUpdateFragment extends ProfileUpdateFragment {
                         updateButton.setClickable(true);
                         profileData = response;
                         Toast.makeText(getActivity(), "Project updated", Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "Updated info: " + profileData.toString());
                         //mListener.onProjectUpdated(profileData, position); //Pass updated project info to activity so it can update it in BaseProjectListFragment
                         ProjectUpdateFragment.super.updateProfile();
                         reloadProjects();

@@ -56,8 +56,6 @@ public class LoginActivity extends AuthenticationActivity {
         if (intent.getAction() != null && intent.getAction().equals(Constants.ACTION_LOGIN)) {
             String username_input = intent.getExtras().getString(USERS.USERNAME.string);
             String password_input = intent.getExtras().getString(USERS.PASSWORD.string);
-            Log.d(TAG, username_input);
-            Log.d(TAG, password_input);
             deviceID =  PreferenceManager.getDefaultSharedPreferences(this).getString(PreferencesKeys.DEVICE_ID, Constants.NO_DEVICE); //Assign old ID to pass the check for different device, since this code occurs right after RegistrationActivity
             authenticate(username_input, password_input, false);
         }
@@ -69,7 +67,6 @@ public class LoginActivity extends AuthenticationActivity {
                 public void onReceive(Context context, Intent intent) {
                     super.onReceive(context, intent); //call parent method to obtain the deviceID
                     deviceID = getDeviceID();
-                    Log.d(TAG, "Device ID: " + deviceID);
                 }
             };
             LocalBroadcastManager.getInstance(this).registerReceiver(tokenBroadCastReceiver,
@@ -130,7 +127,6 @@ public class LoginActivity extends AuthenticationActivity {
             recreate(); //Restart the activity so we can try to get device id again.
         }
         else {
-            Log.d(TAG, URLS.TOKEN_AUTH.string);
             String url = URLS.TOKEN_AUTH.string;
             StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
@@ -196,7 +192,6 @@ public class LoginActivity extends AuthenticationActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d(TAG, "Updated device ID" );
                         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString(PreferencesKeys.DEVICE_ID, deviceID);
@@ -213,7 +208,6 @@ public class LoginActivity extends AuthenticationActivity {
             //Create the body of the request
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                Log.d("DeviceIDBeforeRequest", deviceID);
                 params.put(USERS.DEVICE_ID.string, deviceID);
                 return params;
             }

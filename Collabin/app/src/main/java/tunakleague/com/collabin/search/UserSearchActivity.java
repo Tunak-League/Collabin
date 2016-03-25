@@ -80,8 +80,7 @@ public class UserSearchActivity extends SearchActivity {
                                 Log.d(TAG, "Error rendering FIRST profile" );
                             }
                         }
-                        else{ //TODO: Properly handle no matches with some screen that says "no matches"
-                            Log.d( TAG, "No profiles found" );
+                        else{
                             showNoProfilesStart();
                         }
                         progress.dismiss();
